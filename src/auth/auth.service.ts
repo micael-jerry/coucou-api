@@ -24,11 +24,11 @@ export class AuthService {
 	}
 
 	async signIn(signInDto: SignInDto): Promise<SignInResponse> {
-		const user: User | null = await this.prismaService.user.findUnique({
+		const user: User = await this.prismaService.user.findUniqueOrThrow({
 			where: { username: signInDto.username },
 		});
-		if (bcrypt.compareSync(signInDto.password, user!.password)) {
-			const payload = { user_id: user?.id, user_username: user?.username };
+		if (bcrypt.compareSync(signInDto.password, user.password)) {
+			const payload = { user_id: user.id, user_username: user.username };
 			return {
 				access_token: await this.jwtService.signAsync(payload),
 			};
