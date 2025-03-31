@@ -9,10 +9,10 @@ import {
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/sign-up.dto';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
-import { UserResponse } from 'src/user/dto/user-response.dto';
-import { UserMapper } from 'src/user/mapper/user.mapper';
-import { SignInDto } from './dto/sign-in.dto';
-import { SignInResponse } from './dto/sign-in-response.dto';
+import { UserResponse } from '../user/dto/user-response.dto';
+import { UserMapper } from '../user/mapper/user.mapper';
+import { LoginDto } from './dto/login.dto';
+import { LoginResponse } from './dto/login-response.dto';
 
 @Controller({ path: '/auth' })
 export class AuthController {
@@ -26,11 +26,11 @@ export class AuthController {
 		return UserMapper.toDto(await this.authService.signUp(signUpDto));
 	}
 
-	@ApiBody({ type: SignInDto })
-	@ApiResponse({ status: HttpStatus.OK, type: SignInResponse })
-	@Post('/sign-in')
+	@ApiBody({ type: LoginDto })
+	@ApiResponse({ status: HttpStatus.OK, type: LoginResponse })
+	@Post('/login')
 	@HttpCode(HttpStatus.OK)
-	async signIn(@Body() signInDto: SignInDto): Promise<SignInResponse> {
+	async signIn(@Body() signInDto: LoginDto): Promise<LoginResponse> {
 		return await this.authService.signIn(signInDto);
 	}
 }
