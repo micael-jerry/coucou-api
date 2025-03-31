@@ -13,9 +13,8 @@ async function run() {
 		.setTitle('Coucou api')
 		.setDescription('Chat app API')
 		.setVersion('0.1')
-		.addTag('chat')
 		.addBasicAuth()
-		.build()
+		.build();
 	const document = SwaggerModule.createDocument(app, documentBuilderConfig, {
 		operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
 	});

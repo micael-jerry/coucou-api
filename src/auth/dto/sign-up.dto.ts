@@ -12,7 +12,7 @@ export class SignUpDto {
 
 	@ApiProperty({
 		minLength: 8,
-		maxLength: 50
+		maxLength: 50,
 	})
 	@IsNotEmpty()
 	@MinLength(8)
