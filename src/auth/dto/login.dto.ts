@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, MaxLength, MinLength } from 'class-validator';
 
-export class SignInDto {
+export class LoginDto {
 	@ApiProperty({ minimum: 5 })
 	@IsNotEmpty()
 	@MinLength(5)
