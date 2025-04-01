@@ -1,0 +1,15 @@
+.husky/
+
+.idea/
+
+dist/
+
+docs/
+
+node_modules/
+
+coverage/
+
+README.md
+
+.env.template
