@@ -17,17 +17,13 @@ export class PrismaExceptionFilter implements ExceptionFilter {
 				throw new NotFoundException(`Resource not found.`);
 			case 'P2002':
 				// Unique constraint failed
-				throw new ConflictException(
-					`Unique constraint failed on the field(s).`,
-				);
+				throw new ConflictException(`Unique constraint failed on the field(s).`);
 			case 'P2016':
 				// Query interpretation error
 				throw new BadRequestException(`Query interpretation error`);
 			case 'P2003':
 				// Foreign key constraint failed
-				throw new BadRequestException(
-					`Foreign key constraint failed on the field.`,
-				);
+				throw new BadRequestException(`Foreign key constraint failed on the field.`);
 			default:
 				break;
 		}
