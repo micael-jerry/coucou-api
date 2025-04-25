@@ -21,7 +21,7 @@ export class AuthController {
 
 	@ApiBody({ type: LoginDto })
 	@ApiResponse({ status: HttpStatus.OK, type: LoginResponse })
-	@Post('/login')
+	@Post('/sign-in')
 	@HttpCode(HttpStatus.OK)
 	async signIn(@Body() signInDto: LoginDto): Promise<LoginResponse> {
 		return await this.authService.signIn(signInDto);
