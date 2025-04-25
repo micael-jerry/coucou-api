@@ -3,6 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from '../src/app.module';
+import { Coucou } from '../src/health/dto/coucou.dto';
 
 describe('HealthController (e2e)', () => {
 	let app: INestApplication<App>;
@@ -16,12 +17,10 @@ describe('HealthController (e2e)', () => {
 		await app.init();
 	});
 
-	it('/coucou (GET)', () => {
-		return request(app.getHttpServer())
-			.get('/coucou')
-			.expect(200)
-			.expect(({ body }) => {
-				expect(body.message).toEqual('HELLO ❤️❤️❤️');
-			});
+	it('/coucou (GET)', async () => {
+		const response = (await request(app.getHttpServer()).get('/coucou').expect(200)) as { body: Coucou };
+
+		expect(response.body).toHaveProperty('message');
+		expect(response.body.message).toBe('HELLO ❤️❤️❤️');
 	});
 });

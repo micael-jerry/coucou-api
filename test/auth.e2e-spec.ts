@@ -3,6 +3,8 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { App } from 'supertest/types';
+import { LoginResponse } from '../src/auth/dto/login-response.dto';
+import { UserResponse } from '../src/user/dto/user-response.dto';
 
 describe('AuthController (e2e)', () => {
 	let app: INestApplication<App>;
@@ -17,13 +19,13 @@ describe('AuthController (e2e)', () => {
 	});
 
 	it('/auth/sign-in (POST) - valid credentials', async () => {
-		const response = await request(app.getHttpServer())
+		const response = (await request(app.getHttpServer())
 			.post('/auth/sign-in')
 			.send({
 				username: 'testuser1',
 				password: 'test1@example.com',
 			})
-			.expect(200);
+			.expect(200)) as { body: LoginResponse };
 
 		expect(response.body).toHaveProperty('access_token');
 		expect(typeof response.body.access_token).toBe('string');
@@ -40,7 +42,7 @@ describe('AuthController (e2e)', () => {
 	});
 
 	it('/auth/sign-up (POST)', async () => {
-		const response = await request(app.getHttpServer())
+		const response = (await request(app.getHttpServer())
 			.post('/auth/sign-up')
 			.send({
 				username: 'newuser',
@@ -49,7 +51,7 @@ describe('AuthController (e2e)', () => {
 				firstname: 'New',
 				lastname: 'User',
 			})
-			.expect(201);
+			.expect(201)) as { body: UserResponse };
 
 		expect(response.body).toHaveProperty('id');
 		expect(response.body.username).toBe('newuser');
