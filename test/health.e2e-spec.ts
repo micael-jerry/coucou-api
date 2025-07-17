@@ -2,9 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { App } from 'supertest/types';
-import { AppModule } from './../src/app.module';
+import { AppModule } from '../src/app.module';
+import { Coucou } from '../src/health/dto/coucou.dto';
 
-describe('AppController (e2e)', () => {
+describe('HealthController (e2e)', () => {
 	let app: INestApplication<App>;
 
 	beforeEach(async () => {
@@ -16,10 +17,10 @@ describe('AppController (e2e)', () => {
 		await app.init();
 	});
 
-	it('/ (GET)', () => {
-		return request(app.getHttpServer())
-			.get('/')
-			.expect(200)
-			.expect('Hello World!');
+	it('/coucou (GET)', async () => {
+		const response = (await request(app.getHttpServer()).get('/coucou').expect(200)) as { body: Coucou };
+
+		expect(response.body).toHaveProperty('message');
+		expect(response.body.message).toBe('HELLO ❤️❤️❤️');
 	});
 });
