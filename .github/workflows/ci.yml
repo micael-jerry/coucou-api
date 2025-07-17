@@ -25,16 +25,19 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version: 20
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
 
       - name: Install dependencies
-        run: yarn
+        run: pnpm install
 
       - name: Run lint
-        run: yarn lint
+        run: pnpm lint
 
       - name: Run e2e tests
-        run: yarn test:e2e
+        run: pnpm test:e2e
 
       - name: Build application
-        run: npm run build
+        run: pnpm run build
