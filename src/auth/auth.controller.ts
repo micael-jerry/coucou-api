@@ -1,7 +1,7 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/sign-up.dto';
-import { ApiBody, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { UserResponse } from '../user/dto/user-response.dto';
 import { UserMapper } from '../user/mapper/user.mapper';
 import { LoginDto } from './dto/login.dto';
@@ -11,6 +11,10 @@ import { LoginResponse } from './dto/login-response.dto';
 export class AuthController {
 	constructor(private readonly authService: AuthService) {}
 
+	@ApiOperation({
+		summary: 'User registration endpoint',
+		description: 'Allows a new user to register by providing their details.',
+	})
 	@ApiBody({ type: SignUpDto })
 	@ApiResponse({ status: HttpStatus.CREATED, type: UserResponse })
 	@Post('/sign-up')
@@ -19,6 +23,10 @@ export class AuthController {
 		return UserMapper.toDto(await this.authService.signUp(signUpDto));
 	}
 
+	@ApiOperation({
+		summary: 'User login endpoint',
+		description: 'Allows a user to log in by providing their username and password.',
+	})
 	@ApiBody({ type: LoginDto })
 	@ApiResponse({ status: HttpStatus.OK, type: LoginResponse })
 	@Post('/sign-in')
