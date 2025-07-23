@@ -19,6 +19,7 @@ export function ApiCommonExceptionsDecorator() {
 				timestamp: new Date(),
 				path: '/example',
 			},
+			description: 'Bad Request - The request could not be understood or was missing required parameters.',
 		}),
 		ApiForbiddenResponse({
 			type: HttpExceptionResponseDto,
@@ -29,6 +30,7 @@ export function ApiCommonExceptionsDecorator() {
 				timestamp: new Date(),
 				path: '/example',
 			},
+			description: 'Forbidden - The server understood the request, but refuses to authorize it.',
 		}),
 		ApiNotFoundResponse({
 			type: HttpExceptionResponseDto,
@@ -39,6 +41,7 @@ export function ApiCommonExceptionsDecorator() {
 				timestamp: new Date(),
 				path: '/example',
 			},
+			description: 'Not Found - The requested resource could not be found on the server.',
 		}),
 		ApiTooManyRequestsResponse({
 			type: HttpExceptionResponseDto,
@@ -49,6 +52,7 @@ export function ApiCommonExceptionsDecorator() {
 				timestamp: new Date(),
 				path: '/example',
 			},
+			description: 'Too Many Requests - The user has sent too many requests in a given amount of time.',
 		}),
 		ApiInternalServerErrorResponse({
 			type: HttpExceptionResponseDto,
@@ -59,6 +63,7 @@ export function ApiCommonExceptionsDecorator() {
 				timestamp: new Date(),
 				path: '/example',
 			},
+			description: 'Internal Server Error - An unexpected condition was encountered by the server.',
 		}),
 	);
 }
