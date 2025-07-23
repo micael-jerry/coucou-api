@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { PrismaExceptionFilter } from './prisma/filter/prisma-exception.filter';
+import { HttpExceptionFilter } from './exception/filter/http-exception.filter';
 
 function documentBuilderConfig(app: INestApplication) {
 	const documentBuilderConfig = new DocumentBuilder()
@@ -25,6 +26,7 @@ async function run() {
 	const app = await NestFactory.create(AppModule);
 	app.useGlobalPipes(new ValidationPipe());
 	app.useGlobalFilters(new PrismaExceptionFilter());
+	app.useGlobalFilters(new HttpExceptionFilter());
 
 	documentBuilderConfig(app);
 
