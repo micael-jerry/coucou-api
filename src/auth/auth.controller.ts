@@ -6,6 +6,7 @@ import { UserResponse } from '../user/dto/user-response.dto';
 import { UserMapper } from '../user/mapper/user.mapper';
 import { LoginDto } from './dto/login.dto';
 import { LoginResponse } from './dto/login-response.dto';
+import { ApiCommonExceptionsDecorator } from 'src/exception/decorator/api-common-exceptions.decorator';
 
 @Controller({ path: '/auth' })
 export class AuthController {
@@ -17,6 +18,7 @@ export class AuthController {
 	})
 	@ApiBody({ type: SignUpDto })
 	@ApiResponse({ status: HttpStatus.CREATED, type: UserResponse })
+	@ApiCommonExceptionsDecorator()
 	@Post('/sign-up')
 	@HttpCode(HttpStatus.CREATED)
 	async signUp(@Body() signUpDto: SignUpDto): Promise<UserResponse> {
@@ -29,6 +31,7 @@ export class AuthController {
 	})
 	@ApiBody({ type: LoginDto })
 	@ApiResponse({ status: HttpStatus.OK, type: LoginResponse })
+	@ApiCommonExceptionsDecorator()
 	@Post('/sign-in')
 	@HttpCode(HttpStatus.OK)
 	async signIn(@Body() signInDto: LoginDto): Promise<LoginResponse> {
