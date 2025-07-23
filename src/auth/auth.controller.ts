@@ -6,7 +6,7 @@ import { UserResponse } from '../user/dto/user-response.dto';
 import { UserMapper } from '../user/mapper/user.mapper';
 import { LoginDto } from './dto/login.dto';
 import { LoginResponse } from './dto/login-response.dto';
-import { ApiCommonExceptionsDecorator } from 'src/exception/decorator/api-common-exceptions.decorator';
+import { ApiCommonExceptionsDecorator } from '../exception/decorator/api-common-exceptions.decorator';
 import { Request } from 'express';
 import { AuthGuard } from './guard/auth.guard';
 

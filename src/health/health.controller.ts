@@ -1,8 +1,8 @@
 import { ApiBadRequestResponse, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Coucou } from './dto/coucou.dto';
 import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
-import { HttpExceptionResponseDto } from 'src/exception/dto/http-exception-response.dto';
-import { ApiCommonExceptionsDecorator } from 'src/exception/decorator/api-common-exceptions.decorator';
+import { HttpExceptionResponseDto } from '../exception/dto/http-exception-response.dto';
+import { ApiCommonExceptionsDecorator } from '../exception/decorator/api-common-exceptions.decorator';
 
 @Controller()
 export class HealthController {
