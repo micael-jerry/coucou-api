@@ -7,7 +7,7 @@ import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 
 declare module 'express' {
 	export interface Request {
-		user?: any;
+		user?: AuthTokenPayload;
 	}
 }
 

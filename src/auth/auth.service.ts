@@ -36,4 +36,11 @@ export class AuthService {
 		}
 		throw new UnauthorizedException('Invalid Password');
 	}
+
+	async whoAmI(authTokenPayload: AuthTokenPayload): Promise<User> {
+		const user: User = await this.prismaService.user.findUniqueOrThrow({
+			where: { id: authTokenPayload.user_id },
+		});
+		return user;
+	}
 }
