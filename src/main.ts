@@ -24,6 +24,9 @@ async function run() {
 	const port = process.env.PORT ?? 8080;
 
 	const app = await NestFactory.create(AppModule);
+	app.enableCors({
+		origin: '*',
+	});
 	app.useGlobalPipes(new ValidationPipe());
 	app.useGlobalFilters(new PrismaExceptionFilter());
 	app.useGlobalFilters(new HttpExceptionFilter());
