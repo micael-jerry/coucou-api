@@ -7,6 +7,7 @@ import { LoginDto } from './dto/login.dto';
 import { LoginResponse } from './dto/login-response.dto';
 import { JwtService } from '@nestjs/jwt';
 import { AuthTokenPayload } from './payload/auth-token.payload';
+import { UserMapper } from '../user/mapper/user.mapper';
 
 @Injectable()
 export class AuthService {
@@ -32,6 +33,7 @@ export class AuthService {
 			const payload: AuthTokenPayload = { user_id: user.id, user_username: user.username };
 			return {
 				access_token: await this.jwtService.signAsync(payload),
+				user: UserMapper.toDto(user),
 			};
 		}
 		throw new UnauthorizedException('Invalid Password');
