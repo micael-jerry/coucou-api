@@ -20,7 +20,7 @@ export class AuthService {
 		return await this.prismaService.user.create({
 			data: {
 				...signUpDto,
-				password: bcrypt.hashSync(signUpDto.password, bcrypt.genSaltSync()),
+				password: this.hashPassword(signUpDto.password),
 			},
 		});
 	}
@@ -29,7 +29,7 @@ export class AuthService {
 		const user: User = await this.prismaService.user.findUniqueOrThrow({
 			where: { username: signInDto.username },
 		});
-		if (bcrypt.compareSync(signInDto.password, user.password)) {
+		if (this.isValidPassword(signInDto.password, user.password)) {
 			const payload: AuthTokenPayload = { user_id: user.id, user_username: user.username };
 			return {
 				access_token: await this.jwtService.signAsync(payload),
@@ -44,5 +44,13 @@ export class AuthService {
 			where: { id: authTokenPayload.user_id },
 		});
 		return user;
+	}
+
+	private hashPassword(password: string): string {
+		return bcrypt.hashSync(password, bcrypt.genSaltSync());
+	}
+
+	private isValidPassword(password: string, hashedPassword: string): boolean {
+		return bcrypt.compareSync(password, hashedPassword);
 	}
 }
