@@ -3,7 +3,7 @@ import { UserService } from './user.service';
 import { UserResponse } from './dto/user-response.dto';
 import { UserMapper } from './mapper/user.mapper';
 import { AuthGuard } from '../auth/guard/auth.guard';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { ApiCommonExceptionsDecorator } from '../exception/decorator/api-common-exceptions.decorator';
 
 @Controller({ path: '/users' })
@@ -14,6 +14,7 @@ export class UserController {
 		summary: 'Get all users',
 		description: 'Returns a list of all users.',
 	})
+	@ApiBearerAuth()
 	@ApiResponse({ status: HttpStatus.OK, type: [UserResponse] })
 	@ApiCommonExceptionsDecorator()
 	@Get('/')
@@ -26,6 +27,8 @@ export class UserController {
 		summary: 'Get user by id',
 		description: 'Returns a user by id.',
 	})
+	@ApiBearerAuth()
+	@ApiParam({ name: 'userId', type: 'string', required: true, description: 'The id of the user to retrieve.' })
 	@ApiResponse({ status: HttpStatus.OK, type: UserResponse })
 	@ApiCommonExceptionsDecorator()
 	@Get('/:userId')
