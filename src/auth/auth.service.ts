@@ -8,21 +8,25 @@ import { LoginResponse } from './dto/login-response.dto';
 import { JwtService } from '@nestjs/jwt';
 import { AuthTokenPayload } from './payload/auth-token.payload';
 import { UserMapper } from '../user/mapper/user.mapper';
+import { MailerService } from '../mailer/mailer.service';
 
 @Injectable()
 export class AuthService {
 	constructor(
 		private readonly prismaService: PrismaService,
 		private readonly jwtService: JwtService,
+		private readonly mailerService: MailerService,
 	) {}
 
 	async signUp(signUpDto: SignUpDto): Promise<User> {
-		return await this.prismaService.user.create({
+		const createdUser = await this.prismaService.user.create({
 			data: {
 				...signUpDto,
 				password: this.hashPassword(signUpDto.password),
 			},
 		});
+		await this.mailerService.sendWelcomeMail(createdUser);
+		return createdUser;
 	}
 
 	async signIn(signInDto: LoginDto): Promise<LoginResponse> {

@@ -4,7 +4,7 @@ import { UserResponse } from './dto/user-response.dto';
 import { UserMapper } from './mapper/user.mapper';
 import { AuthGuard } from '../auth/guard/auth.guard';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { ApiCommonExceptionsDecorator } from 'src/exception/decorator/api-common-exceptions.decorator';
+import { ApiCommonExceptionsDecorator } from '../exception/decorator/api-common-exceptions.decorator';
 
 @Controller({ path: '/users' })
 export class UserController {
