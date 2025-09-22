@@ -73,6 +73,7 @@ Update the `.env` file with your local database credentials and a JWT secret.
 DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public"
 JWT_SECRET_KEY="your-super-secret-key"
 RESEND_API_KEY="resend-api-key"
+FRONT_END_BASE_URL="https://front-end-base-url.com"
 ```
 
 ### 4. Start the Database

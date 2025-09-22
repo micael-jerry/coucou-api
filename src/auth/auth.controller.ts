@@ -1,7 +1,7 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/sign-up.dto';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { UserResponse } from '../user/dto/user-response.dto';
 import { UserMapper } from '../user/mapper/user.mapper';
 import { LoginDto } from './dto/login.dto';
@@ -64,12 +64,12 @@ export class AuthController {
 		summary: 'Verify email address',
 		description: 'Verify email address with token sended into email of user.',
 	})
-	@ApiParam({ name: 'token', type: 'string', required: true, description: 'Token to verify email address' })
+	@ApiQuery({ name: 'token', type: 'string', required: true, description: 'Token to verify email address' })
 	@ApiResponse({ status: HttpStatus.OK, type: HttpExceptionResponseDto })
 	@ApiCommonExceptionsDecorator()
-	@Get('/verify-email/:token')
+	@Get('/verify-email')
 	@HttpCode(HttpStatus.OK)
-	async verifyEmail(@Req() req: Request, @Param('token') token: string): Promise<HttpExceptionResponseDto> {
+	async verifyEmail(@Req() req: Request, @Query('token') token: string): Promise<HttpExceptionResponseDto> {
 		const response = await this.mailerService.checkEmailVerificationRequest(token);
 		return {
 			status: HttpStatus.OK,
