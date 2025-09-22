@@ -1,14 +1,14 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { SignUpDto } from './dto/sign-up.dto';
+import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
-import { LoginDto } from './dto/login.dto';
-import { LoginResponse } from './dto/login-response.dto';
-import { JwtService } from '@nestjs/jwt';
-import { AuthTokenPayload } from './payload/auth-token.payload';
-import { UserMapper } from '../user/mapper/user.mapper';
 import { MailerService } from '../mailer/mailer.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { UserMapper } from '../user/mapper/user.mapper';
+import { LoginResponse } from './dto/login-response.dto';
+import { LoginDto } from './dto/login.dto';
+import { SignUpDto } from './dto/sign-up.dto';
+import { AuthTokenPayload } from './payload/auth-token.payload';
 
 @Injectable()
 export class AuthService {
@@ -25,7 +25,7 @@ export class AuthService {
 				password: this.hashPassword(signUpDto.password),
 			},
 		});
-		await this.mailerService.sendWelcomeMail(createdUser);
+		await this.mailerService.sendWelcomeEmail(createdUser);
 		return createdUser;
 	}
 

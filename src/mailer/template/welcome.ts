@@ -1,6 +1,6 @@
 import { User } from '@prisma/client';
 
-export class WelcomeMail {
+export class WelcomeEmail {
 	static getTemplate(createdUser: User) {
 		return `
       <!DOCTYPE html>
@@ -60,7 +60,7 @@ export class WelcomeMail {
       <body>
         <div class="container">
           <div class="header">
-            <img src="https://coucou-app.vercel.app/logo.png" alt="Coucou App Logo">
+            <img src="${process.env.FRONT_END_BASE_URL}/logo.png" alt="Coucou App Logo">
           </div>
           <div class="content">
             <h1>Welcome, ${createdUser.firstname} ${createdUser.lastname}!</h1>

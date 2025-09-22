@@ -1,4 +1,4 @@
-export class SendMailObject {
+export class SendEmailObject {
 	to: string[];
 	subject: string;
 	html: string;
