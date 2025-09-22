@@ -1,7 +1,7 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/sign-up.dto';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { UserResponse } from '../user/dto/user-response.dto';
 import { UserMapper } from '../user/mapper/user.mapper';
 import { LoginDto } from './dto/login.dto';
@@ -9,10 +9,15 @@ import { LoginResponse } from './dto/login-response.dto';
 import { ApiCommonExceptionsDecorator } from '../exception/decorator/api-common-exceptions.decorator';
 import { Request } from 'express';
 import { AuthGuard } from './guard/auth.guard';
+import { HttpExceptionResponseDto } from '../exception/dto/http-exception-response.dto';
+import { MailerService } from '../mailer/mailer.service';
 
 @Controller({ path: '/auth' })
 export class AuthController {
-	constructor(private readonly authService: AuthService) {}
+	constructor(
+		private readonly authService: AuthService,
+		private readonly mailerService: MailerService,
+	) {}
 
 	@ApiOperation({
 		summary: 'User registration endpoint',
@@ -53,5 +58,25 @@ export class AuthController {
 	async whoAmI(@Req() req: Request): Promise<UserResponse> {
 		const user = await this.authService.whoAmI(req.user!);
 		return UserMapper.toDto(user);
+	}
+
+	@ApiOperation({
+		summary: 'Verify email address',
+		description: 'Verify email address with token sended into email of user.',
+	})
+	@ApiParam({ name: 'token', type: 'string', required: true, description: 'Token to verify email address' })
+	@ApiResponse({ status: HttpStatus.OK, type: HttpExceptionResponseDto })
+	@ApiCommonExceptionsDecorator()
+	@Get('/verify-email/:token')
+	@HttpCode(HttpStatus.OK)
+	async verifyEmail(@Req() req: Request, @Param('token') token: string): Promise<HttpExceptionResponseDto> {
+		const response = await this.mailerService.checkEmailVerificationRequest(token);
+		return {
+			status: HttpStatus.OK,
+			type: 'success',
+			message: `Email verified successfully for ${response.email}`,
+			path: req.path,
+			typestamp: new Date(),
+		};
 	}
 }
