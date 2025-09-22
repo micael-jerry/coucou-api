@@ -1,26 +1,21 @@
-import { Resend } from 'resend';
-import { SendMailObject } from './entity/send-mail-object.entity';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
-import { WelcomeMail } from './template/welcome';
+import { Resend } from 'resend';
+import { SendEmailObject } from './entity/send-mail-object.entity';
+import { VerifyEmailPayload } from './payload/verify-email.payload';
+import { VerifyEmail } from './template/verify-email';
+import { WelcomeEmail } from './template/welcome';
 
 @Injectable()
 export class MailerService {
 	private readonly resend: Resend;
 
-	constructor() {
+	constructor(private readonly jwtService: JwtService) {
 		this.resend = new Resend(process.env.RESEND_API_KEY);
 	}
 
-	async sendWelcomeMail(createdUser: User) {
-		await this.sendMail({
-			to: [createdUser.email],
-			subject: 'Welcome to Coucou App',
-			html: WelcomeMail.getTemplate(createdUser),
-		});
-	}
-
-	private async sendMail({ to, subject, html }: SendMailObject) {
+	private async sendEmail({ to, subject, html }: SendEmailObject) {
 		const { data, error } = await this.resend.emails.send({
 			from: 'Coucou app <no-reply@resend.dev>',
 			to: to,
@@ -33,5 +28,33 @@ export class MailerService {
 		}
 
 		console.log({ data });
+	}
+
+	async sendWelcomeEmail(createdUser: User) {
+		await this.sendEmail({
+			to: [createdUser.email],
+			subject: 'Welcome to Coucou App',
+			html: WelcomeEmail.getTemplate(createdUser),
+		});
+	}
+
+	async sendVerificationEmailRequest(createdUser: User) {
+		const verifyEmailPayload: VerifyEmailPayload = { email: createdUser.email };
+		const verifyEmailToken = await this.jwtService.signAsync(verifyEmailPayload);
+
+		await this.sendEmail({
+			to: [createdUser.email],
+			subject: 'Verify your email address for Coucou App',
+			html: VerifyEmail.getTemplate(createdUser, verifyEmailToken),
+		});
+	}
+
+	async checkEmailVerificationRequest(token: string): Promise<VerifyEmailPayload> {
+		try {
+			return await this.jwtService.verifyAsync<VerifyEmailPayload>(token);
+		} catch (err) {
+			console.error(err);
+			throw new BadRequestException('Invalid token');
+		}
 	}
 }
