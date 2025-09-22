@@ -27,7 +27,12 @@ async function run() {
 	app.enableCors({
 		origin: '*',
 	});
-	app.useGlobalPipes(new ValidationPipe());
+	app.useGlobalPipes(
+		new ValidationPipe({
+			whitelist: true,
+			transform: true,
+		}),
+	);
 	app.useGlobalFilters(new PrismaExceptionFilter());
 	app.useGlobalFilters(new HttpExceptionFilter());
 
