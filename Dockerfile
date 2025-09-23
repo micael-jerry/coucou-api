@@ -1,18 +1,19 @@
 FROM node:20.16.0-alpine
 
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+
+COPY . /app
+
 WORKDIR /app
 
-COPY package.json yarn.lock ./
+COPY package.json pnpm-lock.yaml ./
 
-RUN \
-			if [ -f yarn.lock ]; then yarn --frozen-lockfile \
-			else echo "yarn.lock not found." && exit 1; \
-			fi
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
 
-COPY . .
-
-RUN yarn prisma generate && yarn build
+RUN pnpm prisma generate && pnpm build
 
 EXPOSE 8080
 
-CMD [ "yarn", "start:migrate:prod" ]
+CMD [ "pnpm", "start:migrate:prod" ]
