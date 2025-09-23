@@ -15,7 +15,11 @@ export class MailerService {
 		this.resend = new Resend(process.env.RESEND_API_KEY);
 	}
 
-	private async sendEmail({ to, subject, html }: SendEmailObject) {
+	private async sendEmail({ to, subject, html }: SendEmailObject): Promise<void> {
+		if (process.env.NODE_ENV === 'test') {
+			return Promise.resolve();
+		}
+
 		const { data, error } = await this.resend.emails.send({
 			from: 'Coucou app <no-reply@resend.dev>',
 			to: to,

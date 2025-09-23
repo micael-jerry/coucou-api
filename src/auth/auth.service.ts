@@ -26,7 +26,6 @@ export class AuthService {
 			},
 		});
 
-		// TODO: only send email in prod
 		await this.mailerService.sendWelcomeEmail(createdUser);
 		await this.mailerService.sendVerificationEmailRequest(createdUser);
 		return createdUser;

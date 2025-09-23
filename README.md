@@ -70,6 +70,7 @@ Update the `.env` file with your local database credentials and a JWT secret.
 
 ```env
 # .env
+NODE_ENV="dev" # possible value [prod, dev, test]
 DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public"
 JWT_SECRET_KEY="your-super-secret-key"
 RESEND_API_KEY="resend-api-key"
