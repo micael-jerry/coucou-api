@@ -6,12 +6,16 @@ import { SendEmailObject } from './entity/send-mail-object.entity';
 import { VerifyEmailPayload } from './payload/verify-email.payload';
 import { VerifyEmail } from './template/verify-email';
 import { WelcomeEmail } from './template/welcome';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class MailerService {
 	private readonly resend: Resend;
 
-	constructor(private readonly jwtService: JwtService) {
+	constructor(
+		private readonly jwtService: JwtService,
+		private readonly prismaService: PrismaService,
+	) {
 		this.resend = new Resend(process.env.RESEND_API_KEY);
 	}
 
@@ -55,7 +59,12 @@ export class MailerService {
 
 	async checkEmailVerificationRequest(token: string): Promise<VerifyEmailPayload> {
 		try {
-			return await this.jwtService.verifyAsync<VerifyEmailPayload>(token);
+			const payload = await this.jwtService.verifyAsync<VerifyEmailPayload>(token);
+			await this.prismaService.user.update({
+				where: { email: payload.email },
+				data: { is_verified: true },
+			});
+			return payload;
 		} catch (err) {
 			console.error(err);
 			throw new BadRequestException('Invalid token');
