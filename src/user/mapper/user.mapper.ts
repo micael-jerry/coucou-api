@@ -7,8 +7,10 @@ export class UserMapper {
 			id: entity.id,
 			username: entity.username,
 			email: entity.email,
+			isVerified: entity.is_verified,
 			firstname: entity.firstname,
 			lastname: entity.lastname,
+			createdAt: entity.created_at,
 		};
 	}
 }

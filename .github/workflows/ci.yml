@@ -15,8 +15,11 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
+      NODE_ENV: ${{ vars.NODE_ENV }}
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      FRONT_END_BASE_URL: ${{ vars.FRONT_END_BASE_URL }}
 
     steps:
       - name: Checkout code

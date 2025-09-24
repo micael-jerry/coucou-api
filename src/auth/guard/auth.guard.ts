@@ -1,4 +1,4 @@
-import { CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
@@ -7,10 +7,11 @@ import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 
 declare module 'express' {
 	export interface Request {
-		user?: any;
+		user?: AuthTokenPayload;
 	}
 }
 
+@Injectable()
 export class AuthGuard implements CanActivate {
 	constructor(private readonly jwtService: JwtService) {}
 
