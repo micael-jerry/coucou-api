@@ -8,9 +8,14 @@ export class MessageService {
 	constructor(private readonly prismaService: PrismaService) {}
 
 	async sendMessage(message: MessageInput): Promise<Message> {
-		return this.prismaService.message.create({
+		const messageSended = await this.prismaService.message.create({
 			data: { sender_id: message.senderId, conversation_id: message.conversationId, content: message.content },
 		});
+		await this.prismaService.conversation.update({
+			where: { id: message.conversationId },
+			data: { updated_at: messageSended.created_at },
+		});
+		return messageSended;
 	}
 
 	async findMessageById(messageId: string): Promise<Message> {
