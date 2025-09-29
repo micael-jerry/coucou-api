@@ -13,7 +13,7 @@ export class ConversationResponse {
 	@ApiProperty({ type: 'string', format: 'date-time', description: 'User updated datetime' })
 	updatedAt: Date;
 
-	@ApiProperty({ type: 'string', enum: ['PRIVATE', 'GROUP'] })
+	@ApiProperty({ enum: ConversationType })
 	type: ConversationType;
 
 	@ApiProperty({ type: [UserResponse] })
