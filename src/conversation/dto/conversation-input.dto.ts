@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ArrayMinSize, IsEnum } from 'class-validator';
+import { ArrayMinSize, IsEnum, IsUUID } from 'class-validator';
 import { ConversationType } from '@prisma/client';
 
 export class ConversationInput {
@@ -9,5 +9,6 @@ export class ConversationInput {
 
 	@ApiProperty({ description: 'Array of user id' })
 	@ArrayMinSize(2)
+	@IsUUID('4', { each: true, message: 'Invalid members id' })
 	membersId: string[];
 }
