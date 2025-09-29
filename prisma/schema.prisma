@@ -28,6 +28,7 @@ enum ConversationType {
 model Conversation {
   id         String               @id @default(uuid())
   created_at DateTime             @default(now())
+  updated_at DateTime             @default(now())
   type       ConversationType
   messages   Message[]
   members    ConversationMember[]
@@ -44,6 +45,7 @@ model Message {
 }
 
 model ConversationMember {
+  joigned_at      DateTime     @default(now())
   conversation_id String
   conversation    Conversation @relation(fields: [conversation_id], references: [id])
   user_id         String
