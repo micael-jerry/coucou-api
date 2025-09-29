@@ -9,8 +9,6 @@ export class ConversationService {
 	constructor(private readonly prismaService: PrismaService) {}
 
 	async createConversation(conversationInput: ConversationInput): Promise<ConversationEntity> {
-		console.log(conversationInput);
-
 		return this.prismaService.conversation.create({
 			data: {
 				type: this.getType(conversationInput.type),
