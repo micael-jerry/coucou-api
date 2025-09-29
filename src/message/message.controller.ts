@@ -4,8 +4,8 @@ import { MessageInput } from './dto/message-input.dto';
 import { MessageResponse } from './dto/message-response.dto';
 import { MessageMapper } from './mapper/message.mapper';
 import { ApiOperation, ApiBearerAuth, ApiBody, ApiResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
-import { AuthGuard } from 'src/auth/guard/auth.guard';
-import { ApiCommonExceptionsDecorator } from 'src/exception/decorator/api-common-exceptions.decorator';
+import { AuthGuard } from '../auth/guard/auth.guard';
+import { ApiCommonExceptionsDecorator } from '../exception/decorator/api-common-exceptions.decorator';
 
 @Controller('/messages')
 export class MessageController {

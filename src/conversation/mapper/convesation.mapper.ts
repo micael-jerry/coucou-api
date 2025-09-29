@@ -1,7 +1,7 @@
-import { UserMapper } from 'src/user/mapper/user.mapper';
+import { UserMapper } from '../../user/mapper/user.mapper';
 import { ConversationResponse } from '../dto/conversation-response.dto';
 import { ConversationEntity } from '../entity/conversation.entity';
-import { MessageMapper } from 'src/message/mapper/message.mapper';
+import { MessageMapper } from '../../message/mapper/message.mapper';
 
 export class ConversationMapper {
 	static toDto(entity: ConversationEntity): ConversationResponse {
