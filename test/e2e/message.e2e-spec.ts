@@ -1,12 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from '../src/app.module';
+import { AppModule } from '../../src/app.module';
 import { App } from 'supertest/types';
-import { LoginResponse } from '../src/auth/dto/login-response.dto';
-import { ConversationType } from '@prisma/client';
+import { LoginResponse } from '../../src/auth/dto/login-response.dto';
 
-describe('ConversationController (e2e)', () => {
+describe('MessageController (e2e)', () => {
 	let app: INestApplication<App>;
 	let authToken: string;
 
@@ -26,41 +25,42 @@ describe('ConversationController (e2e)', () => {
 		authToken = response.body.access_token;
 	});
 
-	it('/conversations (POST) - should create a new conversation', async () => {
+	it('/messages (POST) - should send a message', async () => {
 		return request(app.getHttpServer())
-			.post('/conversations')
+			.post('/messages')
 			.set('Authorization', `Bearer ${authToken}`)
 			.send({
-				type: ConversationType.PRIVATE,
-				membersId: ['c46ffdce-8ee7-470e-8b22-4e83c84481d2', '3e9bc404-7958-4bd4-942e-54ea2dbe6592'],
+				content: 'Test message',
+				senderId: 'c46ffdce-8ee7-470e-8b22-4e83c84481d2',
+				conversationId: '0dbea30e-9354-4bcb-964c-1b65098bcbbb',
 			})
 			.expect(200)
 			.then((res) => {
 				expect(res.body).toHaveProperty('id');
-				expect(res.body.type).toBe(ConversationType.PRIVATE);
+				expect(res.body.content).toBe('Test message');
 			});
 	});
 
-	it('/conversations/:conversationId (GET) - should get a conversation by id', async () => {
-		const conversationId = '0dbea30e-9354-4bcb-964c-1b65098bcbbb';
+	it('/messages/:messageId (GET) - should get a message by id', async () => {
+		const messageId = '81cb0ce7-15ac-4bf9-888e-a9919a714af2';
 		return request(app.getHttpServer())
-			.get(`/conversations/${conversationId}`)
+			.get(`/messages/${messageId}`)
 			.set('Authorization', `Bearer ${authToken}`)
 			.expect(200)
 			.then((res) => {
-				expect(res.body.id).toBe(conversationId);
+				expect(res.body.id).toBe(messageId);
 			});
 	});
 
-	it('/conversations (GET) - should get conversations by user id', async () => {
-		const userId = 'c46ffdce-8ee7-470e-8b22-4e83c84481d2';
+	it('/messages (GET) - should get messages by conversation id', async () => {
+		const conversationId = '0dbea30e-9354-4bcb-964c-1b65098bcbbb';
 		return request(app.getHttpServer())
-			.get(`/conversations?userId=${userId}`)
+			.get(`/messages?conversationId=${conversationId}`)
 			.set('Authorization', `Bearer ${authToken}`)
 			.expect(200)
 			.then((res) => {
 				expect(Array.isArray(res.body)).toBe(true);
-				expect(res.body.length).toBeGreaterThanOrEqual(1);
+				expect(res.body.length).toBeGreaterThanOrEqual(2);
 			});
 	});
 });
