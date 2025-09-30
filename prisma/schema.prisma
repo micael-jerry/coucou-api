@@ -45,7 +45,7 @@ model Message {
 }
 
 model ConversationMember {
-  joigned_at      DateTime     @default(now())
+  joined_at       DateTime     @default(now())
   conversation_id String
   conversation    Conversation @relation(fields: [conversation_id], references: [id])
   user_id         String
