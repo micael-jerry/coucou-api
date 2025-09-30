@@ -32,9 +32,9 @@ export class ConversationService {
 		return conversation;
 	}
 
-	async getConversationsByUserId(userId: string): Promise<ConversationEntity[]> {
+	async getConversationsByConnectedUser(authTokenPayload: AuthTokenPayload): Promise<ConversationEntity[]> {
 		return this.prismaService.conversation.findMany({
-			where: { members: { some: { user_id: userId } } },
+			where: { members: { some: { user_id: authTokenPayload.user_id } } },
 			orderBy: { updated_at: 'desc' },
 			include: { members: { include: { user: true } }, messages: { orderBy: { created_at: 'desc' } } },
 		});

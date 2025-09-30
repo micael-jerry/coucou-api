@@ -1,6 +1,6 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { ConversationService } from './conversation.service';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { ConversationInput } from './dto/conversation-input.dto';
 import { ConversationResponse } from './dto/conversation-response.dto';
 import { ApiCommonExceptionsDecorator } from '../exception/decorator/api-common-exceptions.decorator';
@@ -51,23 +51,17 @@ export class ConversationController {
 	}
 
 	@ApiOperation({
-		summary: 'Get conversations by user id',
-		description: 'Get conversations by user id',
+		summary: 'Get conversations by user',
+		description: 'Get conversations by connected user',
 	})
 	@ApiBearerAuth()
-	@ApiQuery({
-		name: 'userId',
-		type: 'string',
-		required: true,
-		description: 'The id of the user to retrieve conversations for.',
-	})
 	@ApiResponse({ status: HttpStatus.OK, type: [ConversationResponse] })
 	@ApiCommonExceptionsDecorator()
 	@Get('/')
 	@HttpCode(HttpStatus.OK)
 	@UseGuards(AuthGuard)
-	async getConversationsByUserId(@Query('userId') userId: string): Promise<ConversationResponse[]> {
-		return (await this.conversationService.getConversationsByUserId(userId)).map((entity) =>
+	async getConversationsByUserId(@Req() req: Request): Promise<ConversationResponse[]> {
+		return (await this.conversationService.getConversationsByConnectedUser(req.user!)).map((entity) =>
 			ConversationMapper.toDto(entity),
 		);
 	}
