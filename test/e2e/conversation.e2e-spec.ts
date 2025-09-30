@@ -5,6 +5,7 @@ import { AppModule } from '../../src/app.module';
 import { App } from 'supertest/types';
 import { LoginResponse } from '../../src/auth/dto/login-response.dto';
 import { ConversationType } from '@prisma/client';
+import { ConversationResponse } from '../../src/conversation/dto/conversation-response.dto';
 
 describe('ConversationController (e2e)', () => {
 	let app: INestApplication<App>;
@@ -35,7 +36,7 @@ describe('ConversationController (e2e)', () => {
 				membersId: ['c46ffdce-8ee7-470e-8b22-4e83c84481d2', '3e9bc404-7958-4bd4-942e-54ea2dbe6592'],
 			})
 			.expect(200)
-			.then((res) => {
+			.then((res: { body: ConversationResponse }) => {
 				expect(res.body).toHaveProperty('id');
 				expect(res.body.type).toBe(ConversationType.PRIVATE);
 			});
@@ -47,7 +48,7 @@ describe('ConversationController (e2e)', () => {
 			.get(`/conversations/${conversationId}`)
 			.set('Authorization', `Bearer ${authToken}`)
 			.expect(200)
-			.then((res) => {
+			.then((res: { body: ConversationResponse }) => {
 				expect(res.body.id).toBe(conversationId);
 			});
 	});
@@ -58,7 +59,7 @@ describe('ConversationController (e2e)', () => {
 			.get(`/conversations?userId=${userId}`)
 			.set('Authorization', `Bearer ${authToken}`)
 			.expect(200)
-			.then((res) => {
+			.then((res: { body: ConversationResponse[] }) => {
 				expect(Array.isArray(res.body)).toBe(true);
 				expect(res.body.length).toBeGreaterThanOrEqual(1);
 			});

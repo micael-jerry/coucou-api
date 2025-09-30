@@ -4,6 +4,7 @@ import * as request from 'supertest';
 import { AppModule } from '../../src/app.module';
 import { App } from 'supertest/types';
 import { LoginResponse } from '../../src/auth/dto/login-response.dto';
+import { UserResponse } from '../../src/user/dto/user-response.dto';
 
 describe('UserController (e2e)', () => {
 	let app: INestApplication<App>;
@@ -30,7 +31,7 @@ describe('UserController (e2e)', () => {
 			.get('/users')
 			.set('Authorization', `Bearer ${authToken}`)
 			.expect(200)
-			.then((res) => {
+			.then((res: { body: UserResponse[] }) => {
 				expect(Array.isArray(res.body)).toBe(true);
 				expect(res.body.length).toBeGreaterThanOrEqual(2);
 			});
@@ -42,7 +43,7 @@ describe('UserController (e2e)', () => {
 			.get(`/users/${userId}`)
 			.set('Authorization', `Bearer ${authToken}`)
 			.expect(200)
-			.then((res) => {
+			.then((res: { body: UserResponse }) => {
 				expect(res.body.id).toBe(userId);
 				expect(res.body.username).toBe('testuser1');
 			});

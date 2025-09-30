@@ -4,6 +4,7 @@ import * as request from 'supertest';
 import { AppModule } from '../../src/app.module';
 import { App } from 'supertest/types';
 import { LoginResponse } from '../../src/auth/dto/login-response.dto';
+import { MessageResponse } from '../../src/message/dto/message-response.dto';
 
 describe('MessageController (e2e)', () => {
 	let app: INestApplication<App>;
@@ -35,7 +36,7 @@ describe('MessageController (e2e)', () => {
 				conversationId: '0dbea30e-9354-4bcb-964c-1b65098bcbbb',
 			})
 			.expect(200)
-			.then((res) => {
+			.then((res: { body: MessageResponse }) => {
 				expect(res.body).toHaveProperty('id');
 				expect(res.body.content).toBe('Test message');
 			});
@@ -47,7 +48,7 @@ describe('MessageController (e2e)', () => {
 			.get(`/messages/${messageId}`)
 			.set('Authorization', `Bearer ${authToken}`)
 			.expect(200)
-			.then((res) => {
+			.then((res: { body: MessageResponse }) => {
 				expect(res.body.id).toBe(messageId);
 			});
 	});
@@ -58,7 +59,7 @@ describe('MessageController (e2e)', () => {
 			.get(`/messages?conversationId=${conversationId}`)
 			.set('Authorization', `Bearer ${authToken}`)
 			.expect(200)
-			.then((res) => {
+			.then((res: { body: MessageResponse[] }) => {
 				expect(Array.isArray(res.body)).toBe(true);
 				expect(res.body.length).toBeGreaterThanOrEqual(2);
 			});
