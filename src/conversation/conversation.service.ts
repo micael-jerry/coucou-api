@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { ConversationInput } from './dto/conversation-input.dto';
-import { ConversationType } from '@prisma/client';
 import { ConversationEntity } from './entity/conversation.entity';
 
 @Injectable()
@@ -11,7 +10,7 @@ export class ConversationService {
 	async createConversation(conversationInput: ConversationInput): Promise<ConversationEntity> {
 		return this.prismaService.conversation.create({
 			data: {
-				type: this.getType(conversationInput.type),
+				type: conversationInput.type,
 				members: {
 					createMany: { data: conversationInput.membersId.map((memberId) => ({ user_id: memberId })) },
 				},
@@ -33,9 +32,5 @@ export class ConversationService {
 			orderBy: { updated_at: 'desc' },
 			include: { members: { include: { user: true } }, messages: { orderBy: { created_at: 'desc' } } },
 		});
-	}
-
-	private getType(type: string): ConversationType {
-		return type === 'PRIVATE' ? ConversationType.PRIVATE : ConversationType.GROUP;
 	}
 }
