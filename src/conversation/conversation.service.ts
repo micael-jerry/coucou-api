@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { ConversationInput } from './dto/conversation-input.dto';
 import { ConversationEntity } from './entity/conversation.entity';
+import { AuthTokenPayload } from '../auth/payload/auth-token.payload';
 
 @Injectable()
 export class ConversationService {
@@ -19,11 +20,16 @@ export class ConversationService {
 		});
 	}
 
-	async getConversationById(conversationId: string): Promise<ConversationEntity> {
-		return this.prismaService.conversation.findUniqueOrThrow({
+	async getConversationById(authTokenPayload: AuthTokenPayload, conversationId: string): Promise<ConversationEntity> {
+		const conversations: ConversationEntity = await this.prismaService.conversation.findUniqueOrThrow({
 			where: { id: conversationId },
 			include: { members: { include: { user: true } }, messages: { orderBy: { created_at: 'desc' } } },
 		});
+
+		if (!conversations.members.some((member) => member.user.id === authTokenPayload.user_id))
+			throw new UnauthorizedException('You are not a member of this conversation');
+
+		return conversations;
 	}
 
 	async getConversationsByUserId(userId: string): Promise<ConversationEntity[]> {

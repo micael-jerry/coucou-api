@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ConversationService } from './conversation.service';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { ConversationInput } from './dto/conversation-input.dto';
@@ -6,6 +6,7 @@ import { ConversationResponse } from './dto/conversation-response.dto';
 import { ApiCommonExceptionsDecorator } from '../exception/decorator/api-common-exceptions.decorator';
 import { ConversationMapper } from './mapper/conversation.mapper';
 import { AuthGuard } from '../auth/guard/auth.guard';
+import { Request } from 'express';
 
 @Controller('/conversations')
 export class ConversationController {
@@ -42,8 +43,11 @@ export class ConversationController {
 	@Get('/:conversationId')
 	@HttpCode(HttpStatus.OK)
 	@UseGuards(AuthGuard)
-	async getConversationById(@Param('conversationId') conversationId: string): Promise<ConversationResponse> {
-		return ConversationMapper.toDto(await this.conversationService.getConversationById(conversationId));
+	async getConversationById(
+		@Req() req: Request,
+		@Param('conversationId') conversationId: string,
+	): Promise<ConversationResponse> {
+		return ConversationMapper.toDto(await this.conversationService.getConversationById(req.user!, conversationId));
 	}
 
 	@ApiOperation({
