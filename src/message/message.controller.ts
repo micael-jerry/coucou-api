@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { MessageService } from './message.service';
 import { MessageInput } from './dto/message-input.dto';
 import { MessageResponse } from './dto/message-response.dto';
@@ -6,6 +6,7 @@ import { MessageMapper } from './mapper/message.mapper';
 import { ApiOperation, ApiBearerAuth, ApiBody, ApiResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { AuthGuard } from '../auth/guard/auth.guard';
 import { ApiCommonExceptionsDecorator } from '../exception/decorator/api-common-exceptions.decorator';
+import { Request } from 'express';
 
 @Controller('/messages')
 export class MessageController {
@@ -22,8 +23,8 @@ export class MessageController {
 	@Post('/')
 	@HttpCode(HttpStatus.OK)
 	@UseGuards(AuthGuard)
-	async postMessage(@Body() message: MessageInput): Promise<MessageResponse> {
-		return MessageMapper.toDto(await this.messageService.sendMessage(message));
+	async postMessage(@Req() req: Request, @Body() message: MessageInput): Promise<MessageResponse> {
+		return MessageMapper.toDto(await this.messageService.sendMessage(req.user!, message));
 	}
 
 	@ApiOperation({
@@ -46,14 +47,17 @@ export class MessageController {
 		description: 'Get messages by conversation id',
 	})
 	@ApiBearerAuth()
-	@ApiQuery({ name: 'conversationId', type: 'string' })
+	@ApiQuery({ name: 'conversationId', type: 'string', description: 'Conversation id in which the user is a member' })
 	@ApiResponse({ status: HttpStatus.OK, type: [MessageResponse] })
 	@ApiCommonExceptionsDecorator()
 	@Get('/')
 	@HttpCode(HttpStatus.OK)
 	@UseGuards(AuthGuard)
-	async getMessagesByConversationId(@Query('conversationId') conversationId: string): Promise<MessageResponse[]> {
-		return (await this.messageService.getMessagesByConversationId(conversationId)).map((message) =>
+	async getMessagesByConversationId(
+		@Req() req: Request,
+		@Query('conversationId') conversationId: string,
+	): Promise<MessageResponse[]> {
+		return (await this.messageService.getMessagesByConversationId(req.user!, conversationId)).map((message) =>
 			MessageMapper.toDto(message),
 		);
 	}

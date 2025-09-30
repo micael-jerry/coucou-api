@@ -21,15 +21,15 @@ export class ConversationService {
 	}
 
 	async getConversationById(authTokenPayload: AuthTokenPayload, conversationId: string): Promise<ConversationEntity> {
-		const conversations: ConversationEntity = await this.prismaService.conversation.findUniqueOrThrow({
+		const conversation: ConversationEntity = await this.prismaService.conversation.findUniqueOrThrow({
 			where: { id: conversationId },
 			include: { members: { include: { user: true } }, messages: { orderBy: { created_at: 'desc' } } },
 		});
 
-		if (!conversations.members.some((member) => member.user.id === authTokenPayload.user_id))
+		if (!conversation.members.some((member) => member.user.id === authTokenPayload.user_id))
 			throw new UnauthorizedException('You are not a member of this conversation');
 
-		return conversations;
+		return conversation;
 	}
 
 	async getConversationsByUserId(userId: string): Promise<ConversationEntity[]> {
