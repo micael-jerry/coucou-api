@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ConversationType } from '@prisma/client';
-import { UserResponse } from '../../user/dto/user-response.dto';
 import { MessageResponse } from '../../message/dto/message-response.dto';
+import { UserResponse } from '../../user/dto/user-response.dto';
 
 export class ConversationResponse {
 	@ApiProperty()
@@ -20,5 +20,5 @@ export class ConversationResponse {
 	members: UserResponse[];
 
 	@ApiProperty({ type: [MessageResponse] })
-	message: MessageResponse[];
+	messages: MessageResponse[];
 }
