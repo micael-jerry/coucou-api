@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from '../src/app.module';
+import { AppModule } from '../../src/app.module';
 import { App } from 'supertest/types';
-import { LoginResponse } from '../src/auth/dto/login-response.dto';
-import { UserResponse } from '../src/user/dto/user-response.dto';
+import { LoginResponse } from '../../src/auth/dto/login-response.dto';
+import { UserResponse } from '../../src/user/dto/user-response.dto';
 
 describe('AuthController (e2e)', () => {
 	let app: INestApplication<App>;
