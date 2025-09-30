@@ -4,7 +4,7 @@ import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse }
 import { ConversationInput } from './dto/conversation-input.dto';
 import { ConversationResponse } from './dto/conversation-response.dto';
 import { ApiCommonExceptionsDecorator } from '../exception/decorator/api-common-exceptions.decorator';
-import { ConversationMapper } from './mapper/convesation.mapper';
+import { ConversationMapper } from './mapper/conversation.mapper';
 import { AuthGuard } from '../auth/guard/auth.guard';
 
 @Controller('/conversations')
