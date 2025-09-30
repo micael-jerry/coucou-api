@@ -20,6 +20,7 @@ export class MailerService {
 	}
 
 	private async sendEmail({ to, subject, html }: SendEmailObject): Promise<void> {
+		// INFO: Not send email on test environement
 		if (process.env.NODE_ENV === 'test') {
 			return Promise.resolve();
 		}
