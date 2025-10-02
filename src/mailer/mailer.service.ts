@@ -2,11 +2,11 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { Resend } from 'resend';
+import { PrismaService } from '../prisma/prisma.service';
 import { SendEmailObject } from './entity/send-mail-object.entity';
 import { VerifyEmailPayload } from './payload/verify-email.payload';
 import { VerifyEmail } from './template/verify-email';
 import { WelcomeEmail } from './template/welcome';
-import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class MailerService {
@@ -58,7 +58,7 @@ export class MailerService {
 		});
 	}
 
-	async checkEmailVerificationRequest(token: string): Promise<VerifyEmailPayload> {
+	async verifyEmail(token: string): Promise<VerifyEmailPayload> {
 		try {
 			const payload = await this.jwtService.verifyAsync<VerifyEmailPayload>(token);
 			await this.prismaService.user.update({
