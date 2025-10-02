@@ -1,30 +1,40 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { MessageInput } from './dto/message-input.dto';
 import { Message } from '@prisma/client';
 import { AuthTokenPayload } from '../auth/payload/auth-token.payload';
 import { ConversationService } from '../conversation/conversation.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { SocketGateway } from '../socket/socket.gateway';
+import { MessageInput } from './dto/message-input.dto';
 
 @Injectable()
 export class MessageService {
 	constructor(
 		private readonly prismaService: PrismaService,
 		private readonly conversationService: ConversationService,
+		private readonly socketGateway: SocketGateway,
 	) {}
 
 	async sendMessage(authTokenPayload: AuthTokenPayload, message: MessageInput): Promise<Message> {
 		await this.conversationService.getConversationById(authTokenPayload, message.conversationId);
 
-		return this.prismaService.$transaction(async (prisma) => {
-			const messageSended = await prisma.message.create({
-				data: { sender_id: message.senderId, conversation_id: message.conversationId, content: message.content },
+		const messageSended = await this.prismaService.$transaction(async (prisma) => {
+			const messageCreated = await prisma.message.create({
+				data: {
+					sender_id: authTokenPayload.user_id,
+					conversation_id: message.conversationId,
+					content: message.content,
+				},
 			});
 			await prisma.conversation.update({
 				where: { id: message.conversationId },
-				data: { updated_at: messageSended.created_at },
+				data: { updated_at: messageCreated.created_at },
 			});
-			return messageSended;
+			return messageCreated;
 		});
+
+		this.socketGateway.emitNewMessage(messageSended);
+
+		return messageSended;
 	}
 
 	async findMessageById(messageId: string): Promise<Message> {

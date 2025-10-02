@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
-import { AppModule } from '../../src/app.module';
 import { App } from 'supertest/types';
+import { AppModule } from '../../src/app.module';
 import { LoginResponse } from '../../src/auth/dto/login-response.dto';
 import { MessageResponse } from '../../src/message/dto/message-response.dto';
 
@@ -10,7 +10,7 @@ describe('MessageController (e2e)', () => {
 	let app: INestApplication<App>;
 	let authToken: string;
 
-	beforeEach(async () => {
+	beforeAll(async () => {
 		const moduleFixture: TestingModule = await Test.createTestingModule({
 			imports: [AppModule],
 		}).compile();
@@ -26,13 +26,16 @@ describe('MessageController (e2e)', () => {
 		authToken = response.body.access_token;
 	});
 
+	afterEach(async () => {
+		await app.close();
+	});
+
 	it('/messages (POST) - should send a message', async () => {
 		return request(app.getHttpServer())
 			.post('/messages')
 			.set('Authorization', `Bearer ${authToken}`)
 			.send({
 				content: 'Test message',
-				senderId: 'c46ffdce-8ee7-470e-8b22-4e83c84481d2',
 				conversationId: '0dbea30e-9354-4bcb-964c-1b65098bcbbb',
 			})
 			.expect(200)

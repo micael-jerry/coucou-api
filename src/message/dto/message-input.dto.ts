@@ -3,10 +3,6 @@ import { IsUUID, MinLength } from 'class-validator';
 
 export class MessageInput {
 	@ApiProperty()
-	@IsUUID('4', { message: 'Invalid senderId' })
-	senderId: string;
-
-	@ApiProperty()
 	@IsUUID('4', { message: 'Invalid conversationId' })
 	conversationId: string;
 
