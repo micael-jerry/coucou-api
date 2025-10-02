@@ -18,6 +18,7 @@ export class MailerService {
 		private readonly logger: Logger,
 	) {
 		this.resend = new Resend(process.env.RESEND_API_KEY);
+		this.logger = new Logger(MailerService.name);
 	}
 
 	private async sendEmail({ to, subject, html }: SendEmailObject): Promise<void> {

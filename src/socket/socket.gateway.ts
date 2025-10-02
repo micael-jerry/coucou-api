@@ -13,6 +13,7 @@ import { Server, Socket } from 'socket.io';
 import { ConversationEntity } from '../conversation/entity/conversation.entity';
 import { JwtService } from '@nestjs/jwt';
 import { AuthTokenPayload } from '../auth/payload/auth-token.payload';
+import { Logger } from '@nestjs/common';
 
 @WebSocketGateway(parseInt(process.env.SOCKET_PORT || '8081'), { cors: { origin: '*' } })
 export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -21,10 +22,15 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
 	private readonly connectedUsers = new Map<string, string>();
 
-	constructor(private readonly jwtService: JwtService) {}
+	constructor(
+		private readonly jwtService: JwtService,
+		private readonly logger: Logger,
+	) {
+		this.logger = new Logger(SocketGateway.name);
+	}
 
 	afterInit() {
-		console.info('Socket server initialized');
+		this.logger.log('Socket server initialized');
 	}
 
 	handleConnection(client: Socket) {
@@ -36,7 +42,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 			return;
 		}
 		this.connectedUsers.set(authTokenPayload.user_id, client.id);
-		console.info(`Client connected: ${client.id} (user: ${authTokenPayload.user_id})`);
+		this.logger.log(`Client connected: ${client.id} (user: ${authTokenPayload.user_id})`);
 	}
 
 	handleDisconnect(@ConnectedSocket() client: Socket) {
@@ -46,7 +52,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 		if (authTokenPayload) {
 			this.connectedUsers.delete(authTokenPayload.user_id);
 		}
-		console.info(`Client disconnected: ${client.id}`);
+		this.logger.log(`Client disconnected: ${client.id}`);
 	}
 
 	@SubscribeMessage('joinConversation')
@@ -81,7 +87,8 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 		try {
 			const token = authHeader.split(' ')[1];
 			return this.jwtService.verify<AuthTokenPayload>(token);
-		} catch {
+		} catch (err) {
+			this.logger.error('Invalid token', err);
 			return null;
 		}
 	}
