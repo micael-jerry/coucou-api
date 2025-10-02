@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { Resend } from 'resend';
@@ -15,6 +15,7 @@ export class MailerService {
 	constructor(
 		private readonly jwtService: JwtService,
 		private readonly prismaService: PrismaService,
+		private readonly logger: Logger,
 	) {
 		this.resend = new Resend(process.env.RESEND_API_KEY);
 	}
@@ -33,10 +34,10 @@ export class MailerService {
 		});
 
 		if (error) {
-			return console.error({ error });
+			return this.logger.error({ error });
 		}
 
-		console.log({ data });
+		this.logger.log({ data });
 	}
 
 	async sendWelcomeEmail(createdUser: User) {
@@ -67,7 +68,7 @@ export class MailerService {
 			});
 			return payload;
 		} catch (err) {
-			console.error(err);
+			this.logger.error(err);
 			throw new BadRequestException('Invalid token');
 		}
 	}

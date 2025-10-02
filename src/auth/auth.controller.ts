@@ -17,7 +17,7 @@ export class AuthController {
 	constructor(
 		private readonly authService: AuthService,
 		private readonly mailerService: MailerService,
-	) { }
+	) {}
 
 	@ApiOperation({
 		summary: 'User registration endpoint',
