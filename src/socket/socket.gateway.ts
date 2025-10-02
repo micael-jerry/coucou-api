@@ -17,17 +17,14 @@ import { Logger } from '@nestjs/common';
 
 @WebSocketGateway(parseInt(process.env.SOCKET_PORT || '8081'), { cors: { origin: '*' } })
 export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+	private readonly logger: Logger = new Logger(SocketGateway.name);
+
 	@WebSocketServer()
 	private readonly server: Server;
 
 	private readonly connectedUsers = new Map<string, string>();
 
-	constructor(
-		private readonly jwtService: JwtService,
-		private readonly logger: Logger,
-	) {
-		this.logger = new Logger(SocketGateway.name);
-	}
+	constructor(private readonly jwtService: JwtService) {}
 
 	afterInit() {
 		this.logger.log('Socket server initialized');

@@ -11,14 +11,13 @@ import { WelcomeEmail } from './template/welcome';
 @Injectable()
 export class MailerService {
 	private readonly resend: Resend;
+	private readonly logger: Logger = new Logger(MailerService.name);
 
 	constructor(
 		private readonly jwtService: JwtService,
 		private readonly prismaService: PrismaService,
-		private readonly logger: Logger,
 	) {
 		this.resend = new Resend(process.env.RESEND_API_KEY);
-		this.logger = new Logger(MailerService.name);
 	}
 
 	private async sendEmail({ to, subject, html }: SendEmailObject): Promise<void> {
