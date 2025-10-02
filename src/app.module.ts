@@ -1,15 +1,27 @@
 import { Module } from '@nestjs/common';
-import { PrismaModule } from './prisma/prisma.module';
-import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
-import { HealthModule } from './health/health.module';
 import { ConversationModule } from './conversation/conversation.module';
+import { HealthModule } from './health/health.module';
 import { MessageModule } from './message/message.module';
-import { AppGateway } from './app.gateway';
+import { PrismaModule } from './prisma/prisma.module';
 import { SocketModule } from './socket/socket.module';
+import { UserModule } from './user/user.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-	imports: [PrismaModule, UserModule, AuthModule, HealthModule, ConversationModule, MessageModule, SocketModule],
-	providers: [AppGateway],
+	imports: [
+		JwtModule.register({
+			global: true,
+			secret: process.env.JWT_SECRET_KEY,
+			signOptions: { expiresIn: '30d' },
+		}),
+		PrismaModule,
+		UserModule,
+		AuthModule,
+		HealthModule,
+		ConversationModule,
+		MessageModule,
+		SocketModule,
+	],
 })
 export class AppModule {}

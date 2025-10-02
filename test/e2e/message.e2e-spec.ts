@@ -32,7 +32,6 @@ describe('MessageController (e2e)', () => {
 			.set('Authorization', `Bearer ${authToken}`)
 			.send({
 				content: 'Test message',
-				senderId: 'c46ffdce-8ee7-470e-8b22-4e83c84481d2',
 				conversationId: '0dbea30e-9354-4bcb-964c-1b65098bcbbb',
 			})
 			.expect(200)

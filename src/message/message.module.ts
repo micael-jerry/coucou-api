@@ -1,12 +1,14 @@
 import { Module } from '@nestjs/common';
+import { AuthModule } from '../auth/auth.module';
+import { ConversationModule } from '../conversation/conversation.module';
+import { PrismaModule } from '../prisma/prisma.module';
+import { SocketGateway } from '../socket/socket.gateway';
 import { MessageController } from './message.controller';
 import { MessageService } from './message.service';
-import { PrismaModule } from '../prisma/prisma.module';
-import { ConversationService } from '../conversation/conversation.service';
 
 @Module({
-	imports: [PrismaModule],
+	imports: [PrismaModule, ConversationModule, AuthModule],
 	controllers: [MessageController],
-	providers: [MessageService, ConversationService],
+	providers: [MessageService, SocketGateway],
 })
 export class MessageModule {}

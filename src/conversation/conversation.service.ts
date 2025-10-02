@@ -1,15 +1,19 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { AuthTokenPayload } from '../auth/payload/auth-token.payload';
 import { PrismaService } from '../prisma/prisma.service';
+import { SocketGateway } from '../socket/socket.gateway';
 import { ConversationInput } from './dto/conversation-input.dto';
 import { ConversationEntity } from './entity/conversation.entity';
-import { AuthTokenPayload } from '../auth/payload/auth-token.payload';
 
 @Injectable()
 export class ConversationService {
-	constructor(private readonly prismaService: PrismaService) {}
+	constructor(
+		private readonly prismaService: PrismaService,
+		private readonly socketGateway: SocketGateway,
+	) {}
 
 	async createConversation(conversationInput: ConversationInput): Promise<ConversationEntity> {
-		return this.prismaService.conversation.create({
+		const conversation = await this.prismaService.conversation.create({
 			data: {
 				type: conversationInput.type,
 				members: {
@@ -18,6 +22,10 @@ export class ConversationService {
 			},
 			include: { members: { include: { user: true } }, messages: { orderBy: { created_at: 'desc' } } },
 		});
+
+		this.socketGateway.emitNewConversation(conversation);
+
+		return conversation;
 	}
 
 	async getConversationById(authTokenPayload: AuthTokenPayload, conversationId: string): Promise<ConversationEntity> {
