@@ -58,9 +58,8 @@ describe('ConversationController (e2e)', () => {
 	});
 
 	it('/conversations (GET) - should get conversations by user id', async () => {
-		const userId = 'c46ffdce-8ee7-470e-8b22-4e83c84481d2';
 		return request(app.getHttpServer())
-			.get(`/conversations?userId=${userId}`)
+			.get(`/conversations`)
 			.set('Authorization', `Bearer ${authToken}`)
 			.expect(200)
 			.then((res: { body: ConversationResponse[] }) => {
