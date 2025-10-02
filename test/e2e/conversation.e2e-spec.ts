@@ -27,6 +27,10 @@ describe('ConversationController (e2e)', () => {
 		authToken = response.body.access_token;
 	});
 
+	afterEach(async () => {
+		await app.close();
+	});
+
 	it('/conversations (POST) - should create a new conversation', async () => {
 		return request(app.getHttpServer())
 			.post('/conversations')

@@ -26,6 +26,10 @@ describe('MessageController (e2e)', () => {
 		authToken = response.body.access_token;
 	});
 
+	afterEach(async () => {
+		await app.close();
+	});
+
 	it('/messages (POST) - should send a message', async () => {
 		return request(app.getHttpServer())
 			.post('/messages')

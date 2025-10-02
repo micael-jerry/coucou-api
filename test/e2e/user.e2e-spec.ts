@@ -26,6 +26,10 @@ describe('UserController (e2e)', () => {
 		authToken = response.body.access_token;
 	});
 
+	afterEach(async () => {
+		await app.close();
+	});
+
 	it('/users (GET) - should get all users', async () => {
 		return request(app.getHttpServer())
 			.get('/users')

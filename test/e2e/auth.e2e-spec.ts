@@ -17,7 +17,7 @@ describe('AuthController (e2e)', () => {
 		await app.init();
 	});
 
-	afterAll(async () => {
+	afterEach(async () => {
 		await app.close();
 	});
 

@@ -17,6 +17,10 @@ describe('HealthController (e2e)', () => {
 		await app.init();
 	});
 
+	afterEach(async () => {
+		await app.close();
+	});
+
 	it('/coucou (GET)', async () => {
 		const response = (await request(app.getHttpServer()).get('/coucou').expect(200)) as { body: Coucou };
 
