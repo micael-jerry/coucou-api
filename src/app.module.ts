@@ -4,7 +4,6 @@ import { ConversationModule } from './conversation/conversation.module';
 import { HealthModule } from './health/health.module';
 import { MessageModule } from './message/message.module';
 import { PrismaModule } from './prisma/prisma.module';
-import { SocketModule } from './socket/socket.module';
 import { UserModule } from './user/user.module';
 import { JwtModule } from '@nestjs/jwt';
 
@@ -21,7 +20,6 @@ import { JwtModule } from '@nestjs/jwt';
 		HealthModule,
 		ConversationModule,
 		MessageModule,
-		SocketModule,
 	],
 })
 export class AppModule {}
