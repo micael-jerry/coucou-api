@@ -16,7 +16,7 @@ This project is currently under development and serves as the foundation for a f
 ## ✨ Features
 
 - **User Authentication**: Secure sign-up and login with JWT-based authentication.
-- **Real-time Messaging**: (Planned) WebSocket integration for instant message delivery.
+- **Real-time Messaging**: WebSocket integration for instant message delivery.
 - **Conversation Management**: Create and manage conversations between users.
 - **Database Management**: Uses Prisma ORM for predictable and reliable database interactions.
 - **API Documentation**: Auto-generated Swagger/OpenAPI documentation for clear and easy API testing.
@@ -34,6 +34,12 @@ This project is currently under development and serves as the foundation for a f
 - **CI/CD**: [GitHub Actions](https://github.com/features/actions)
 - **Deployment**: [Koyeb](https://www.koyeb.com/)
 - **Development Environment**: [Docker](https://www.docker.com/)
+
+## 📊 Database Schema
+
+The database schema is managed with Prisma. Below is the physical data model (PDM) of the database.
+
+![Database Schema](docs/mpd.png)
 
 ## 🏁 Getting Started
 
@@ -128,9 +134,27 @@ pnpm run test:e2e
 
 Once the application is running, you can access the auto-generated Swagger API documentation at:
 
-[**http://localhost:3000/api**](http://localhost:3000/api)
+[**http://localhost:PORT/api**](http://localhost:PORT/api)
 
 This interface allows you to explore and interact with all the available API endpoints.
+
+## 🔌 Websocket
+
+The WebSocket gateway provides real-time communication for features like instant messaging. It uses `socket.io` and authenticates clients using the same JWT provided by the REST API.
+
+The client must connect to the socket server with the `Authorization` header containing the bearer token.
+
+![Socket Gateway](docs/socket-gateway.png)
+
+### Events
+
+- **Client Emits:**
+  - `joinConversation` (payload: `string` - conversationId): To join a specific conversation room.
+  - `leaveConversation` (payload: `string` - conversationId): To leave a conversation room.
+
+- **Server Emits:**
+  - `newMessage` (payload: `Message`): When a new message is sent in a joined conversation.
+  - `newConversation` (payload: `ConversationEntity`): When the user is added to a new conversation.
 
 ## ☁️ Deployment
 
