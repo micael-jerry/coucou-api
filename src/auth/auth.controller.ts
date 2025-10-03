@@ -1,16 +1,16 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Req, UseGuards } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { SignUpDto } from './dto/sign-up.dto';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
-import { UserResponse } from '../user/dto/user-response.dto';
-import { UserMapper } from '../user/mapper/user.mapper';
-import { LoginDto } from './dto/login.dto';
-import { LoginResponse } from './dto/login-response.dto';
-import { ApiCommonExceptionsDecorator } from '../exception/decorator/api-common-exceptions.decorator';
 import { Request } from 'express';
-import { AuthGuard } from './guard/auth.guard';
+import { ApiCommonExceptionsDecorator } from '../exception/decorator/api-common-exceptions.decorator';
 import { HttpExceptionResponseDto } from '../exception/dto/http-exception-response.dto';
 import { MailerService } from '../mailer/mailer.service';
+import { UserResponse } from '../user/dto/user-response.dto';
+import { UserMapper } from '../user/mapper/user.mapper';
+import { AuthService } from './auth.service';
+import { LoginResponse } from './dto/login-response.dto';
+import { LoginDto } from './dto/login.dto';
+import { SignUpDto } from './dto/sign-up.dto';
+import { AuthGuard } from './guard/auth.guard';
 
 @Controller({ path: '/auth' })
 export class AuthController {
@@ -70,7 +70,7 @@ export class AuthController {
 	@Get('/verify-email')
 	@HttpCode(HttpStatus.OK)
 	async verifyEmail(@Req() req: Request, @Query('token') token: string): Promise<HttpExceptionResponseDto> {
-		const response = await this.mailerService.checkEmailVerificationRequest(token);
+		const response = await this.mailerService.verifyEmail(token);
 		return {
 			status: HttpStatus.OK,
 			type: 'success',

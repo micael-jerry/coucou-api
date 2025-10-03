@@ -1,7 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { Resend } from 'resend';
+import { PrismaService } from '../prisma/prisma.service';
 import { SendEmailObject } from './entity/send-mail-object.entity';
 import { VerifyEmailPayload } from './payload/verify-email.payload';
 import { VerifyEmail } from './template/verify-email';
@@ -10,12 +11,17 @@ import { WelcomeEmail } from './template/welcome';
 @Injectable()
 export class MailerService {
 	private readonly resend: Resend;
+	private readonly logger: Logger = new Logger(MailerService.name);
 
-	constructor(private readonly jwtService: JwtService) {
+	constructor(
+		private readonly jwtService: JwtService,
+		private readonly prismaService: PrismaService,
+	) {
 		this.resend = new Resend(process.env.RESEND_API_KEY);
 	}
 
 	private async sendEmail({ to, subject, html }: SendEmailObject): Promise<void> {
+		// INFO: Not send email on test environement
 		if (process.env.NODE_ENV === 'test') {
 			return Promise.resolve();
 		}
@@ -28,10 +34,10 @@ export class MailerService {
 		});
 
 		if (error) {
-			return console.error({ error });
+			return this.logger.error({ error });
 		}
 
-		console.log({ data });
+		this.logger.log({ data });
 	}
 
 	async sendWelcomeEmail(createdUser: User) {
@@ -53,11 +59,16 @@ export class MailerService {
 		});
 	}
 
-	async checkEmailVerificationRequest(token: string): Promise<VerifyEmailPayload> {
+	async verifyEmail(token: string): Promise<VerifyEmailPayload> {
 		try {
-			return await this.jwtService.verifyAsync<VerifyEmailPayload>(token);
+			const payload = await this.jwtService.verifyAsync<VerifyEmailPayload>(token);
+			await this.prismaService.user.update({
+				where: { email: payload.email },
+				data: { is_verified: true },
+			});
+			return payload;
 		} catch (err) {
-			console.error(err);
+			this.logger.error(err);
 			throw new BadRequestException('Invalid token');
 		}
 	}

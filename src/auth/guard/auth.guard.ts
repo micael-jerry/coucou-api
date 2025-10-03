@@ -1,4 +1,4 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
@@ -13,6 +13,8 @@ declare module 'express' {
 
 @Injectable()
 export class AuthGuard implements CanActivate {
+	private readonly logger: Logger = new Logger(AuthGuard.name);
+
 	constructor(private readonly jwtService: JwtService) {}
 
 	canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
@@ -26,7 +28,7 @@ export class AuthGuard implements CanActivate {
 
 			return true;
 		} catch (error) {
-			console.error(error);
+			this.logger.error(error);
 			throw new UnauthorizedException(`Invalid token`);
 		}
 	}
