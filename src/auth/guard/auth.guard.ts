@@ -1,9 +1,9 @@
 import { CanActivate, ExecutionContext, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
 import { AuthTokenPayload } from '../payload/auth-token.payload';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
+import { AuthUtils } from '../auth.utils';
 
 declare module 'express' {
 	export interface Request {
@@ -15,7 +15,7 @@ declare module 'express' {
 export class AuthGuard implements CanActivate {
 	private readonly logger: Logger = new Logger(AuthGuard.name);
 
-	constructor(private readonly jwtService: JwtService) {}
+	constructor(private readonly authUtils: AuthUtils) {}
 
 	canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
 		const httpArgumentHost: HttpArgumentsHost = context.switchToHttp();
@@ -24,7 +24,7 @@ export class AuthGuard implements CanActivate {
 		try {
 			const authHeader = req.headers.authorization;
 			const token: string = authHeader!.split(' ')[1];
-			req.user = this.jwtService.verify<AuthTokenPayload>(token);
+			req.user = this.authUtils.getPayloadFromToken(token);
 
 			return true;
 		} catch (error) {

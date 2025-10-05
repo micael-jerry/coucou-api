@@ -1,7 +1,6 @@
 import { BadRequestException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
-import * as bcrypt from 'bcrypt';
 import { MailerService } from '../mailer/mailer.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { UserMapper } from '../user/mapper/user.mapper';
@@ -14,6 +13,7 @@ import { ResetPasswordRequestDto } from './dto/reset-password-request.dto';
 import { VerifyEmailPayload } from './payload/verify-email.payload';
 import { VerifyEmailResponse } from './dto/verify-email-response.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { AuthUtils } from './auth.utils';
 
 @Injectable()
 export class AuthService {
@@ -22,20 +22,21 @@ export class AuthService {
 		private readonly prismaService: PrismaService,
 		private readonly jwtService: JwtService,
 		private readonly mailerService: MailerService,
+		private readonly authUtils: AuthUtils,
 	) {}
 
 	async signUp(signUpDto: SignUpDto): Promise<User> {
 		const createdUser = await this.prismaService.user.create({
 			data: {
 				...signUpDto,
-				password: this.hashPassword(signUpDto.password),
+				password: this.authUtils.hashPassword(signUpDto.password),
 			},
 		});
 
 		await this.mailerService.sendWelcomeEmail(createdUser);
 		await this.mailerService.sendVerificationEmailRequest(
 			createdUser,
-			await this.genVerificationEmailToken(createdUser),
+			await this.authUtils.genVerificationEmailToken(createdUser),
 		);
 		return createdUser;
 	}
@@ -44,9 +45,9 @@ export class AuthService {
 		const user: User = await this.prismaService.user.findUniqueOrThrow({
 			where: { username: signInDto.username },
 		});
-		if (this.isValidPassword(signInDto.password, user.password)) {
+		if (this.authUtils.isValidPassword(signInDto.password, user.password)) {
 			return {
-				access_token: await this.genAuthToken(user),
+				access_token: await this.authUtils.genAuthToken(user),
 				user: UserMapper.toDto(user),
 			};
 		}
@@ -82,39 +83,18 @@ export class AuthService {
 		const user: User = await this.prismaService.user.findUniqueOrThrow({
 			where: { email: resetPasswordRequestDto.email },
 		});
-		await this.mailerService.sendResetPasswordEmailRequest(user, await this.genAuthToken(user));
+		await this.mailerService.sendResetPasswordEmailRequest(user, await this.authUtils.genAuthToken(user));
 		return {
 			message: `The email for the password reset was successfully sent to the following email address ${resetPasswordRequestDto.email}`,
 			timestamp: Date.now(),
 		};
 	}
 
-	async resetPassword(authTokenPayload: AuthTokenPayload, resetPasswordDto: ResetPasswordDto): Promise<User> {
+	async resetPassword(resetPasswordDto: ResetPasswordDto): Promise<User> {
+		const authTokenPayload: AuthTokenPayload = this.authUtils.getPayloadFromToken(resetPasswordDto.token);
 		return await this.prismaService.user.update({
 			where: { id: authTokenPayload.user_id },
-			data: { password: this.hashPassword(resetPasswordDto.newPassword) },
+			data: { password: this.authUtils.hashPassword(resetPasswordDto.newPassword) },
 		});
-	}
-
-	async genAuthToken(user: User): Promise<string> {
-		const payload: AuthTokenPayload = { user_id: user.id, user_username: user.username };
-		return await this.jwtService.signAsync(payload);
-	}
-
-	async genVerificationEmailToken(user: User): Promise<string> {
-		const verifyEmailPayload: VerifyEmailPayload = {
-			id: user.id,
-			email: user.email,
-			timestamp: Date.now(),
-		};
-		return await this.jwtService.signAsync(verifyEmailPayload);
-	}
-
-	private hashPassword(password: string): string {
-		return bcrypt.hashSync(password, bcrypt.genSaltSync());
-	}
-
-	private isValidPassword(password: string, hashedPassword: string): boolean {
-		return bcrypt.compareSync(password, hashedPassword);
 	}
 }
