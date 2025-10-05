@@ -1,10 +1,10 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { Resend } from 'resend';
+import { VerifyEmailPayload } from '../auth/payload/verify-email.payload';
 import { PrismaService } from '../prisma/prisma.service';
 import { SendEmailObject } from './entity/send-mail-object.entity';
-import { VerifyEmailPayload } from './payload/verify-email.payload';
 import { VerifyEmail } from './template/verify-email';
 import { WelcomeEmail } from './template/welcome';
 
@@ -61,19 +61,5 @@ export class MailerService {
 			subject: 'Verify your email address for Coucou App',
 			html: VerifyEmail.getTemplate(createdUser, verifyEmailToken),
 		});
-	}
-
-	async verifyEmail(token: string): Promise<VerifyEmailPayload> {
-		try {
-			const payload = await this.jwtService.verifyAsync<VerifyEmailPayload>(token);
-			await this.prismaService.user.update({
-				where: { email: payload.email },
-				data: { is_verified: true },
-			});
-			return payload;
-		} catch (err) {
-			this.logger.error(err);
-			throw new BadRequestException('Invalid token');
-		}
 	}
 }

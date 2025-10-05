@@ -3,7 +3,6 @@ import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiResponse } from '@ne
 import { Request } from 'express';
 import { ApiCommonExceptionsDecorator } from '../exception/decorator/api-common-exceptions.decorator';
 import { HttpExceptionResponseDto } from '../exception/dto/http-exception-response.dto';
-import { MailerService } from '../mailer/mailer.service';
 import { UserResponse } from '../user/dto/user-response.dto';
 import { UserMapper } from '../user/mapper/user.mapper';
 import { AuthService } from './auth.service';
@@ -14,10 +13,7 @@ import { AuthGuard } from './guard/auth.guard';
 
 @Controller({ path: '/auth' })
 export class AuthController {
-	constructor(
-		private readonly authService: AuthService,
-		private readonly mailerService: MailerService,
-	) {}
+	constructor(private readonly authService: AuthService) {}
 
 	@ApiOperation({
 		summary: 'User registration endpoint',
@@ -70,7 +66,7 @@ export class AuthController {
 	@Get('/verify-email')
 	@HttpCode(HttpStatus.OK)
 	async verifyEmail(@Req() req: Request, @Query('token') token: string): Promise<HttpExceptionResponseDto> {
-		const response = await this.mailerService.verifyEmail(token);
+		const response = await this.authService.verifyEmail(token);
 		return {
 			status: HttpStatus.OK,
 			type: 'success',

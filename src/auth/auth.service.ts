@@ -1,7 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import { VerifyEmailPayload } from 'src/auth/payload/verify-email.payload';
 import { MailerService } from '../mailer/mailer.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { UserMapper } from '../user/mapper/user.mapper';
@@ -12,6 +13,8 @@ import { AuthTokenPayload } from './payload/auth-token.payload';
 
 @Injectable()
 export class AuthService {
+	private readonly logger: Logger = new Logger(AuthService.name);
+
 	constructor(
 		private readonly prismaService: PrismaService,
 		private readonly jwtService: JwtService,
@@ -50,6 +53,20 @@ export class AuthService {
 			where: { id: authTokenPayload.user_id },
 		});
 		return user;
+	}
+
+	async verifyEmail(verificationEmailToken: string): Promise<VerifyEmailPayload> {
+		try {
+			const payload = await this.jwtService.verifyAsync<VerifyEmailPayload>(verificationEmailToken);
+			await this.prismaService.user.update({
+				where: { email: payload.email },
+				data: { is_verified: true },
+			});
+			return payload;
+		} catch (err) {
+			this.logger.error(err);
+			throw new BadRequestException('Invalid token');
+		}
 	}
 
 	private hashPassword(password: string): string {
