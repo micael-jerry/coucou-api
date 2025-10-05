@@ -49,7 +49,11 @@ export class MailerService {
 	}
 
 	async sendVerificationEmailRequest(createdUser: User) {
-		const verifyEmailPayload: VerifyEmailPayload = { email: createdUser.email };
+		const verifyEmailPayload: VerifyEmailPayload = {
+			id: createdUser.id,
+			email: createdUser.email,
+			timestamp: Date.now(),
+		};
 		const verifyEmailToken = await this.jwtService.signAsync(verifyEmailPayload);
 
 		await this.sendEmail({
