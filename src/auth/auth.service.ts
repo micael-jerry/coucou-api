@@ -77,18 +77,14 @@ export class AuthService {
 	}
 
 	async resetPasswordRequest(resetPasswordRequestDto: ResetPasswordRequestDto): Promise<ResetPasswordRequestResponse> {
-		try {
-			const user: User = await this.prismaService.user.findUniqueOrThrow({
-				where: { email: resetPasswordRequestDto.email },
-			});
-			await this.mailerService.sendResetPasswordEmailRequest(user, await this.genAuthToken(user));
-			return {
-				message: `The email for the password reset was successfully sent to the following email address ${resetPasswordRequestDto.email}`,
-				timestamp: Date.now(),
-			};
-		} catch {
-			throw new BadRequestException('Invalid email');
-		}
+		const user: User = await this.prismaService.user.findUniqueOrThrow({
+			where: { email: resetPasswordRequestDto.email },
+		});
+		await this.mailerService.sendResetPasswordEmailRequest(user, await this.genAuthToken(user));
+		return {
+			message: `The email for the password reset was successfully sent to the following email address ${resetPasswordRequestDto.email}`,
+			timestamp: Date.now(),
+		};
 	}
 
 	async resetPassword(authTokenPayload: AuthTokenPayload, resetPasswordDto: ResetPasswordDto): Promise<User> {

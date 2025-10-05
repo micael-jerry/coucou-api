@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadGatewayException, Injectable, Logger } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { Resend } from 'resend';
 import { SendEmailObject } from './entity/send-mail-object.entity';
@@ -29,7 +29,8 @@ export class MailerService {
 		});
 
 		if (error) {
-			return this.logger.error({ error });
+			this.logger.error({ error });
+			throw new BadGatewayException('Failed to send the email via external service. Please try again later.');
 		}
 
 		this.logger.log({ data });
