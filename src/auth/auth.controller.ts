@@ -80,7 +80,7 @@ export class AuthController {
 	@ApiBody({ type: ResetPasswordRequestDto })
 	@ApiResponse({ status: HttpStatus.OK, type: ResetPasswordRequestResponse })
 	@ApiCommonExceptionsDecorator()
-	@Get('/reset-password-request')
+	@Post('/reset-password-request')
 	@HttpCode(HttpStatus.OK)
 	async resetPasswordRequest(
 		@Body() resetPasswordRequestDto: ResetPasswordRequestDto,
