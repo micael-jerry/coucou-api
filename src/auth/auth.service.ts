@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
@@ -17,6 +17,7 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Injectable()
 export class AuthService {
+	private readonly logger: Logger = new Logger(AuthService.name);
 	constructor(
 		private readonly prismaService: PrismaService,
 		private readonly jwtService: JwtService,
@@ -71,7 +72,8 @@ export class AuthService {
 				message: 'The email address has been checked successfully',
 				timestamp: Date.now(),
 			};
-		} catch {
+		} catch (err) {
+			this.logger.error(err);
 			throw new BadRequestException('Invalid token');
 		}
 	}
