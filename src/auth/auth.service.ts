@@ -92,10 +92,15 @@ export class AuthService {
 	}
 
 	async resetPassword(resetPasswordDto: ResetPasswordDto): Promise<User> {
-		const authTokenPayload = await this.authUtils.getPayloadToken<SpecificReqTokenPayload>(resetPasswordDto.token);
-		return await this.prismaService.user.update({
-			where: { id: authTokenPayload.id },
-			data: { password: await this.authUtils.hashPassword(resetPasswordDto.newPassword) },
-		});
+		try {
+			const authTokenPayload = await this.authUtils.getPayloadToken<SpecificReqTokenPayload>(resetPasswordDto.token);
+			return await this.prismaService.user.update({
+				where: { id: authTokenPayload.id },
+				data: { password: await this.authUtils.hashPassword(resetPasswordDto.newPassword) },
+			});
+		} catch (err) {
+			this.logger.error(err);
+			throw new BadRequestException('Invalid or expired password reset token.');
+		}
 	}
 }
