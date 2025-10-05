@@ -3,7 +3,6 @@ import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiResponse } from '@ne
 import { Request } from 'express';
 import { ApiCommonExceptionsDecorator } from '../exception/decorator/api-common-exceptions.decorator';
 import { HttpExceptionResponseDto } from '../exception/dto/http-exception-response.dto';
-import { MailerService } from '../mailer/mailer.service';
 import { UserResponse } from '../user/dto/user-response.dto';
 import { UserMapper } from '../user/mapper/user.mapper';
 import { AuthService } from './auth.service';
@@ -11,13 +10,14 @@ import { LoginResponse } from './dto/login-response.dto';
 import { LoginDto } from './dto/login.dto';
 import { SignUpDto } from './dto/sign-up.dto';
 import { AuthGuard } from './guard/auth.guard';
+import { ResetPasswordRequestResponse } from './dto/reset-password-request-response.dto';
+import { ResetPasswordRequestDto } from './dto/reset-password-request.dto';
+import { VerifyEmailResponse } from './dto/verify-email-response.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Controller({ path: '/auth' })
 export class AuthController {
-	constructor(
-		private readonly authService: AuthService,
-		private readonly mailerService: MailerService,
-	) {}
+	constructor(private readonly authService: AuthService) {}
 
 	@ApiOperation({
 		summary: 'User registration endpoint',
@@ -69,14 +69,37 @@ export class AuthController {
 	@ApiCommonExceptionsDecorator()
 	@Get('/verify-email')
 	@HttpCode(HttpStatus.OK)
-	async verifyEmail(@Req() req: Request, @Query('token') token: string): Promise<HttpExceptionResponseDto> {
-		const response = await this.mailerService.verifyEmail(token);
-		return {
-			status: HttpStatus.OK,
-			type: 'success',
-			message: `Email verified successfully for ${response.email}`,
-			path: req.path,
-			typestamp: new Date(),
-		};
+	async verifyEmail(@Query('token') token: string): Promise<VerifyEmailResponse> {
+		return await this.authService.verifyEmail(token);
+	}
+
+	@ApiOperation({
+		summary: 'Send reset password email',
+		description: 'Send reset password email to user.',
+	})
+	@ApiBody({ type: ResetPasswordRequestDto })
+	@ApiResponse({ status: HttpStatus.OK, type: ResetPasswordRequestResponse })
+	@ApiCommonExceptionsDecorator()
+	@Post('/reset-password-request')
+	@HttpCode(HttpStatus.OK)
+	async resetPasswordRequest(
+		@Body() resetPasswordRequestDto: ResetPasswordRequestDto,
+	): Promise<ResetPasswordRequestResponse> {
+		return await this.authService.resetPasswordRequest(resetPasswordRequestDto);
+	}
+
+	@ApiOperation({
+		summary: 'Reset password',
+		description: 'Reset password with token sended into email of user.',
+	})
+	@ApiBearerAuth()
+	@ApiBody({ type: ResetPasswordDto })
+	@ApiResponse({ status: HttpStatus.OK, type: UserResponse })
+	@ApiCommonExceptionsDecorator()
+	@Post('/reset-password')
+	@HttpCode(HttpStatus.OK)
+	@UseGuards(AuthGuard)
+	async resetPassword(@Req() req: Request, @Body() resetPasswordDto: ResetPasswordDto): Promise<UserResponse> {
+		return UserMapper.toDto(await this.authService.resetPassword(req.user!, resetPasswordDto));
 	}
 }

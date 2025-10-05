@@ -1,22 +1,17 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { BadGatewayException, Injectable, Logger } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { Resend } from 'resend';
-import { PrismaService } from '../prisma/prisma.service';
 import { SendEmailObject } from './entity/send-mail-object.entity';
-import { VerifyEmailPayload } from './payload/verify-email.payload';
 import { VerifyEmail } from './template/verify-email';
 import { WelcomeEmail } from './template/welcome';
+import { ResetPassword } from './template/reset-password';
 
 @Injectable()
 export class MailerService {
 	private readonly resend: Resend;
 	private readonly logger: Logger = new Logger(MailerService.name);
 
-	constructor(
-		private readonly jwtService: JwtService,
-		private readonly prismaService: PrismaService,
-	) {
+	constructor() {
 		this.resend = new Resend(process.env.RESEND_API_KEY);
 	}
 
@@ -34,7 +29,8 @@ export class MailerService {
 		});
 
 		if (error) {
-			return this.logger.error({ error });
+			this.logger.error({ error });
+			throw new BadGatewayException('Failed to send the email via external service. Please try again later.');
 		}
 
 		this.logger.log({ data });
@@ -48,14 +44,7 @@ export class MailerService {
 		});
 	}
 
-	async sendVerificationEmailRequest(createdUser: User) {
-		const verifyEmailPayload: VerifyEmailPayload = {
-			id: createdUser.id,
-			email: createdUser.email,
-			timestamp: Date.now(),
-		};
-		const verifyEmailToken = await this.jwtService.signAsync(verifyEmailPayload);
-
+	async sendVerificationEmailRequest(createdUser: User, verifyEmailToken: string) {
 		await this.sendEmail({
 			to: [createdUser.email],
 			subject: 'Verify your email address for Coucou App',
@@ -63,17 +52,11 @@ export class MailerService {
 		});
 	}
 
-	async verifyEmail(token: string): Promise<VerifyEmailPayload> {
-		try {
-			const payload = await this.jwtService.verifyAsync<VerifyEmailPayload>(token);
-			await this.prismaService.user.update({
-				where: { email: payload.email },
-				data: { is_verified: true },
-			});
-			return payload;
-		} catch (err) {
-			this.logger.error(err);
-			throw new BadRequestException('Invalid token');
-		}
+	async sendResetPasswordEmailRequest(user: User, authTokenToSend: string) {
+		await this.sendEmail({
+			to: [user.email],
+			subject: 'Reset your password for Coucou App',
+			html: ResetPassword.getTemplate(user, authTokenToSend),
+		});
 	}
 }
