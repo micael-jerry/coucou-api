@@ -88,12 +88,9 @@ export class AuthService {
 	}
 
 	async resetPassword(authTokenPayload: AuthTokenPayload, resetPasswordDto: ResetPasswordDto): Promise<User> {
-		return await this.prismaService.$transaction(async (prisma) => {
-			const user: User = await prisma.user.findUniqueOrThrow({ where: { id: authTokenPayload.user_id } });
-			return await this.prismaService.user.update({
-				where: { email: user.email },
-				data: { password: this.hashPassword(resetPasswordDto.newPassword) },
-			});
+		return await this.prismaService.user.update({
+			where: { id: authTokenPayload.user_id },
+			data: { password: this.hashPassword(resetPasswordDto.newPassword) },
 		});
 	}
 
