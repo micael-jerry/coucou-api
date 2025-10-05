@@ -97,7 +97,6 @@ export class AuthController {
 	@ApiCommonExceptionsDecorator()
 	@Post('/reset-password')
 	@HttpCode(HttpStatus.OK)
-	@UseGuards(AuthGuard)
 	async resetPassword(@Body() resetPasswordDto: ResetPasswordDto): Promise<UserResponse> {
 		return UserMapper.toDto(await this.authService.resetPassword(resetPasswordDto));
 	}
