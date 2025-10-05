@@ -10,6 +10,10 @@ import { LoginResponse } from './dto/login-response.dto';
 import { LoginDto } from './dto/login.dto';
 import { SignUpDto } from './dto/sign-up.dto';
 import { AuthGuard } from './guard/auth.guard';
+import { ResetPasswordRequestResponse } from './dto/reset-password-request-response.dto';
+import { ResetPasswordRequestDto } from './dto/reset-password-request.dto';
+import { VerifyEmailResponse } from './dto/verify-email-response.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Controller({ path: '/auth' })
 export class AuthController {
@@ -65,14 +69,37 @@ export class AuthController {
 	@ApiCommonExceptionsDecorator()
 	@Get('/verify-email')
 	@HttpCode(HttpStatus.OK)
-	async verifyEmail(@Req() req: Request, @Query('token') token: string): Promise<HttpExceptionResponseDto> {
-		const response = await this.authService.verifyEmail(token);
-		return {
-			status: HttpStatus.OK,
-			type: 'success',
-			message: `Email verified successfully for ${response.email}`,
-			path: req.path,
-			typestamp: new Date(),
-		};
+	async verifyEmail(@Query('token') token: string): Promise<VerifyEmailResponse> {
+		return await this.authService.verifyEmail(token);
+	}
+
+	@ApiOperation({
+		summary: 'Send reset password email',
+		description: 'Send reset password email to user.',
+	})
+	@ApiBody({ type: ResetPasswordRequestDto })
+	@ApiResponse({ status: HttpStatus.OK, type: ResetPasswordRequestResponse })
+	@ApiCommonExceptionsDecorator()
+	@Get('/reset-password-request')
+	@HttpCode(HttpStatus.OK)
+	async resetPasswordRequest(
+		@Body() resetPasswordRequestDto: ResetPasswordRequestDto,
+	): Promise<ResetPasswordRequestResponse> {
+		return await this.authService.resetPasswordRequest(resetPasswordRequestDto);
+	}
+
+	@ApiOperation({
+		summary: 'Reset password',
+		description: 'Reset password with token sended into email of user.',
+	})
+	@ApiBearerAuth()
+	@ApiBody({ type: ResetPasswordDto })
+	@ApiResponse({ status: HttpStatus.OK, type: UserResponse })
+	@ApiCommonExceptionsDecorator()
+	@Post('/reset-password')
+	@HttpCode(HttpStatus.OK)
+	@UseGuards(AuthGuard)
+	async resetPassword(@Req() req: Request, @Body() resetPasswordDto: ResetPasswordDto): Promise<UserResponse> {
+		return UserMapper.toDto(await this.authService.resetPassword(req.user!, resetPasswordDto));
 	}
 }

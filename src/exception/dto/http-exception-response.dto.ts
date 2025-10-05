@@ -11,7 +11,7 @@ export class HttpExceptionResponseDto {
 	message: string;
 
 	@ApiProperty({ description: 'Timestamp of the error' })
-	typestamp: Date;
+	timestamp: Date;
 
 	@ApiProperty({ description: 'Request path that caused the error' })
 	path: string;

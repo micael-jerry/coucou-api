@@ -1,22 +1,17 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { Resend } from 'resend';
-import { VerifyEmailPayload } from '../auth/payload/verify-email.payload';
-import { PrismaService } from '../prisma/prisma.service';
 import { SendEmailObject } from './entity/send-mail-object.entity';
 import { VerifyEmail } from './template/verify-email';
 import { WelcomeEmail } from './template/welcome';
+import { ResetPassword } from './template/reset-password';
 
 @Injectable()
 export class MailerService {
 	private readonly resend: Resend;
 	private readonly logger: Logger = new Logger(MailerService.name);
 
-	constructor(
-		private readonly jwtService: JwtService,
-		private readonly prismaService: PrismaService,
-	) {
+	constructor() {
 		this.resend = new Resend(process.env.RESEND_API_KEY);
 	}
 
@@ -48,18 +43,19 @@ export class MailerService {
 		});
 	}
 
-	async sendVerificationEmailRequest(createdUser: User) {
-		const verifyEmailPayload: VerifyEmailPayload = {
-			id: createdUser.id,
-			email: createdUser.email,
-			timestamp: Date.now(),
-		};
-		const verifyEmailToken = await this.jwtService.signAsync(verifyEmailPayload);
-
+	async sendVerificationEmailRequest(createdUser: User, verifyEmailToken: string) {
 		await this.sendEmail({
 			to: [createdUser.email],
 			subject: 'Verify your email address for Coucou App',
 			html: VerifyEmail.getTemplate(createdUser, verifyEmailToken),
+		});
+	}
+
+	async sendResetPasswordEmailRequest(user: User, authTokenToSend: string) {
+		await this.sendEmail({
+			to: [user.email],
+			subject: 'Reset your password for Coucou App',
+			html: ResetPassword.getTemplate(user, authTokenToSend),
 		});
 	}
 }
