@@ -29,7 +29,7 @@ export class AuthService {
 		const createdUser = await this.prismaService.user.create({
 			data: {
 				...signUpDto,
-				password: this.authUtils.hashPassword(signUpDto.password),
+				password: await this.authUtils.hashPassword(signUpDto.password),
 			},
 		});
 
@@ -45,7 +45,7 @@ export class AuthService {
 		const user: User = await this.prismaService.user.findUniqueOrThrow({
 			where: { username: signInDto.username },
 		});
-		if (this.authUtils.isValidPassword(signInDto.password, user.password)) {
+		if (await this.authUtils.isValidPassword(signInDto.password, user.password)) {
 			return {
 				access_token: await this.authUtils.genAuthToken(user),
 				user: UserMapper.toDto(user),
@@ -95,7 +95,7 @@ export class AuthService {
 		const authTokenPayload = await this.authUtils.getPayloadToken<SpecificReqTokenPayload>(resetPasswordDto.token);
 		return await this.prismaService.user.update({
 			where: { id: authTokenPayload.id },
-			data: { password: this.authUtils.hashPassword(resetPasswordDto.newPassword) },
+			data: { password: await this.authUtils.hashPassword(resetPasswordDto.newPassword) },
 		});
 	}
 }

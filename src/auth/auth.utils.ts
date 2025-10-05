@@ -27,11 +27,11 @@ export class AuthUtils {
 		return await this.jwtService.signAsync(verifyEmailPayload, { expiresIn: '1h' });
 	}
 
-	hashPassword(password: string): string {
-		return bcrypt.hashSync(password, bcrypt.genSaltSync());
+	async hashPassword(password: string): Promise<string> {
+		return await bcrypt.hash(password, await bcrypt.genSalt());
 	}
 
-	isValidPassword(password: string, hashedPassword: string): boolean {
-		return bcrypt.compareSync(password, hashedPassword);
+	async isValidPassword(password: string, hashedPassword: string): Promise<boolean> {
+		return await bcrypt.compare(password, hashedPassword);
 	}
 }
