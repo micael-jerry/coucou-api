@@ -1,9 +1,9 @@
 import { CanActivate, ExecutionContext, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
 import { AuthTokenPayload } from '../payload/auth-token.payload';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
+import { JwtService } from '@nestjs/jwt';
 
 declare module 'express' {
 	export interface Request {

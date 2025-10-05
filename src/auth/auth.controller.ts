@@ -92,14 +92,12 @@ export class AuthController {
 		summary: 'Reset password',
 		description: 'Reset password with token sended into email of user.',
 	})
-	@ApiBearerAuth()
 	@ApiBody({ type: ResetPasswordDto })
 	@ApiResponse({ status: HttpStatus.OK, type: UserResponse })
 	@ApiCommonExceptionsDecorator()
 	@Post('/reset-password')
 	@HttpCode(HttpStatus.OK)
-	@UseGuards(AuthGuard)
-	async resetPassword(@Req() req: Request, @Body() resetPasswordDto: ResetPasswordDto): Promise<UserResponse> {
-		return UserMapper.toDto(await this.authService.resetPassword(req.user!, resetPasswordDto));
+	async resetPassword(@Body() resetPasswordDto: ResetPasswordDto): Promise<UserResponse> {
+		return UserMapper.toDto(await this.authService.resetPassword(resetPasswordDto));
 	}
 }
