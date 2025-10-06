@@ -4,7 +4,7 @@ import { User } from '@prisma/client';
 import { AuthTokenPayload } from '../auth/payload/auth-token.payload';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthUtils } from '../auth/auth.utils';
-import { MailerService } from 'src/mailer/mailer.service';
+import { MailerService } from '../mailer/mailer.service';
 
 @Injectable()
 export class UserService {
