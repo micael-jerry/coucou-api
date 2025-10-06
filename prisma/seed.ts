@@ -8,7 +8,7 @@ async function main() {
 			{
 				id: 'c46ffdce-8ee7-470e-8b22-4e83c84481d2',
 				username: 'testuser1',
-				email: 'fidimalala.mj@gmail.com',
+				email: process.env.SEED_USER1_EMAIL || 'test1@example.com',
 				password: '$2a$12$iikMNRVvK5cfuqGUW0fs4.w44gPqipPnJ75/OG2JTORo81RwIFOJa', // test1@example.com
 				firstname: 'Test',
 				lastname: 'User1',
