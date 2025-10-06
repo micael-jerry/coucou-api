@@ -4,12 +4,14 @@ import { User } from '@prisma/client';
 import { AuthTokenPayload } from '../auth/payload/auth-token.payload';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthUtils } from '../auth/auth.utils';
+import { MailerService } from 'src/mailer/mailer.service';
 
 @Injectable()
 export class UserService {
 	constructor(
 		private readonly prismaService: PrismaService,
 		private readonly authUtils: AuthUtils,
+		private readonly mailerService: MailerService,
 	) {}
 
 	async findAll(): Promise<User[]> {
@@ -31,6 +33,10 @@ export class UserService {
 					is_verified: user.email === userUpdateVal.email,
 				},
 			});
+			await this.mailerService.sendVerificationEmailRequest(
+				updatedUser,
+				await this.authUtils.genSpecificRequestToken(updatedUser),
+			);
 			return updatedUser;
 		});
 	}
