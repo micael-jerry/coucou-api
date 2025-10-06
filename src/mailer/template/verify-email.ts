@@ -72,16 +72,15 @@ export class VerifyEmail {
 						<img src="${process.env.FRONT_END_BASE_URL}/logo.png" alt="Coucou App Logo">
 					</div>
 					<div class="content">
-						<h1>Hello, ${createdUser.firstname}!</h1>
-						<p>Thank you for signing up to <strong>Coucou App</strong>.</p>
-						<p>Before you can start using your account, we need to confirm your email address.</p>
-						<p>Please click the button below to verify your email:</p>
+						<h1>Verify Your Email Address</h1>
+						<p>Hello, ${createdUser.firstname}!</p>
+						<p>Please click the button below to confirm your email address.</p>
 						<p style="text-align: center;">
 							<a href="${verificationLink}" class="button">Verify My Email</a>
 						</p>
 						<p>If the button does not work, copy and paste the following link into your browser:</p>
 						<p><a href="${verificationLink}">${verificationLink}</a></p>
-						<p>If you did not create an account, you can safely ignore this email.</p>
+						<p>If you did not request this verification, please ignore this email.</p>
 						<p>Best regards,<br>The Coucou Team</p>
 					</div>
 				</div>
