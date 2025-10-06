@@ -1,10 +1,12 @@
-import { Controller, Get, HttpStatus, Param, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, Put, Req, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserResponse } from './dto/user-response.dto';
 import { UserMapper } from './mapper/user.mapper';
 import { AuthGuard } from '../auth/guard/auth.guard';
-import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { ApiCommonExceptionsDecorator } from '../exception/decorator/api-common-exceptions.decorator';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { Request } from 'express';
 
 @Controller({ path: '/users' })
 export class UserController {
@@ -35,5 +37,19 @@ export class UserController {
 	@UseGuards(AuthGuard)
 	async getUserById(@Param('userId') userId: string): Promise<UserResponse> {
 		return UserMapper.toDto(await this.userService.findById(userId));
+	}
+
+	@ApiOperation({
+		summary: 'Update connected user',
+		description: 'Update a user connected.',
+	})
+	@ApiBearerAuth()
+	@ApiBody({ type: UpdateUserDto })
+	@ApiResponse({ status: HttpStatus.OK, type: UserResponse })
+	@ApiCommonExceptionsDecorator()
+	@Put('/update')
+	@UseGuards(AuthGuard)
+	async updateUser(@Req() req: Request, @Body() userUpdateVal: UpdateUserDto) {
+		return UserMapper.toDto(await this.userService.updateUser(req.user!, userUpdateVal));
 	}
 }

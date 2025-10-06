@@ -5,6 +5,7 @@ import { App } from 'supertest/types';
 import { AppModule } from '../../src/app.module';
 import { LoginResponse } from '../../src/auth/dto/login-response.dto';
 import { UserResponse } from '../../src/user/dto/user-response.dto';
+import { UpdateUserDto } from '../../src/user/dto/update-user.dto';
 
 describe('UserController (e2e)', () => {
 	let app: INestApplication<App>;
@@ -26,7 +27,7 @@ describe('UserController (e2e)', () => {
 		authToken = response.body.access_token;
 	});
 
-	afterEach(async () => {
+	afterAll(async () => {
 		await app.close();
 	});
 
@@ -53,7 +54,30 @@ describe('UserController (e2e)', () => {
 			});
 	});
 
+	it('/users/update (PUT) - should update the connected user', async () => {
+		const updateUserDto: UpdateUserDto = {
+			firstname: 'Test',
+			lastname: 'User 1 Updated',
+			email: 'testuser1@example.com',
+			password: 'test1@example.com',
+			username: 'testuser1',
+		};
+		return request(app.getHttpServer())
+			.put('/users/update')
+			.set('Authorization', `Bearer ${authToken}`)
+			.send(updateUserDto)
+			.expect(200)
+			.then((res: { body: UserResponse }) => {
+				expect(res.body.firstname).toBe(updateUserDto.firstname);
+				expect(res.body.lastname).toBe(updateUserDto.lastname);
+			});
+	});
+
 	it('/users (GET) - should fail without auth token', async () => {
 		await request(app.getHttpServer()).get('/users').expect(401);
+	});
+
+	it('/users/update (PUT) - should fail without auth token', async () => {
+		await request(app.getHttpServer()).put('/users/update').send({}).expect(401);
 	});
 });
