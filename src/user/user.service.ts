@@ -23,21 +23,22 @@ export class UserService {
 	}
 
 	async updateUser(authTokenPayload: AuthTokenPayload, userUpdateVal: UpdateUserDto) {
-		return await this.prismaService.$transaction(async (prisma) => {
-			const user = await prisma.user.findUniqueOrThrow({ where: { id: authTokenPayload.user_id } });
-			const updatedUser = await prisma.user.update({
-				where: { id: authTokenPayload.user_id },
-				data: {
-					...userUpdateVal,
-					password: await this.authUtils.hashPassword(userUpdateVal.password),
-					is_verified: user.email === userUpdateVal.email,
-				},
-			});
+		const user = await this.findById(authTokenPayload.user_id);
+		const isChangedEmail = user.email !== userUpdateVal.email;
+		const updatedUser = await this.prismaService.user.update({
+			where: { id: authTokenPayload.user_id },
+			data: {
+				...userUpdateVal,
+				password: await this.authUtils.hashPassword(userUpdateVal.password),
+				is_verified: isChangedEmail ? false : user.is_verified,
+			},
+		});
+		if (isChangedEmail) {
 			await this.mailerService.sendVerificationEmailRequest(
 				updatedUser,
 				await this.authUtils.genSpecificRequestToken(updatedUser),
 			);
-			return updatedUser;
-		});
+		}
+		return updatedUser;
 	}
 }
