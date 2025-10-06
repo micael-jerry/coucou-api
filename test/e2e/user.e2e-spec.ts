@@ -4,8 +4,8 @@ import * as request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from '../../src/app.module';
 import { LoginResponse } from '../../src/auth/dto/login-response.dto';
-import { UserResponse } from '../../src/user/dto/user-response.dto';
 import { UpdateUserDto } from '../../src/user/dto/update-user.dto';
+import { UserResponse } from '../../src/user/dto/user-response.dto';
 
 describe('UserController (e2e)', () => {
 	let app: INestApplication<App>;
@@ -63,7 +63,7 @@ describe('UserController (e2e)', () => {
 			username: 'testuser1',
 		};
 		return request(app.getHttpServer())
-			.put('/users/update')
+			.put('/users/me')
 			.set('Authorization', `Bearer ${authToken}`)
 			.send(updateUserDto)
 			.expect(200)
@@ -78,6 +78,6 @@ describe('UserController (e2e)', () => {
 	});
 
 	it('/users/update (PUT) - should fail without auth token', async () => {
-		await request(app.getHttpServer()).put('/users/update').send({}).expect(401);
+		await request(app.getHttpServer()).put('/users/me').send({}).expect(401);
 	});
 });
