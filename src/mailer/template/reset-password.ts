@@ -2,7 +2,7 @@ import { User } from '@prisma/client';
 
 export class ResetPassword {
 	static getTemplate(user: User, resetToken: string) {
-		const resetLink = `${process.env.FRONT_END_BASE_URL}/reset-password?token=${resetToken}`;
+		const resetLink = `${process.env.FRONT_END_BASE_URL}/auth/reset-password?token=${resetToken}`;
 
 		return `
 			<!DOCTYPE html>

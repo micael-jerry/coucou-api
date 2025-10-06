@@ -35,6 +35,10 @@ This project is currently under development and serves as the foundation for a f
 - **Deployment**: [Koyeb](https://www.koyeb.com/)
 - **Development Environment**: [Docker](https://www.docker.com/)
 
+## 🔗 Related Projects
+
+- **[Coucou App (Front-End)](https://github.com/micael-jerry/coucou-app)**: The front-end client for the Coucou messenger, built with modern web technologies.
+
 ## 📊 Database Schema
 
 The database schema is managed with Prisma. Below is the physical data model (PDM) of the database.
