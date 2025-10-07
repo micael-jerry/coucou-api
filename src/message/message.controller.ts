@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { MessageService } from './message.service';
 import { MessageInput } from './dto/message-input.dto';
 import { MessageResponse } from './dto/message-response.dto';
@@ -21,12 +21,11 @@ export class MessageController {
 	})
 	@ApiBearerAuth()
 	@ApiBody({ type: MessageInput })
-	@ApiResponse({ status: HttpStatus.OK, type: MessageResponse })
+	@ApiResponse({ status: HttpStatus.CREATED, type: MessageResponse })
 	@ApiCommonExceptionsDecorator()
 	@Post('/')
 	@Roles([UserRole.ADMIN, UserRole.USER])
 	@UseGuards(AuthGuard, RolesGuard)
-	@HttpCode(HttpStatus.OK)
 	async postMessage(@Req() req: Request, @Body() message: MessageInput): Promise<MessageResponse> {
 		return MessageMapper.toDto(await this.messageService.sendMessage(req.user!, message));
 	}

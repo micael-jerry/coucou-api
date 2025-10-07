@@ -38,7 +38,7 @@ describe('MessageController (e2e)', () => {
 				content: 'Test message',
 				conversationId: '0dbea30e-9354-4bcb-964c-1b65098bcbbb',
 			})
-			.expect(200)
+			.expect(201)
 			.then((res: { body: MessageResponse }) => {
 				expect(res.body).toHaveProperty('id');
 				expect(res.body.content).toBe('Test message');

@@ -83,6 +83,7 @@ export class AuthController {
 	@ApiResponse({ status: HttpStatus.OK, type: ResetPasswordRequestResponse })
 	@ApiCommonExceptionsDecorator()
 	@Post('/reset-password-request')
+	@HttpCode(HttpStatus.OK)
 	async resetPasswordRequest(
 		@Body() resetPasswordRequestDto: ResetPasswordRequestDto,
 	): Promise<ResetPasswordRequestResponse> {
@@ -97,6 +98,7 @@ export class AuthController {
 	@ApiResponse({ status: HttpStatus.OK, type: UserResponse })
 	@ApiCommonExceptionsDecorator()
 	@Post('/reset-password')
+	@HttpCode(HttpStatus.OK)
 	async resetPassword(@Body() resetPasswordDto: ResetPasswordDto): Promise<UserResponse> {
 		return UserMapper.toDto(await this.authService.resetPassword(resetPasswordDto));
 	}
