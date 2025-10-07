@@ -7,6 +7,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  USER
+  ADMIN
+}
+
 model User {
   id            String               @id @default(uuid())
   username      String               @unique @db.VarChar(50)
@@ -16,6 +21,8 @@ model User {
   firstname     String               @db.VarChar()
   lastname      String               @db.VarChar()
   created_at    DateTime             @default(now())
+  updated_at    DateTime             @default(now()) @updatedAt
+  role          UserRole             @default(USER)
   messages      Message[]
   conversations ConversationMember[]
 }
@@ -28,7 +35,7 @@ enum ConversationType {
 model Conversation {
   id         String               @id @default(uuid())
   created_at DateTime             @default(now())
-  updated_at DateTime             @default(now())
+  updated_at DateTime             @default(now()) @updatedAt
   type       ConversationType
   messages   Message[]
   members    ConversationMember[]

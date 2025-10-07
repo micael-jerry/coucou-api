@@ -14,7 +14,7 @@ export class AuthUtils {
 	}
 
 	async genAuthToken(user: User): Promise<string> {
-		const payload: AuthTokenPayload = { user_id: user.id, user_username: user.username };
+		const payload: AuthTokenPayload = { user_id: user.id, user_username: user.username, user_role: user.role };
 		return await this.jwtService.signAsync(payload);
 	}
 

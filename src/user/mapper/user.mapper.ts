@@ -11,6 +11,7 @@ export class UserMapper {
 			firstname: entity.firstname,
 			lastname: entity.lastname,
 			createdAt: entity.created_at,
+			role: entity.role,
 		};
 	}
 }

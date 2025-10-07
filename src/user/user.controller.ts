@@ -7,6 +7,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserResponse } from './dto/user-response.dto';
 import { UserMapper } from './mapper/user.mapper';
 import { UserService } from './user.service';
+import { RolesGuard } from '../auth/guard/roles.guard';
+import { Roles } from '../auth/decorator/roles.decorator';
+import { UserRole } from '@prisma/client';
 
 @Controller({ path: '/users' })
 export class UserController {
@@ -20,7 +23,8 @@ export class UserController {
 	@ApiResponse({ status: HttpStatus.OK, type: [UserResponse] })
 	@ApiCommonExceptionsDecorator()
 	@Get('/')
-	@UseGuards(AuthGuard)
+	@Roles([UserRole.ADMIN, UserRole.USER])
+	@UseGuards(AuthGuard, RolesGuard)
 	async getAllUsers(): Promise<UserResponse[]> {
 		return (await this.userService.findAll()).map((u) => UserMapper.toDto(u));
 	}
@@ -34,7 +38,8 @@ export class UserController {
 	@ApiResponse({ status: HttpStatus.OK, type: UserResponse })
 	@ApiCommonExceptionsDecorator()
 	@Get('/:userId')
-	@UseGuards(AuthGuard)
+	@Roles([UserRole.ADMIN, UserRole.USER])
+	@UseGuards(AuthGuard, RolesGuard)
 	async getUserById(@Param('userId') userId: string): Promise<UserResponse> {
 		return UserMapper.toDto(await this.userService.findById(userId));
 	}
@@ -48,7 +53,8 @@ export class UserController {
 	@ApiResponse({ status: HttpStatus.OK, type: UserResponse })
 	@ApiCommonExceptionsDecorator()
 	@Put('/me')
-	@UseGuards(AuthGuard)
+	@Roles([UserRole.ADMIN, UserRole.USER])
+	@UseGuards(AuthGuard, RolesGuard)
 	async updateUser(@Req() req: Request, @Body() userUpdateVal: UpdateUserDto) {
 		return UserMapper.toDto(await this.userService.updateUser(req.user!, userUpdateVal));
 	}

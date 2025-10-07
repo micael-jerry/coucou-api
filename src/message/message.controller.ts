@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { MessageService } from './message.service';
 import { MessageInput } from './dto/message-input.dto';
 import { MessageResponse } from './dto/message-response.dto';
@@ -7,6 +7,9 @@ import { ApiOperation, ApiBearerAuth, ApiBody, ApiResponse, ApiParam, ApiQuery }
 import { AuthGuard } from '../auth/guard/auth.guard';
 import { ApiCommonExceptionsDecorator } from '../exception/decorator/api-common-exceptions.decorator';
 import { Request } from 'express';
+import { UserRole } from '@prisma/client';
+import { Roles } from '../auth/decorator/roles.decorator';
+import { RolesGuard } from '../auth/guard/roles.guard';
 
 @Controller('/messages')
 export class MessageController {
@@ -18,11 +21,11 @@ export class MessageController {
 	})
 	@ApiBearerAuth()
 	@ApiBody({ type: MessageInput })
-	@ApiResponse({ status: HttpStatus.OK, type: MessageResponse })
+	@ApiResponse({ status: HttpStatus.CREATED, type: MessageResponse })
 	@ApiCommonExceptionsDecorator()
 	@Post('/')
-	@HttpCode(HttpStatus.OK)
-	@UseGuards(AuthGuard)
+	@Roles([UserRole.ADMIN, UserRole.USER])
+	@UseGuards(AuthGuard, RolesGuard)
 	async postMessage(@Req() req: Request, @Body() message: MessageInput): Promise<MessageResponse> {
 		return MessageMapper.toDto(await this.messageService.sendMessage(req.user!, message));
 	}
@@ -36,8 +39,8 @@ export class MessageController {
 	@ApiResponse({ status: HttpStatus.OK, type: MessageResponse })
 	@ApiCommonExceptionsDecorator()
 	@Get('/:messageId')
-	@HttpCode(HttpStatus.OK)
-	@UseGuards(AuthGuard)
+	@Roles([UserRole.ADMIN, UserRole.USER])
+	@UseGuards(AuthGuard, RolesGuard)
 	async getMessageById(@Param('messageId') messageId: string): Promise<MessageResponse> {
 		return MessageMapper.toDto(await this.messageService.findMessageById(messageId));
 	}
@@ -51,8 +54,8 @@ export class MessageController {
 	@ApiResponse({ status: HttpStatus.OK, type: [MessageResponse] })
 	@ApiCommonExceptionsDecorator()
 	@Get('/')
-	@HttpCode(HttpStatus.OK)
-	@UseGuards(AuthGuard)
+	@Roles([UserRole.ADMIN, UserRole.USER])
+	@UseGuards(AuthGuard, RolesGuard)
 	async getMessagesByConversationId(
 		@Req() req: Request,
 		@Query('conversationId') conversationId: string,

@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { UserRole } from '@prisma/client';
 
 export class UserResponse {
 	@ApiProperty()
@@ -18,6 +19,9 @@ export class UserResponse {
 
 	@ApiProperty()
 	lastname: string;
+
+	@ApiProperty({ enum: UserRole, description: 'User role' })
+	role: UserRole;
 
 	@ApiProperty({ type: 'string', format: 'date-time', description: 'User created datetime' })
 	createdAt: Date;
