@@ -1,4 +1,4 @@
-import { INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import { App } from 'supertest/types';
@@ -35,7 +35,7 @@ describe('UserController (e2e)', () => {
 		return request(app.getHttpServer())
 			.get('/users')
 			.set('Authorization', `Bearer ${authToken}`)
-			.expect(200)
+			.expect(HttpStatus.OK)
 			.then((res: { body: UserResponse[] }) => {
 				expect(Array.isArray(res.body)).toBe(true);
 				expect(res.body.length).toBeGreaterThanOrEqual(2);
@@ -47,7 +47,7 @@ describe('UserController (e2e)', () => {
 		return request(app.getHttpServer())
 			.get(`/users/${userId}`)
 			.set('Authorization', `Bearer ${authToken}`)
-			.expect(200)
+			.expect(HttpStatus.OK)
 			.then((res: { body: UserResponse }) => {
 				expect(res.body.id).toBe(userId);
 				expect(res.body.username).toBe('testuser1');
@@ -66,7 +66,7 @@ describe('UserController (e2e)', () => {
 			.put('/users/me')
 			.set('Authorization', `Bearer ${authToken}`)
 			.send(updateUserDto)
-			.expect(200)
+			.expect(HttpStatus.OK)
 			.then((res: { body: UserResponse }) => {
 				expect(res.body.firstname).toBe(updateUserDto.firstname);
 				expect(res.body.lastname).toBe(updateUserDto.lastname);

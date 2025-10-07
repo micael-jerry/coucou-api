@@ -5,10 +5,11 @@ import { PrismaModule } from '../prisma/prisma.module';
 import { AuthGuard } from './guard/auth.guard';
 import { MailerService } from '../mailer/mailer.service';
 import { AuthUtils } from './auth.utils';
+import { RolesGuard } from './guard/roles.guard';
 
 @Module({
 	imports: [PrismaModule],
 	controllers: [AuthController],
-	providers: [AuthService, AuthGuard, AuthUtils, MailerService],
+	providers: [AuthService, AuthGuard, AuthUtils, MailerService, RolesGuard],
 })
 export class AuthModule {}

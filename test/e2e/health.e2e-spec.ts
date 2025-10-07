@@ -1,4 +1,4 @@
-import { INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import { App } from 'supertest/types';
@@ -22,7 +22,7 @@ describe('HealthController (e2e)', () => {
 	});
 
 	it('/coucou (GET)', async () => {
-		const response = (await request(app.getHttpServer()).get('/coucou').expect(200)) as { body: Coucou };
+		const response = (await request(app.getHttpServer()).get('/coucou').expect(HttpStatus.OK)) as { body: Coucou };
 
 		expect(response.body).toHaveProperty('message');
 		expect(response.body.message).toBe('HELLO ❤️❤️❤️');

@@ -1,5 +1,5 @@
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../../src/app.module';
 import { LoginResponse } from '../../src/auth/dto/login-response.dto';
@@ -28,7 +28,7 @@ describe('AuthController (e2e)', () => {
 				username: 'testuser1',
 				password: 'test1@example.com',
 			})
-			.expect(200)) as { body: LoginResponse };
+			.expect(HttpStatus.OK)) as { body: LoginResponse };
 
 		expect(response.body).toHaveProperty('access_token');
 		expect(typeof response.body.access_token).toBe('string');
@@ -54,7 +54,7 @@ describe('AuthController (e2e)', () => {
 				firstname: 'New',
 				lastname: 'User',
 			})
-			.expect(201)) as { body: UserResponse };
+			.expect(HttpStatus.CREATED)) as { body: UserResponse };
 
 		expect(response.body).toHaveProperty('id');
 		expect(response.body.username).toBe('newuser');
