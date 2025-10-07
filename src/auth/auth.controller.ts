@@ -14,6 +14,9 @@ import { ResetPasswordRequestResponse } from './dto/reset-password-request-respo
 import { ResetPasswordRequestDto } from './dto/reset-password-request.dto';
 import { VerifyEmailResponse } from './dto/verify-email-response.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { UserRole } from '@prisma/client';
+import { RolesGuard } from './guard/roles.guard';
+import { Roles } from './decorator/roles.decorator';
 
 @Controller({ path: '/auth' })
 export class AuthController {
@@ -53,8 +56,8 @@ export class AuthController {
 	@ApiResponse({ status: HttpStatus.OK, type: UserResponse })
 	@ApiCommonExceptionsDecorator()
 	@Get('/who-am-i')
-	@HttpCode(HttpStatus.OK)
-	@UseGuards(AuthGuard)
+	@Roles([UserRole.ADMIN, UserRole.USER])
+	@UseGuards(AuthGuard, RolesGuard)
 	async whoAmI(@Req() req: Request): Promise<UserResponse> {
 		const user = await this.authService.whoAmI(req.user!);
 		return UserMapper.toDto(user);
@@ -68,7 +71,6 @@ export class AuthController {
 	@ApiResponse({ status: HttpStatus.OK, type: HttpExceptionResponseDto })
 	@ApiCommonExceptionsDecorator()
 	@Get('/verify-email')
-	@HttpCode(HttpStatus.OK)
 	async verifyEmail(@Query('token') token: string): Promise<VerifyEmailResponse> {
 		return await this.authService.verifyEmail(token);
 	}
@@ -81,7 +83,6 @@ export class AuthController {
 	@ApiResponse({ status: HttpStatus.OK, type: ResetPasswordRequestResponse })
 	@ApiCommonExceptionsDecorator()
 	@Post('/reset-password-request')
-	@HttpCode(HttpStatus.OK)
 	async resetPasswordRequest(
 		@Body() resetPasswordRequestDto: ResetPasswordRequestDto,
 	): Promise<ResetPasswordRequestResponse> {
@@ -96,7 +97,6 @@ export class AuthController {
 	@ApiResponse({ status: HttpStatus.OK, type: UserResponse })
 	@ApiCommonExceptionsDecorator()
 	@Post('/reset-password')
-	@HttpCode(HttpStatus.OK)
 	async resetPassword(@Body() resetPasswordDto: ResetPasswordDto): Promise<UserResponse> {
 		return UserMapper.toDto(await this.authService.resetPassword(resetPasswordDto));
 	}
