@@ -51,7 +51,7 @@ describe('ConversationController (e2e)', () => {
 		return request(app.getHttpServer())
 			.get(`/conversations/${conversationId}`)
 			.set('Authorization', `Bearer ${authToken}`)
-			.expect(200)
+			.expect(HttpStatus.OK)
 			.then((res: { body: ConversationResponse }) => {
 				expect(res.body.id).toBe(conversationId);
 			});
@@ -61,7 +61,7 @@ describe('ConversationController (e2e)', () => {
 		return request(app.getHttpServer())
 			.get(`/conversations`)
 			.set('Authorization', `Bearer ${authToken}`)
-			.expect(200)
+			.expect(HttpStatus.OK)
 			.then((res: { body: ConversationResponse[] }) => {
 				expect(Array.isArray(res.body)).toBe(true);
 				expect(res.body.length).toBeGreaterThanOrEqual(1);

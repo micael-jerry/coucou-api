@@ -27,7 +27,6 @@ export class RolesGuard implements CanActivate {
 
 	private hasPermission(payload: AuthTokenPayload, requiredRoles: UserRole[] | undefined) {
 		if (!requiredRoles) return true;
-		if (requiredRoles.includes(payload.user_role)) return true;
-		return false;
+		return requiredRoles.includes(payload.user_role);
 	}
 }

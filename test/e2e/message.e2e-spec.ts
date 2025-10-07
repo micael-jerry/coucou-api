@@ -1,4 +1,4 @@
-import { INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import { App } from 'supertest/types';
@@ -38,7 +38,7 @@ describe('MessageController (e2e)', () => {
 				content: 'Test message',
 				conversationId: '0dbea30e-9354-4bcb-964c-1b65098bcbbb',
 			})
-			.expect(201)
+			.expect(HttpStatus.CREATED)
 			.then((res: { body: MessageResponse }) => {
 				expect(res.body).toHaveProperty('id');
 				expect(res.body.content).toBe('Test message');
@@ -50,7 +50,7 @@ describe('MessageController (e2e)', () => {
 		return request(app.getHttpServer())
 			.get(`/messages/${messageId}`)
 			.set('Authorization', `Bearer ${authToken}`)
-			.expect(200)
+			.expect(HttpStatus.OK)
 			.then((res: { body: MessageResponse }) => {
 				expect(res.body.id).toBe(messageId);
 			});
@@ -61,7 +61,7 @@ describe('MessageController (e2e)', () => {
 		return request(app.getHttpServer())
 			.get(`/messages?conversationId=${conversationId}`)
 			.set('Authorization', `Bearer ${authToken}`)
-			.expect(200)
+			.expect(HttpStatus.OK)
 			.then((res: { body: MessageResponse[] }) => {
 				expect(Array.isArray(res.body)).toBe(true);
 				expect(res.body.length).toBeGreaterThanOrEqual(2);
