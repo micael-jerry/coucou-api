@@ -3,8 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from '../../src/app.module';
-import { LoginResponse } from '../../src/auth/dto/login-response.dto';
-import { MessageResponse } from '../../src/message/dto/message-response.dto';
+import { LoginResponse } from '../../src/modules/auth/dto/login-response.dto';
+import { MessageResponse } from '../../src/modules/message/dto/message-response.dto';
 
 describe('MessageController (e2e)', () => {
 	let app: INestApplication<App>;
