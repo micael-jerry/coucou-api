@@ -3,9 +3,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from '../../src/app.module';
-import { LoginResponse } from '../../src/auth/dto/login-response.dto';
-import { UpdateUserDto } from '../../src/user/dto/update-user.dto';
-import { UserResponse } from '../../src/user/dto/user-response.dto';
+import { LoginResponse } from '../../src/modules/auth/dto/login-response.dto';
+import { UpdateUserDto } from '../../src/modules/user/dto/update-user.dto';
+import { UserResponse } from '../../src/modules/user/dto/user-response.dto';
 
 describe('UserController (e2e)', () => {
 	let app: INestApplication<App>;

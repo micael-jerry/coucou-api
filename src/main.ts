@@ -2,8 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { PrismaExceptionFilter } from './prisma/filter/prisma-exception.filter';
-import { HttpExceptionFilter } from './exception/filter/http-exception.filter';
+import { PrismaExceptionFilter } from './common/filters/prisma-exception.filter';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 
 function documentBuilderConfig(app: INestApplication) {
 	const documentBuilderConfig = new DocumentBuilder()
@@ -13,7 +13,7 @@ function documentBuilderConfig(app: INestApplication) {
 		.addBearerAuth()
 		.build();
 	const document = SwaggerModule.createDocument(app, documentBuilderConfig, {
-		operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
+		operationIdFactory: (_: string, methodKey: string) => methodKey,
 	});
 	SwaggerModule.setup('api', app, document, {
 		jsonDocumentUrl: 'swagger/json',

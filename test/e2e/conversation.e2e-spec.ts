@@ -4,8 +4,8 @@ import { ConversationType } from '@prisma/client';
 import * as request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from '../../src/app.module';
-import { LoginResponse } from '../../src/auth/dto/login-response.dto';
-import { ConversationResponse } from '../../src/conversation/dto/conversation-response.dto';
+import { LoginResponse } from '../../src/modules/auth/dto/login-response.dto';
+import { ConversationResponse } from '../../src/modules/conversation/dto/conversation-response.dto';
 
 describe('ConversationController (e2e)', () => {
 	let app: INestApplication<App>;
