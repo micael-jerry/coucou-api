@@ -1,19 +1,19 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
 import { PrismaExceptionFilter } from './common/filters/prisma-exception.filter';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 
-function documentBuilderConfig(app: INestApplication) {
+function documentBuilderConfig(app: INestApplication): void {
 	const documentBuilderConfig = new DocumentBuilder()
 		.setTitle('Coucou api')
 		.setDescription('Chat app API')
 		.setVersion('0.1')
 		.addBearerAuth()
 		.build();
-	const document = SwaggerModule.createDocument(app, documentBuilderConfig, {
-		operationIdFactory: (_: string, methodKey: string) => methodKey,
+	const document: OpenAPIObject = SwaggerModule.createDocument(app, documentBuilderConfig, {
+		operationIdFactory: (_: string, methodKey: string): string => methodKey,
 	});
 	SwaggerModule.setup('api', app, document, {
 		jsonDocumentUrl: 'swagger/json',

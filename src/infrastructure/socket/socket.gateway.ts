@@ -22,7 +22,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 	@WebSocketServer()
 	private readonly server: Server;
 
-	private readonly connectedUsers = new Map<string, string>();
+	private readonly connectedUsers: Map<string, string> = new Map<string, string>();
 
 	constructor(private readonly jwtService: JwtService) {}
 
@@ -30,7 +30,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 		this.logger.log('Socket server initialized');
 	}
 
-	handleConnection(client: Socket) {
+	handleConnection(client: Socket): void {
 		const authTokenPayload: AuthTokenPayload | null = this.getPayloadFromAuthHeader(
 			client.handshake.headers.authorization,
 		);
@@ -42,7 +42,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 		this.logger.log(`Client connected: ${client.id} (user: ${authTokenPayload.user_id})`);
 	}
 
-	handleDisconnect(@ConnectedSocket() client: Socket) {
+	handleDisconnect(@ConnectedSocket() client: Socket): void {
 		const authTokenPayload: AuthTokenPayload | null = this.getPayloadFromAuthHeader(
 			client.handshake.headers.authorization,
 		);
@@ -62,7 +62,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 		await socket.leave(this.getConversationRoom(conversationId));
 	}
 
-	emitNewMessage(message: Message) {
+	emitNewMessage(message: Message): void {
 		this.server.to(this.getConversationRoom(message.conversation_id)).emit('newMessage', message);
 	}
 

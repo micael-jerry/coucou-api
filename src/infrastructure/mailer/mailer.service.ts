@@ -16,7 +16,7 @@ export class MailerService {
 	}
 
 	private async sendEmail({ to, subject, html }: SendEmailObject): Promise<void> {
-		// INFO: Not send email on test environement
+		// INFO: Not send email on test environment
 		if (process.env.NODE_ENV === 'test') {
 			return Promise.resolve();
 		}
@@ -36,7 +36,7 @@ export class MailerService {
 		this.logger.log({ data });
 	}
 
-	async sendWelcomeEmail(createdUser: User) {
+	async sendWelcomeEmail(createdUser: User): Promise<void> {
 		await this.sendEmail({
 			to: [createdUser.email],
 			subject: 'Welcome to Coucou App',
@@ -44,7 +44,7 @@ export class MailerService {
 		});
 	}
 
-	async sendVerificationEmailRequest(createdUser: User, verifyEmailToken: string) {
+	async sendVerificationEmailRequest(createdUser: User, verifyEmailToken: string): Promise<void> {
 		await this.sendEmail({
 			to: [createdUser.email],
 			subject: 'Verify your email address for Coucou App',
@@ -52,7 +52,7 @@ export class MailerService {
 		});
 	}
 
-	async sendResetPasswordEmailRequest(user: User, authTokenToSend: string) {
+	async sendResetPasswordEmailRequest(user: User, authTokenToSend: string): Promise<void> {
 		await this.sendEmail({
 			to: [user.email],
 			subject: 'Reset your password for Coucou App',

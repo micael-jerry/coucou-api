@@ -25,7 +25,7 @@ export class RolesGuard implements CanActivate {
 		return this.reflector.get<UserRole[]>(Roles, context.getHandler());
 	}
 
-	private hasPermission(payload: AuthTokenPayload, requiredRoles: UserRole[] | undefined) {
+	private hasPermission(payload: AuthTokenPayload, requiredRoles: UserRole[] | undefined): boolean {
 		if (!requiredRoles) return true;
 		return requiredRoles.includes(payload.user_role);
 	}
