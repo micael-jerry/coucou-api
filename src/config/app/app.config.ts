@@ -1,10 +1,5 @@
 import { registerAs } from '@nestjs/config';
-
-export enum NodeEnv {
-	DEVELOPMENT = 'dev',
-	PRODUCTION = 'prod',
-	TEST = 'test',
-}
+import { NodeEnv } from './app.type';
 
 export default registerAs('app', () => ({
 	env: process.env.NODE_ENV as NodeEnv,

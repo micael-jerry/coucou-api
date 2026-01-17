@@ -1,12 +1,12 @@
 import { BadGatewayException, Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { User } from '@prisma/client';
 import { Resend } from 'resend';
 import { SendEmailObject } from './entity/send-mail-object.entity';
+import { ResetPassword } from './template/reset-password';
 import { VerifyEmail } from './template/verify-email';
 import { WelcomeEmail } from './template/welcome';
-import { ResetPassword } from './template/reset-password';
-import { ConfigService } from '@nestjs/config';
-import { NodeEnv } from '../../config/app.config';
+import { NodeEnv } from 'src/config/app';
 
 @Injectable()
 export class MailerService {
