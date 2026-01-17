@@ -6,13 +6,27 @@ import { MessageModule } from './modules/message/message.module';
 import { PrismaModule } from './infrastructure/prisma/prisma.module';
 import { UserModule } from './modules/user/user.module';
 import { JwtModule } from '@nestjs/jwt';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import appConfig from './config/app.config';
 
 @Module({
 	imports: [
-		JwtModule.register({
+		ConfigModule.forRoot({
+			envFilePath: '.env',
+			load: [appConfig],
+			isGlobal: true,
+			cache: true,
+		}),
+		JwtModule.registerAsync({
 			global: true,
-			secret: process.env.JWT_SECRET_KEY,
-			signOptions: { expiresIn: '30d' },
+			imports: [ConfigModule],
+			inject: [ConfigService],
+			useFactory: (configService: ConfigService) => ({
+				secret: configService.get<string>('app.jwt.secretKey'),
+				signOptions: {
+					expiresIn: configService.get<string>('app.jwt.expiresIn'),
+				},
+			}),
 		}),
 		PrismaModule,
 		UserModule,

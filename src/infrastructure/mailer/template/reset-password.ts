@@ -1,8 +1,9 @@
 import { User } from '@prisma/client';
 
 export class ResetPassword {
-	static getTemplate(user: User, resetToken: string) {
-		const resetLink = `${process.env.FRONT_END_BASE_URL}/auth/reset-password?token=${resetToken}`;
+	static getTemplate(user: User, resetToken: string, frontendBaseUrl: string) {
+		const logoUrl = `${frontendBaseUrl}/logo.png`;
+		const resetLink = `${frontendBaseUrl}/auth/reset-password?token=${resetToken}`;
 
 		return `
 			<!DOCTYPE html>
@@ -69,7 +70,7 @@ export class ResetPassword {
 			<body>
 				<div class="container">
 					<div class="header">
-						<img src="${process.env.FRONT_END_BASE_URL}/logo.png" alt="Coucou App Logo">
+						<img src="${logoUrl}" alt="Coucou App Logo">
 					</div>
 					<div class="content">
 						<h1>Hello, ${user.firstname}!</h1>

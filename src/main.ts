@@ -4,6 +4,7 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
 import { PrismaExceptionFilter } from './common/filters/prisma-exception.filter';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { ConfigService } from '@nestjs/config';
 
 function documentBuilderConfig(app: INestApplication): void {
 	const documentBuilderConfig = new DocumentBuilder()
@@ -21,9 +22,10 @@ function documentBuilderConfig(app: INestApplication): void {
 }
 
 async function run() {
-	const port = process.env.PORT ?? 8080;
-
 	const app = await NestFactory.create(AppModule);
+	const configService = app.get(ConfigService);
+	const port = configService.getOrThrow<number>('app.port');
+
 	app.enableCors({
 		origin: '*',
 	});
