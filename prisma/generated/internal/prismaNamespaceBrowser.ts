@@ -93,6 +93,7 @@ export const ConversationScalarFieldEnum = {
   id: 'id',
   created_at: 'created_at',
   updated_at: 'updated_at',
+  name: 'name',
   type: 'type'
 } as const
 
@@ -112,6 +113,7 @@ export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeo
 
 export const ConversationMemberScalarFieldEnum = {
   joined_at: 'joined_at',
+  role: 'role',
   conversation_id: 'conversation_id',
   user_id: 'user_id'
 } as const
@@ -133,4 +135,12 @@ export const QueryMode = {
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 

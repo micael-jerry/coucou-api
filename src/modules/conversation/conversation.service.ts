@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { ConversationType } from '../../../prisma/generated/client';
+import { ConversationMemberRole, ConversationType } from '../../../prisma/generated/client';
 import { AuthTokenPayload } from '../../common/payloads/auth-token.payload';
 import { PrismaService } from '../../infrastructure/prisma/prisma.service';
 import { ConversationInput } from './dto/conversation-input.dto';
@@ -9,24 +9,43 @@ import { ConversationEntity } from './entity/conversation.entity';
 export class ConversationService {
 	constructor(private readonly prismaService: PrismaService) {}
 
-	async createConversation(conversationInput: ConversationInput): Promise<ConversationEntity> {
+	async createConversation(
+		authTokenPayload: AuthTokenPayload,
+		conversationInput: ConversationInput,
+	): Promise<ConversationEntity> {
 		const conversationAlreadyExist: boolean = await this.privateConversationAlreadyExist(conversationInput);
 
 		if (conversationAlreadyExist) {
 			throw new BadRequestException('Conversation already exist');
 		}
 
-		const conversation = await this.prismaService.conversation.create({
-			data: {
-				type: conversationInput.type,
-				members: {
-					createMany: { data: conversationInput.membersId.map((memberId) => ({ user_id: memberId })) },
+		return await this.prismaService.$transaction(async (prisma) => {
+			const conversation = await prisma.conversation.create({
+				data: {
+					type: conversationInput.type,
+					name: conversationInput.name,
+					members: {
+						createMany: { data: conversationInput.membersId.map((memberId) => ({ user_id: memberId })) },
+					},
 				},
-			},
-			include: { members: { include: { user: true } }, messages: { orderBy: { created_at: 'desc' } } },
+				include: { members: { include: { user: true } }, messages: { orderBy: { created_at: 'desc' } } },
+			});
+			await prisma.conversationMember.updateMany({
+				where: {
+					conversation_id: conversation.id,
+					user_id: {
+						in:
+							conversationInput.type === ConversationType.PRIVATE
+								? conversationInput.membersId
+								: [authTokenPayload.user_id],
+					},
+				},
+				data: {
+					role: ConversationMemberRole.ADMIN,
+				},
+			});
+			return conversation;
 		});
-
-		return conversation;
 	}
 
 	async getConversationById(authTokenPayload: AuthTokenPayload, conversationId: string): Promise<ConversationEntity> {

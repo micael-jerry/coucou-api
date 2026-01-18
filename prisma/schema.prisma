@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client"
-  output = "./generated"
+  output   = "./generated"
 }
 
 datasource db {
@@ -36,6 +36,7 @@ model Conversation {
   id         String               @id @default(uuid())
   created_at DateTime             @default(now())
   updated_at DateTime             @default(now()) @updatedAt
+  name       String?
   type       ConversationType
   messages   Message[]
   members    ConversationMember[]
@@ -51,12 +52,18 @@ model Message {
   conversation    Conversation @relation(fields: [conversation_id], references: [id])
 }
 
+enum ConversationMemberRole {
+  ADMIN
+  MEMBER
+}
+
 model ConversationMember {
-  joined_at       DateTime     @default(now())
+  joined_at       DateTime               @default(now())
+  role            ConversationMemberRole @default(MEMBER)
   conversation_id String
-  conversation    Conversation @relation(fields: [conversation_id], references: [id])
+  conversation    Conversation           @relation(fields: [conversation_id], references: [id])
   user_id         String
-  user            User         @relation(fields: [user_id], references: [id])
+  user            User                   @relation(fields: [user_id], references: [id])
 
   @@id([conversation_id, user_id])
 }

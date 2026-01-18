@@ -762,6 +762,7 @@ export const ConversationScalarFieldEnum = {
   id: 'id',
   created_at: 'created_at',
   updated_at: 'updated_at',
+  name: 'name',
   type: 'type'
 } as const
 
@@ -781,6 +782,7 @@ export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeo
 
 export const ConversationMemberScalarFieldEnum = {
   joined_at: 'joined_at',
+  role: 'role',
   conversation_id: 'conversation_id',
   user_id: 'user_id'
 } as const
@@ -802,6 +804,14 @@ export const QueryMode = {
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
 
@@ -870,6 +880,20 @@ export type EnumConversationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
  * Reference to a field of type 'ConversationType[]'
  */
 export type ListEnumConversationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ConversationType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ConversationMemberRole'
+ */
+export type EnumConversationMemberRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ConversationMemberRole'>
+    
+
+
+/**
+ * Reference to a field of type 'ConversationMemberRole[]'
+ */
+export type ListEnumConversationMemberRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ConversationMemberRole[]'>
     
 
 

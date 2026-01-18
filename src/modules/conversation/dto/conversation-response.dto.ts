@@ -13,6 +13,9 @@ export class ConversationResponse {
 	@ApiProperty({ type: 'string', format: 'date-time', description: 'User updated datetime' })
 	updatedAt: Date;
 
+	@ApiProperty({ description: 'Conversation name' })
+	name?: string;
+
 	@ApiProperty({ enum: ConversationType })
 	type: ConversationType;
 

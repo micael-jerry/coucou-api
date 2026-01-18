@@ -26,8 +26,11 @@ export class ConversationController {
 	@Post('/')
 	@Roles([UserRole.ADMIN, UserRole.USER])
 	@UseGuards(AuthGuard, RolesGuard)
-	async postConversation(@Body() conversationInput: ConversationInput): Promise<ConversationResponse> {
-		return ConversationMapper.toDto(await this.conversationService.createConversation(conversationInput));
+	async postConversation(
+		@Req() req: Request,
+		@Body() conversationInput: ConversationInput,
+	): Promise<ConversationResponse> {
+		return ConversationMapper.toDto(await this.conversationService.createConversation(req.user!, conversationInput));
 	}
 
 	@ApiOperation({

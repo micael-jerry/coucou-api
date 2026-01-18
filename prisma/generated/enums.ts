@@ -23,3 +23,11 @@ export const ConversationType = {
 } as const
 
 export type ConversationType = (typeof ConversationType)[keyof typeof ConversationType]
+
+
+export const ConversationMemberRole = {
+  ADMIN: 'ADMIN',
+  MEMBER: 'MEMBER'
+} as const
+
+export type ConversationMemberRole = (typeof ConversationMemberRole)[keyof typeof ConversationMemberRole]
