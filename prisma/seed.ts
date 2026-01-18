@@ -26,6 +26,15 @@ async function main() {
 				lastname: 'User2',
 				is_verified: true,
 			},
+			{
+				id: '9a8b7c6d-5e4f-3a2b-1c0d-9e8f7a6b5c4d',
+				username: 'testuser3',
+				email: 'test3@example.com',
+				password: '$2a$12$nJXXmOUWNQnR3qNU5FEWTOVxsFK9cS7upV.IVfVUeCOK0xLmR5Rqm', // test3@example.com
+				firstname: 'Test',
+				lastname: 'User3',
+				is_verified: true,
+			},
 		],
 	});
 

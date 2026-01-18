@@ -37,7 +37,7 @@ describe('ConversationController (e2e)', () => {
 			.set('Authorization', `Bearer ${authToken}`)
 			.send({
 				type: ConversationType.PRIVATE,
-				membersId: ['c46ffdce-8ee7-470e-8b22-4e83c84481d2', '3e9bc404-7958-4bd4-942e-54ea2dbe6592'],
+				membersId: ['c46ffdce-8ee7-470e-8b22-4e83c84481d2', '9a8b7c6d-5e4f-3a2b-1c0d-9e8f7a6b5c4d'],
 			})
 			.expect(HttpStatus.CREATED)
 			.then((res: { body: ConversationResponse }) => {

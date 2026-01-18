@@ -18,7 +18,8 @@
 		"test:watch": "jest --watch",
 		"test:cov": "jest --coverage",
 		"test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-		"test:e2e": "prisma migrate reset --force && prisma db seed && jest --config ./test/jest-e2e.json --runInBand",
+		"reset:test:db": "prisma migrate reset --force && prisma db seed",
+		"test:e2e": "pnpm run reset:test:db && jest --config ./test/jest-e2e.json --runInBand",
 		"prepare": "husky"
 	},
 	"dependencies": {
