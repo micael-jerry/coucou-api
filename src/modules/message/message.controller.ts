@@ -1,15 +1,15 @@
 import { Body, Controller, Get, HttpStatus, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
-import { MessageService } from './message.service';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { Request } from 'express';
+import { UserRole } from '../../../prisma/generated/client';
+import { ApiCommonExceptionsDecorator } from '../../common/decorators/api-common-exceptions.decorator';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { AuthGuard } from '../../common/guards/auth.guard';
+import { RolesGuard } from '../../common/guards/roles.guard';
 import { MessageInput } from './dto/message-input.dto';
 import { MessageResponse } from './dto/message-response.dto';
 import { MessageMapper } from './mapper/message.mapper';
-import { ApiOperation, ApiBearerAuth, ApiBody, ApiResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
-import { AuthGuard } from '../../common/guards/auth.guard';
-import { ApiCommonExceptionsDecorator } from '../../common/decorators/api-common-exceptions.decorator';
-import { Request } from 'express';
-import { UserRole } from '@prisma/client';
-import { Roles } from '../../common/decorators/roles.decorator';
-import { RolesGuard } from '../../common/guards/roles.guard';
+import { MessageService } from './message.service';
 
 @Controller('/messages')
 export class MessageController {

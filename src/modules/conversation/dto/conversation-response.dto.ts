@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ConversationType } from '@prisma/client';
+import { ConversationType } from '../../../../prisma/generated/client';
 import { MessageResponse } from '../../message/dto/message-response.dto';
 import { UserResponse } from '../../user/dto/user-response.dto';
 

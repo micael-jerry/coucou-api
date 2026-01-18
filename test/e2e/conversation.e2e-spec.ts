@@ -1,11 +1,11 @@
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { ConversationType } from '@prisma/client';
 import * as request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from '../../src/app.module';
 import { LoginResponse } from '../../src/modules/auth/dto/login-response.dto';
 import { ConversationResponse } from '../../src/modules/conversation/dto/conversation-response.dto';
+import { ConversationType } from '../../prisma/generated/enums';
 
 describe('ConversationController (e2e)', () => {
 	let app: INestApplication<App>;

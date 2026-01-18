@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ArrayMaxSize, ArrayMinSize, IsEnum, IsUUID, ValidateIf } from 'class-validator';
-import { ConversationType } from '@prisma/client';
+import { ConversationType } from '../../../../prisma/generated/client';
 
 export class ConversationInput {
 	@ApiProperty({ enum: ConversationType })

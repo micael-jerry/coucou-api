@@ -1,22 +1,22 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { Request } from 'express';
+import { UserRole } from '../../../prisma/generated/client';
 import { ApiCommonExceptionsDecorator } from '../../common/decorators/api-common-exceptions.decorator';
+import { Roles } from '../../common/decorators/roles.decorator';
 import { HttpExceptionResponseDto } from '../../common/dtos/http-exception-response.dto';
+import { AuthGuard } from '../../common/guards/auth.guard';
+import { RolesGuard } from '../../common/guards/roles.guard';
 import { UserResponse } from '../user/dto/user-response.dto';
 import { UserMapper } from '../user/mapper/user.mapper';
 import { AuthService } from './auth.service';
 import { LoginResponse } from './dto/login-response.dto';
 import { LoginDto } from './dto/login.dto';
-import { SignUpDto } from './dto/sign-up.dto';
-import { AuthGuard } from '../../common/guards/auth.guard';
 import { ResetPasswordRequestResponse } from './dto/reset-password-request-response.dto';
 import { ResetPasswordRequestDto } from './dto/reset-password-request.dto';
-import { VerifyEmailResponse } from './dto/verify-email-response.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
-import { UserRole } from '@prisma/client';
-import { RolesGuard } from '../../common/guards/roles.guard';
-import { Roles } from '../../common/decorators/roles.decorator';
+import { SignUpDto } from './dto/sign-up.dto';
+import { VerifyEmailResponse } from './dto/verify-email-response.dto';
 
 @Controller({ path: '/auth' })
 export class AuthController {

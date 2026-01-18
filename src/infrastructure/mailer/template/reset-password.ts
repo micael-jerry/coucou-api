@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import { User } from '../../../../prisma/generated/client';
 
 export class ResetPassword {
 	static getTemplate(user: User, resetToken: string, frontendBaseUrl: string) {

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { Message } from '@prisma/client';
+import { Message } from '../../../prisma/generated/client';
 import { AuthTokenPayload } from '../../common/payloads/auth-token.payload';
-import { ConversationService } from '../conversation/conversation.service';
 import { PrismaService } from '../../infrastructure/prisma/prisma.service';
+import { ConversationService } from '../conversation/conversation.service';
 import { MessageInput } from './dto/message-input.dto';
 
 @Injectable()

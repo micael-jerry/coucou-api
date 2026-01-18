@@ -1,15 +1,15 @@
 import { Body, Controller, Get, HttpStatus, Param, Post, Req, UseGuards } from '@nestjs/common';
-import { ConversationService } from './conversation.service';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { Request } from 'express';
+import { UserRole } from '../../../prisma/generated/client';
+import { ApiCommonExceptionsDecorator } from '../../common/decorators/api-common-exceptions.decorator';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { AuthGuard } from '../../common/guards/auth.guard';
+import { RolesGuard } from '../../common/guards/roles.guard';
+import { ConversationService } from './conversation.service';
 import { ConversationInput } from './dto/conversation-input.dto';
 import { ConversationResponse } from './dto/conversation-response.dto';
-import { ApiCommonExceptionsDecorator } from '../../common/decorators/api-common-exceptions.decorator';
 import { ConversationMapper } from './mapper/conversation.mapper';
-import { AuthGuard } from '../../common/guards/auth.guard';
-import { Request } from 'express';
-import { UserRole } from '@prisma/client';
-import { Roles } from '../../common/decorators/roles.decorator';
-import { RolesGuard } from '../../common/guards/roles.guard';
 
 @Controller('/conversations')
 export class ConversationController {

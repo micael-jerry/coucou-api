@@ -1,4 +1,4 @@
-import { UserRole } from '@prisma/client';
+import { UserRole } from '../../../prisma/generated/client';
 
 export class AuthTokenPayload {
 	user_id: string;

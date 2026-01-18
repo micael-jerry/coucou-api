@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import { User } from '../../../../prisma/generated/client';
 
 export class VerifyEmail {
 	static getTemplate(createdUser: User, emailVerificationToken: string, frontEndBaseUrl: string) {

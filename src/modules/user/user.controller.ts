@@ -1,15 +1,15 @@
 import { Body, Controller, Get, HttpStatus, Param, Put, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { Request } from 'express';
-import { AuthGuard } from '../../common/guards/auth.guard';
+import { UserRole } from '../../../prisma/generated/client';
 import { ApiCommonExceptionsDecorator } from '../../common/decorators/api-common-exceptions.decorator';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { AuthGuard } from '../../common/guards/auth.guard';
+import { RolesGuard } from '../../common/guards/roles.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserResponse } from './dto/user-response.dto';
 import { UserMapper } from './mapper/user.mapper';
 import { UserService } from './user.service';
-import { RolesGuard } from '../../common/guards/roles.guard';
-import { Roles } from '../../common/decorators/roles.decorator';
-import { UserRole } from '@prisma/client';
 
 @Controller({ path: '/users' })
 export class UserController {
