@@ -16,8 +16,10 @@ jobs:
 
     env:
       NODE_ENV: ${{ vars.NODE_ENV }}
+      PORT: ${{ secrets.PORT }}
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+      JWT_EXPIRES_IN: ${{ secrets.JWT_EXPIRES_IN }}
       RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
       FRONT_END_BASE_URL: ${{ vars.FRONT_END_BASE_URL }}
 
