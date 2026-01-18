@@ -1,4 +1,5 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConversationType } from '@prisma/client';
 import { AuthTokenPayload } from '../../common/payloads/auth-token.payload';
 import { PrismaService } from '../../infrastructure/prisma/prisma.service';
 import { ConversationInput } from './dto/conversation-input.dto';
@@ -9,6 +10,12 @@ export class ConversationService {
 	constructor(private readonly prismaService: PrismaService) {}
 
 	async createConversation(conversationInput: ConversationInput): Promise<ConversationEntity> {
+		const conversationAlreadyExist: boolean = await this.privateConversationAlreadyExist(conversationInput);
+
+		if (conversationAlreadyExist) {
+			throw new BadRequestException('Conversation already exist');
+		}
+
 		const conversation = await this.prismaService.conversation.create({
 			data: {
 				type: conversationInput.type,
@@ -40,5 +47,31 @@ export class ConversationService {
 			orderBy: { updated_at: 'desc' },
 			include: { members: { include: { user: true } }, messages: { orderBy: { created_at: 'desc' } } },
 		});
+	}
+
+	private async privateConversationAlreadyExist(conversationInput: ConversationInput): Promise<boolean> {
+		if (conversationInput.type === ConversationType.PRIVATE) {
+			const conversation = await this.prismaService.conversation.findFirst({
+				where: {
+					type: ConversationType.PRIVATE,
+					AND: [
+						...conversationInput.membersId.map((memberId) => ({
+							members: { some: { user_id: memberId } },
+						})),
+						{
+							members: {
+								every: {
+									user_id: {
+										in: conversationInput.membersId,
+									},
+								},
+							},
+						},
+					],
+				},
+			});
+			return !!conversation;
+		}
+		return false;
 	}
 }
