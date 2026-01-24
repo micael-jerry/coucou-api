@@ -33,7 +33,7 @@
 		"@nestjs/swagger": "^11.1.0",
 		"@nestjs/websockets": "^11.1.6",
 		"@prisma/adapter-pg": "^7.2.0",
-		"@prisma/client": "^7.2.0",
+		"@prisma/client": "^7.3.0",
 		"bcrypt": "^5.1.1",
 		"class-transformer": "^0.5.1",
 		"class-validator": "^0.14.1",
@@ -93,5 +93,5 @@
 		"coverageDirectory": "../coverage",
 		"testEnvironment": "node"
 	},
-	"packageManager": "pnpm@10.18.1+sha512.77a884a165cbba2d8d1c19e3b4880eee6d2fcabd0d879121e282196b80042351d5eb3ca0935fa599da1dc51265cc68816ad2bddd2a2de5ea9fdf92adbec7cd34"
+	"packageManager": "pnpm@10.28.1+sha512.7d7dbbca9e99447b7c3bf7a73286afaaf6be99251eb9498baefa7d406892f67b879adb3a1d7e687fc4ccc1a388c7175fbaae567a26ab44d1067b54fcb0d6a316"
 }

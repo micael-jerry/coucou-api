@@ -37,3 +37,8 @@ export type Message = Prisma.MessageModel
  * 
  */
 export type ConversationMember = Prisma.ConversationMemberModel
+/**
+ * Model FriendRequest
+ * 
+ */
+export type FriendRequest = Prisma.FriendRequestModel

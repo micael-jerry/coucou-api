@@ -224,6 +224,8 @@ export type UserWhereInput = {
   role?: Prisma.EnumUserRoleFilter<"User"> | $Enums.UserRole
   messages?: Prisma.MessageListRelationFilter
   conversations?: Prisma.ConversationMemberListRelationFilter
+  sent_friend_requests?: Prisma.FriendRequestListRelationFilter
+  received_friend_requests?: Prisma.FriendRequestListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -239,6 +241,8 @@ export type UserOrderByWithRelationInput = {
   role?: Prisma.SortOrder
   messages?: Prisma.MessageOrderByRelationAggregateInput
   conversations?: Prisma.ConversationMemberOrderByRelationAggregateInput
+  sent_friend_requests?: Prisma.FriendRequestOrderByRelationAggregateInput
+  received_friend_requests?: Prisma.FriendRequestOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -257,6 +261,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   role?: Prisma.EnumUserRoleFilter<"User"> | $Enums.UserRole
   messages?: Prisma.MessageListRelationFilter
   conversations?: Prisma.ConversationMemberListRelationFilter
+  sent_friend_requests?: Prisma.FriendRequestListRelationFilter
+  received_friend_requests?: Prisma.FriendRequestListRelationFilter
 }, "id" | "username" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -304,6 +310,8 @@ export type UserCreateInput = {
   role?: $Enums.UserRole
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
   conversations?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
+  sent_friend_requests?: Prisma.FriendRequestCreateNestedManyWithoutUserInput
+  received_friend_requests?: Prisma.FriendRequestCreateNestedManyWithoutUser__targetInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -319,6 +327,8 @@ export type UserUncheckedCreateInput = {
   role?: $Enums.UserRole
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
   conversations?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
+  sent_friend_requests?: Prisma.FriendRequestUncheckedCreateNestedManyWithoutUserInput
+  received_friend_requests?: Prisma.FriendRequestUncheckedCreateNestedManyWithoutUser__targetInput
 }
 
 export type UserUpdateInput = {
@@ -334,6 +344,8 @@ export type UserUpdateInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
   conversations?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
+  sent_friend_requests?: Prisma.FriendRequestUpdateManyWithoutUserNestedInput
+  received_friend_requests?: Prisma.FriendRequestUpdateManyWithoutUser__targetNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -349,6 +361,8 @@ export type UserUncheckedUpdateInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
   conversations?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
+  sent_friend_requests?: Prisma.FriendRequestUncheckedUpdateManyWithoutUserNestedInput
+  received_friend_requests?: Prisma.FriendRequestUncheckedUpdateManyWithoutUser__targetNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -478,6 +492,34 @@ export type UserUpdateOneRequiredWithoutConversationsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutConversationsInput, Prisma.UserUpdateWithoutConversationsInput>, Prisma.UserUncheckedUpdateWithoutConversationsInput>
 }
 
+export type UserCreateNestedOneWithoutSent_friend_requestsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSent_friend_requestsInput, Prisma.UserUncheckedCreateWithoutSent_friend_requestsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSent_friend_requestsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutReceived_friend_requestsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReceived_friend_requestsInput, Prisma.UserUncheckedCreateWithoutReceived_friend_requestsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReceived_friend_requestsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutSent_friend_requestsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSent_friend_requestsInput, Prisma.UserUncheckedCreateWithoutSent_friend_requestsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSent_friend_requestsInput
+  upsert?: Prisma.UserUpsertWithoutSent_friend_requestsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSent_friend_requestsInput, Prisma.UserUpdateWithoutSent_friend_requestsInput>, Prisma.UserUncheckedUpdateWithoutSent_friend_requestsInput>
+}
+
+export type UserUpdateOneRequiredWithoutReceived_friend_requestsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReceived_friend_requestsInput, Prisma.UserUncheckedCreateWithoutReceived_friend_requestsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReceived_friend_requestsInput
+  upsert?: Prisma.UserUpsertWithoutReceived_friend_requestsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReceived_friend_requestsInput, Prisma.UserUpdateWithoutReceived_friend_requestsInput>, Prisma.UserUncheckedUpdateWithoutReceived_friend_requestsInput>
+}
+
 export type UserCreateWithoutMessagesInput = {
   id?: string
   username: string
@@ -490,6 +532,8 @@ export type UserCreateWithoutMessagesInput = {
   updated_at?: Date | string
   role?: $Enums.UserRole
   conversations?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
+  sent_friend_requests?: Prisma.FriendRequestCreateNestedManyWithoutUserInput
+  received_friend_requests?: Prisma.FriendRequestCreateNestedManyWithoutUser__targetInput
 }
 
 export type UserUncheckedCreateWithoutMessagesInput = {
@@ -504,6 +548,8 @@ export type UserUncheckedCreateWithoutMessagesInput = {
   updated_at?: Date | string
   role?: $Enums.UserRole
   conversations?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
+  sent_friend_requests?: Prisma.FriendRequestUncheckedCreateNestedManyWithoutUserInput
+  received_friend_requests?: Prisma.FriendRequestUncheckedCreateNestedManyWithoutUser__targetInput
 }
 
 export type UserCreateOrConnectWithoutMessagesInput = {
@@ -534,6 +580,8 @@ export type UserUpdateWithoutMessagesInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   conversations?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
+  sent_friend_requests?: Prisma.FriendRequestUpdateManyWithoutUserNestedInput
+  received_friend_requests?: Prisma.FriendRequestUpdateManyWithoutUser__targetNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMessagesInput = {
@@ -548,6 +596,8 @@ export type UserUncheckedUpdateWithoutMessagesInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   conversations?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
+  sent_friend_requests?: Prisma.FriendRequestUncheckedUpdateManyWithoutUserNestedInput
+  received_friend_requests?: Prisma.FriendRequestUncheckedUpdateManyWithoutUser__targetNestedInput
 }
 
 export type UserCreateWithoutConversationsInput = {
@@ -562,6 +612,8 @@ export type UserCreateWithoutConversationsInput = {
   updated_at?: Date | string
   role?: $Enums.UserRole
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  sent_friend_requests?: Prisma.FriendRequestCreateNestedManyWithoutUserInput
+  received_friend_requests?: Prisma.FriendRequestCreateNestedManyWithoutUser__targetInput
 }
 
 export type UserUncheckedCreateWithoutConversationsInput = {
@@ -576,6 +628,8 @@ export type UserUncheckedCreateWithoutConversationsInput = {
   updated_at?: Date | string
   role?: $Enums.UserRole
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  sent_friend_requests?: Prisma.FriendRequestUncheckedCreateNestedManyWithoutUserInput
+  received_friend_requests?: Prisma.FriendRequestUncheckedCreateNestedManyWithoutUser__targetInput
 }
 
 export type UserCreateOrConnectWithoutConversationsInput = {
@@ -606,6 +660,8 @@ export type UserUpdateWithoutConversationsInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  sent_friend_requests?: Prisma.FriendRequestUpdateManyWithoutUserNestedInput
+  received_friend_requests?: Prisma.FriendRequestUpdateManyWithoutUser__targetNestedInput
 }
 
 export type UserUncheckedUpdateWithoutConversationsInput = {
@@ -620,6 +676,168 @@ export type UserUncheckedUpdateWithoutConversationsInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  sent_friend_requests?: Prisma.FriendRequestUncheckedUpdateManyWithoutUserNestedInput
+  received_friend_requests?: Prisma.FriendRequestUncheckedUpdateManyWithoutUser__targetNestedInput
+}
+
+export type UserCreateWithoutSent_friend_requestsInput = {
+  id?: string
+  username: string
+  password: string
+  email: string
+  is_verified?: boolean
+  firstname: string
+  lastname: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  role?: $Enums.UserRole
+  messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  conversations?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
+  received_friend_requests?: Prisma.FriendRequestCreateNestedManyWithoutUser__targetInput
+}
+
+export type UserUncheckedCreateWithoutSent_friend_requestsInput = {
+  id?: string
+  username: string
+  password: string
+  email: string
+  is_verified?: boolean
+  firstname: string
+  lastname: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  role?: $Enums.UserRole
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  conversations?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
+  received_friend_requests?: Prisma.FriendRequestUncheckedCreateNestedManyWithoutUser__targetInput
+}
+
+export type UserCreateOrConnectWithoutSent_friend_requestsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutSent_friend_requestsInput, Prisma.UserUncheckedCreateWithoutSent_friend_requestsInput>
+}
+
+export type UserCreateWithoutReceived_friend_requestsInput = {
+  id?: string
+  username: string
+  password: string
+  email: string
+  is_verified?: boolean
+  firstname: string
+  lastname: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  role?: $Enums.UserRole
+  messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  conversations?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
+  sent_friend_requests?: Prisma.FriendRequestCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutReceived_friend_requestsInput = {
+  id?: string
+  username: string
+  password: string
+  email: string
+  is_verified?: boolean
+  firstname: string
+  lastname: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  role?: $Enums.UserRole
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  conversations?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
+  sent_friend_requests?: Prisma.FriendRequestUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutReceived_friend_requestsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutReceived_friend_requestsInput, Prisma.UserUncheckedCreateWithoutReceived_friend_requestsInput>
+}
+
+export type UserUpsertWithoutSent_friend_requestsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutSent_friend_requestsInput, Prisma.UserUncheckedUpdateWithoutSent_friend_requestsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSent_friend_requestsInput, Prisma.UserUncheckedCreateWithoutSent_friend_requestsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutSent_friend_requestsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutSent_friend_requestsInput, Prisma.UserUncheckedUpdateWithoutSent_friend_requestsInput>
+}
+
+export type UserUpdateWithoutSent_friend_requestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  firstname?: Prisma.StringFieldUpdateOperationsInput | string
+  lastname?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  conversations?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
+  received_friend_requests?: Prisma.FriendRequestUpdateManyWithoutUser__targetNestedInput
+}
+
+export type UserUncheckedUpdateWithoutSent_friend_requestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  firstname?: Prisma.StringFieldUpdateOperationsInput | string
+  lastname?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  conversations?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
+  received_friend_requests?: Prisma.FriendRequestUncheckedUpdateManyWithoutUser__targetNestedInput
+}
+
+export type UserUpsertWithoutReceived_friend_requestsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutReceived_friend_requestsInput, Prisma.UserUncheckedUpdateWithoutReceived_friend_requestsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutReceived_friend_requestsInput, Prisma.UserUncheckedCreateWithoutReceived_friend_requestsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutReceived_friend_requestsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutReceived_friend_requestsInput, Prisma.UserUncheckedUpdateWithoutReceived_friend_requestsInput>
+}
+
+export type UserUpdateWithoutReceived_friend_requestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  firstname?: Prisma.StringFieldUpdateOperationsInput | string
+  lastname?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  conversations?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
+  sent_friend_requests?: Prisma.FriendRequestUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutReceived_friend_requestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  firstname?: Prisma.StringFieldUpdateOperationsInput | string
+  lastname?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  conversations?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
+  sent_friend_requests?: Prisma.FriendRequestUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -630,11 +848,15 @@ export type UserUncheckedUpdateWithoutConversationsInput = {
 export type UserCountOutputType = {
   messages: number
   conversations: number
+  sent_friend_requests: number
+  received_friend_requests: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   messages?: boolean | UserCountOutputTypeCountMessagesArgs
   conversations?: boolean | UserCountOutputTypeCountConversationsArgs
+  sent_friend_requests?: boolean | UserCountOutputTypeCountSent_friend_requestsArgs
+  received_friend_requests?: boolean | UserCountOutputTypeCountReceived_friend_requestsArgs
 }
 
 /**
@@ -661,6 +883,20 @@ export type UserCountOutputTypeCountConversationsArgs<ExtArgs extends runtime.Ty
   where?: Prisma.ConversationMemberWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountSent_friend_requestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FriendRequestWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountReceived_friend_requestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FriendRequestWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -675,6 +911,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   role?: boolean
   messages?: boolean | Prisma.User$messagesArgs<ExtArgs>
   conversations?: boolean | Prisma.User$conversationsArgs<ExtArgs>
+  sent_friend_requests?: boolean | Prisma.User$sent_friend_requestsArgs<ExtArgs>
+  received_friend_requests?: boolean | Prisma.User$received_friend_requestsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -721,6 +959,8 @@ export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = run
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   messages?: boolean | Prisma.User$messagesArgs<ExtArgs>
   conversations?: boolean | Prisma.User$conversationsArgs<ExtArgs>
+  sent_friend_requests?: boolean | Prisma.User$sent_friend_requestsArgs<ExtArgs>
+  received_friend_requests?: boolean | Prisma.User$received_friend_requestsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -731,6 +971,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     messages: Prisma.$MessagePayload<ExtArgs>[]
     conversations: Prisma.$ConversationMemberPayload<ExtArgs>[]
+    sent_friend_requests: Prisma.$FriendRequestPayload<ExtArgs>[]
+    received_friend_requests: Prisma.$FriendRequestPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1139,6 +1381,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   messages<T extends Prisma.User$messagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   conversations<T extends Prisma.User$conversationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConversationMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  sent_friend_requests<T extends Prisma.User$sent_friend_requestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sent_friend_requestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FriendRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  received_friend_requests<T extends Prisma.User$received_friend_requestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$received_friend_requestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FriendRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1611,6 +1855,54 @@ export type User$conversationsArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.ConversationMemberScalarFieldEnum | Prisma.ConversationMemberScalarFieldEnum[]
+}
+
+/**
+ * User.sent_friend_requests
+ */
+export type User$sent_friend_requestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the FriendRequest
+   */
+  select?: Prisma.FriendRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the FriendRequest
+   */
+  omit?: Prisma.FriendRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FriendRequestInclude<ExtArgs> | null
+  where?: Prisma.FriendRequestWhereInput
+  orderBy?: Prisma.FriendRequestOrderByWithRelationInput | Prisma.FriendRequestOrderByWithRelationInput[]
+  cursor?: Prisma.FriendRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.FriendRequestScalarFieldEnum | Prisma.FriendRequestScalarFieldEnum[]
+}
+
+/**
+ * User.received_friend_requests
+ */
+export type User$received_friend_requestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the FriendRequest
+   */
+  select?: Prisma.FriendRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the FriendRequest
+   */
+  omit?: Prisma.FriendRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FriendRequestInclude<ExtArgs> | null
+  where?: Prisma.FriendRequestWhereInput
+  orderBy?: Prisma.FriendRequestOrderByWithRelationInput | Prisma.FriendRequestOrderByWithRelationInput[]
+  cursor?: Prisma.FriendRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.FriendRequestScalarFieldEnum | Prisma.FriendRequestScalarFieldEnum[]
 }
 
 /**

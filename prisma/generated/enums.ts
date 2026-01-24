@@ -31,3 +31,12 @@ export const ConversationMemberRole = {
 } as const
 
 export type ConversationMemberRole = (typeof ConversationMemberRole)[keyof typeof ConversationMemberRole]
+
+
+export const FriendRequestStatus = {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type FriendRequestStatus = (typeof FriendRequestStatus)[keyof typeof FriendRequestStatus]
