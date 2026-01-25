@@ -7,6 +7,7 @@ export class FriendRequestMapper {
 		return {
 			status: friendRequest.status,
 			sender: UserMapper.toDto(friendRequest.user),
+			receiver: UserMapper.toDto(friendRequest.user__target),
 			createdAt: friendRequest.created_at,
 			updatedAt: friendRequest.updated_at,
 		};

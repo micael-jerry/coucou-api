@@ -9,6 +9,9 @@ export class FriendRequestResponse {
 	@ApiProperty({ type: UserResponse, description: 'User who sent the friend request' })
 	sender: UserResponse;
 
+	@ApiProperty({ type: UserResponse, description: 'User who received the friend request' })
+	receiver: UserResponse;
+
 	@ApiProperty({ type: 'string', format: 'date-time', description: 'Friend request created datetime' })
 	createdAt: Date;
 

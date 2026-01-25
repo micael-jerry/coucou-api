@@ -12,7 +12,7 @@ export class FriendRequestService {
 	async getAllFriendRequests(receiverId: string, status?: FriendRequestStatus): Promise<FriendRequestEntity[]> {
 		return await this.prisma.friendRequest.findMany({
 			where: {
-				status,
+				...(status && { status }),
 				user_target_id: receiverId,
 			},
 			orderBy: {
@@ -20,6 +20,7 @@ export class FriendRequestService {
 			},
 			include: {
 				user: true,
+				user__target: true,
 			},
 		});
 	}
@@ -35,6 +36,7 @@ export class FriendRequestService {
 			})),
 			include: {
 				user: true,
+				user__target: true,
 			},
 		});
 	}
@@ -43,23 +45,27 @@ export class FriendRequestService {
 		senderId: string,
 		friendReqUpdateInputs: FriendRequestUpdateInput[],
 	): Promise<FriendRequestEntity[]> {
-		const dbReq = friendReqUpdateInputs.map((friendReqUpdateInput) =>
-			this.prisma.friendRequest.update({
-				where: {
-					user_id_user_target_id: {
-						user_id: senderId,
-						user_target_id: friendReqUpdateInput.receiverId,
+		return await this.prisma.$transaction(async (prisma) => {
+			const results = [];
+			for (const friendReqUpdateInput of friendReqUpdateInputs) {
+				const result = await prisma.friendRequest.update({
+					where: {
+						user_id_user_target_id: {
+							user_id: senderId,
+							user_target_id: friendReqUpdateInput.receiverId,
+						},
 					},
-				},
-				data: {
-					status: friendReqUpdateInput.status,
-				},
-				include: {
-					user: true,
-				},
-			}),
-		);
-
-		return await this.prisma.$transaction(dbReq);
+					data: {
+						status: friendReqUpdateInput.status,
+					},
+					include: {
+						user: true,
+						user__target: true,
+					},
+				});
+				results.push(result);
+			}
+			return results;
+		});
 	}
 }

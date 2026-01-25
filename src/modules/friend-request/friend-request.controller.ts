@@ -1,5 +1,5 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { Request } from 'express';
 import { UserRole } from '../../../prisma/generated/client';
 import { FriendRequestStatus } from '../../../prisma/generated/enums';
@@ -43,6 +43,7 @@ export class FriendRequestController {
 		description: 'Send friend requests to the specified users',
 	})
 	@ApiBearerAuth()
+	@ApiBody({ type: [FriendRequestInput] })
 	@ApiResponse({ status: HttpStatus.CREATED, type: [FriendRequestResponse] })
 	@ApiCommonExceptionsDecorator()
 	@Post()
@@ -63,6 +64,7 @@ export class FriendRequestController {
 		description: 'Update friend requests status for the current user',
 	})
 	@ApiBearerAuth()
+	@ApiBody({ type: [FriendRequestUpdateInput] })
 	@ApiResponse({ status: HttpStatus.OK, type: [FriendRequestResponse] })
 	@ApiCommonExceptionsDecorator()
 	@Put()
@@ -72,6 +74,7 @@ export class FriendRequestController {
 		@Req() request: Request,
 		@Body() friendRequestUpdateInputs: FriendRequestUpdateInput[],
 	): Promise<FriendRequestResponse[]> {
+		console.log(request.user!.user_id == friendRequestUpdateInputs[0].receiverId);
 		return (
 			await this.friendRequestService.updateFriendRequestStatus(request.user!.user_id, friendRequestUpdateInputs)
 		).map((friendRequest) => FriendRequestMapper.toDto(friendRequest));

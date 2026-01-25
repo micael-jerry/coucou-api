@@ -35,6 +35,15 @@ async function main() {
 				lastname: 'User3',
 				is_verified: true,
 			},
+			{
+				id: '1f2e3d4c-5b6a-7890-1234-567890abcdef',
+				username: 'testuser4',
+				email: 'test4@example.com',
+				password: '$2a$12$nJXXmOUWNQnR3qNU5FEWTOVxsFK9cS7upV.IVfVUeCOK0xLmR5Rqm', // test4@example.com
+				firstname: 'Test',
+				lastname: 'User4',
+				is_verified: true,
+			},
 		],
 	});
 
@@ -68,6 +77,21 @@ async function main() {
 				content: 'Hello from user 2',
 				sender_id: '3e9bc404-7958-4bd4-942e-54ea2dbe6592',
 				conversation_id: '0dbea30e-9354-4bcb-964c-1b65098bcbbb',
+			},
+		],
+	});
+
+	await prisma.friendRequest.createMany({
+		data: [
+			{
+				user_id: '3e9bc404-7958-4bd4-942e-54ea2dbe6592', // testuser2
+				user_target_id: 'c46ffdce-8ee7-470e-8b22-4e83c84481d2', // testuser1
+				status: 'PENDING',
+			},
+			{
+				user_id: 'c46ffdce-8ee7-470e-8b22-4e83c84481d2', // testuser1
+				user_target_id: '1f2e3d4c-5b6a-7890-1234-567890abcdef', // testuser4
+				status: 'PENDING',
 			},
 		],
 	});

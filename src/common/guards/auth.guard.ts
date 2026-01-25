@@ -1,9 +1,9 @@
 import { CanActivate, ExecutionContext, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { HttpArgumentsHost } from '@nestjs/common/interfaces';
+import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
 import { AuthTokenPayload } from '../payloads/auth-token.payload';
-import { HttpArgumentsHost } from '@nestjs/common/interfaces';
-import { JwtService } from '@nestjs/jwt';
 
 declare module 'express' {
 	export interface Request {
@@ -23,7 +23,10 @@ export class AuthGuard implements CanActivate {
 
 		try {
 			const authHeader = req.headers.authorization;
-			const token: string = authHeader!.split(' ')[1];
+			if (!authHeader) {
+				throw new UnauthorizedException('No token provided');
+			}
+			const token: string = authHeader.split(' ')[1];
 			req.user = this.jwtService.verify<AuthTokenPayload>(token);
 
 			return true;
