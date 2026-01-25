@@ -17,8 +17,8 @@ import type * as Prisma from "./prismaNamespace"
 
 const config: runtime.GetPrismaClientConfig = {
   "previewFeatures": [],
-  "clientVersion": "7.2.0",
-  "engineVersion": "0c8ef2ce45c83248ab3df073180d5eda9e8be7a3",
+  "clientVersion": "7.3.0",
+  "engineVersion": "9d6ad21cbbceab97458517b147a6a09ff43aa735",
   "activeProvider": "postgresql",
   "inlineSchema": "generator client {\n  provider = \"prisma-client\"\n  output   = \"./generated\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nenum UserRole {\n  USER\n  ADMIN\n}\n\nmodel User {\n  id                       String               @id @default(uuid())\n  username                 String               @unique @db.VarChar(50)\n  password                 String               @db.VarChar()\n  email                    String               @unique @db.VarChar(50)\n  is_verified              Boolean              @default(false)\n  firstname                String               @db.VarChar()\n  lastname                 String               @db.VarChar()\n  created_at               DateTime             @default(now())\n  updated_at               DateTime             @default(now()) @updatedAt\n  role                     UserRole             @default(USER)\n  messages                 Message[]\n  conversations            ConversationMember[]\n  sent_friend_requests     FriendRequest[]      @relation(\"SentFriendRequests\")\n  received_friend_requests FriendRequest[]      @relation(\"ReceivedFriendRequests\")\n}\n\nenum ConversationType {\n  PRIVATE\n  GROUP\n}\n\nmodel Conversation {\n  id         String               @id @default(uuid())\n  created_at DateTime             @default(now())\n  updated_at DateTime             @default(now()) @updatedAt\n  name       String?\n  type       ConversationType\n  messages   Message[]\n  members    ConversationMember[]\n}\n\nmodel Message {\n  id              String       @id @default(uuid())\n  content         String       @db.Text\n  created_at      DateTime     @default(now())\n  sender_id       String\n  sender          User         @relation(fields: [sender_id], references: [id])\n  conversation_id String\n  conversation    Conversation @relation(fields: [conversation_id], references: [id])\n}\n\nenum ConversationMemberRole {\n  ADMIN\n  MEMBER\n}\n\nmodel ConversationMember {\n  joined_at       DateTime               @default(now())\n  role            ConversationMemberRole @default(MEMBER)\n  conversation_id String\n  conversation    Conversation           @relation(fields: [conversation_id], references: [id])\n  user_id         String\n  user            User                   @relation(fields: [user_id], references: [id])\n\n  @@id([conversation_id, user_id])\n}\n\nenum FriendRequestStatus {\n  PENDING\n  ACCEPTED\n  REJECTED\n}\n\nmodel FriendRequest {\n  status         FriendRequestStatus @default(PENDING)\n  created_at     DateTime            @default(now())\n  updated_at     DateTime            @default(now()) @updatedAt\n  user_id        String\n  user           User                @relation(\"SentFriendRequests\", fields: [user_id], references: [id])\n  user_target_id String\n  user__target   User                @relation(\"ReceivedFriendRequests\", fields: [user_target_id], references: [id])\n\n  @@id([user_id, user_target_id])\n}\n",
   "runtimeDataModel": {
@@ -37,12 +37,14 @@ async function decodeBase64AsWasm(wasmBase64: string): Promise<WebAssembly.Modul
 }
 
 config.compilerWasm = {
-  getRuntime: async () => await import("@prisma/client/runtime/query_compiler_bg.postgresql.js"),
+  getRuntime: async () => await import("@prisma/client/runtime/query_compiler_fast_bg.postgresql.js"),
 
   getQueryCompilerWasmModule: async () => {
-    const { wasm } = await import("@prisma/client/runtime/query_compiler_bg.postgresql.wasm-base64.js")
+    const { wasm } = await import("@prisma/client/runtime/query_compiler_fast_bg.postgresql.wasm-base64.js")
     return await decodeBase64AsWasm(wasm)
-  }
+  },
+
+  importName: "./query_compiler_fast_bg.js"
 }
 
 

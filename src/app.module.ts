@@ -8,6 +8,7 @@ import { HealthModule } from './modules/health/health.module';
 import { MessageModule } from './modules/message/message.module';
 import { UserModule } from './modules/user/user.module';
 import { appConfig, appConfigSchema } from './config/app';
+import { FriendRequestModule } from './modules/friend-request/friend-request.module';
 
 @Module({
 	imports: [
@@ -35,6 +36,7 @@ import { appConfig, appConfigSchema } from './config/app';
 		HealthModule,
 		ConversationModule,
 		MessageModule,
+		FriendRequestModule,
 	],
 })
 export class AppModule {}
