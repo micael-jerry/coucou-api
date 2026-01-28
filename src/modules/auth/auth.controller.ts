@@ -17,6 +17,7 @@ import { ResetPasswordRequestDto } from './dto/reset-password-request.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { SignUpDto } from './dto/sign-up.dto';
 import { VerifyEmailResponse } from './dto/verify-email-response.dto';
+import { GoogleAuthGuard } from '../../common/guards/google-auth.guard';
 
 @Controller({ path: '/auth' })
 export class AuthController {
@@ -102,4 +103,12 @@ export class AuthController {
 	async resetPassword(@Body() resetPasswordDto: ResetPasswordDto): Promise<UserResponse> {
 		return UserMapper.toDto(await this.authService.resetPassword(resetPasswordDto));
 	}
+
+	@Get('/google/sign-in')
+	@UseGuards(GoogleAuthGuard)
+	googleAuthSignIn() {}
+
+	@Get('/google/redirect')
+	@UseGuards(GoogleAuthGuard)
+	googleAuthRedirect() {}
 }
