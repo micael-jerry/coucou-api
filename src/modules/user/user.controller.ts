@@ -1,15 +1,13 @@
-import { Body, Controller, Get, HttpStatus, Param, Put, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, Put, Req } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { Request } from 'express';
 import { UserRole } from '../../../prisma/generated/client';
 import { ApiCommonExceptionsDecorator } from '../../common/decorators/api-common-exceptions.decorator';
-import { Roles } from '../../common/decorators/roles.decorator';
-import { AuthGuard } from '../../common/guards/auth.guard';
-import { RolesGuard } from '../../common/guards/roles.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserResponse } from './dto/user-response.dto';
 import { UserMapper } from './mapper/user.mapper';
 import { UserService } from './user.service';
+import { Auth, AuthType } from '../../common/decorators/auth.decorator';
 
 @Controller({ path: '/users' })
 export class UserController {
@@ -23,8 +21,7 @@ export class UserController {
 	@ApiResponse({ status: HttpStatus.OK, type: [UserResponse] })
 	@ApiCommonExceptionsDecorator()
 	@Get('/')
-	@Roles([UserRole.ADMIN, UserRole.USER])
-	@UseGuards(AuthGuard, RolesGuard)
+	@Auth(AuthType.ROLES, [UserRole.ADMIN, UserRole.USER])
 	async getAllUsers(): Promise<UserResponse[]> {
 		return (await this.userService.findAll()).map((u) => UserMapper.toDto(u));
 	}
@@ -38,8 +35,7 @@ export class UserController {
 	@ApiResponse({ status: HttpStatus.OK, type: UserResponse })
 	@ApiCommonExceptionsDecorator()
 	@Get('/:userId')
-	@Roles([UserRole.ADMIN, UserRole.USER])
-	@UseGuards(AuthGuard, RolesGuard)
+	@Auth(AuthType.ROLES, [UserRole.ADMIN, UserRole.USER])
 	async getUserById(@Param('userId') userId: string): Promise<UserResponse> {
 		return UserMapper.toDto(await this.userService.findById(userId));
 	}
@@ -53,8 +49,7 @@ export class UserController {
 	@ApiResponse({ status: HttpStatus.OK, type: UserResponse })
 	@ApiCommonExceptionsDecorator()
 	@Put('/me')
-	@Roles([UserRole.ADMIN, UserRole.USER])
-	@UseGuards(AuthGuard, RolesGuard)
+	@Auth(AuthType.ROLES, [UserRole.ADMIN, UserRole.USER])
 	async updateUser(@Req() req: Request, @Body() userUpdateVal: UpdateUserDto) {
 		return UserMapper.toDto(await this.userService.updateUser(req.user!, userUpdateVal));
 	}

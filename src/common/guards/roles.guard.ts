@@ -3,7 +3,7 @@ import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
-import { UserRole } from '../../../prisma/generated/client';
+import { UserRole } from '../../../prisma/generated/enums';
 import { Roles } from '../decorators/roles.decorator';
 import { AuthTokenPayload } from '../payloads/auth-token.payload';
 

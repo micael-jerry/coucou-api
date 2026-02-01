@@ -1,18 +1,16 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Put, Query, Req } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { Request } from 'express';
 import { UserRole } from '../../../prisma/generated/client';
 import { FriendRequestStatus } from '../../../prisma/generated/enums';
 import { ApiCommonExceptionsDecorator } from '../../common/decorators/api-common-exceptions.decorator';
-import { Roles } from '../../common/decorators/roles.decorator';
-import { AuthGuard } from '../../common/guards/auth.guard';
-import { RolesGuard } from '../../common/guards/roles.guard';
 import { FriendRequestResponse } from './dto/friend-request-response.dto';
 import { FriendRequestService } from './friend-request.service';
 import { FriendRequestMapper } from './mapper/friend-request.mapper';
 import { ParseFriendRequestStatusPipe } from './pipe/friend-request.pipe';
 import { FriendRequestInput } from './dto/friend-request-input.dto';
 import { FriendRequestUpdateInput } from './dto/friend-request-update-input.dto';
+import { Auth, AuthType } from '../../common/decorators/auth.decorator';
 
 @Controller('friend-requests')
 export class FriendRequestController {
@@ -27,8 +25,7 @@ export class FriendRequestController {
 	@ApiResponse({ status: HttpStatus.OK, type: [FriendRequestResponse] })
 	@ApiCommonExceptionsDecorator()
 	@Get()
-	@Roles([UserRole.ADMIN, UserRole.USER])
-	@UseGuards(AuthGuard, RolesGuard)
+	@Auth(AuthType.ROLES, [UserRole.ADMIN, UserRole.USER])
 	async getAllFriendRequests(
 		@Req() request: Request,
 		@Query('status', new ParseFriendRequestStatusPipe()) status?: FriendRequestStatus,
@@ -48,8 +45,7 @@ export class FriendRequestController {
 	@ApiCommonExceptionsDecorator()
 	@Post()
 	@HttpCode(HttpStatus.CREATED)
-	@Roles([UserRole.ADMIN, UserRole.USER])
-	@UseGuards(AuthGuard, RolesGuard)
+	@Auth(AuthType.ROLES, [UserRole.ADMIN, UserRole.USER])
 	async sendFriendRequests(
 		@Req() request: Request,
 		@Body() body: FriendRequestInput[],
@@ -68,8 +64,7 @@ export class FriendRequestController {
 	@ApiResponse({ status: HttpStatus.OK, type: [FriendRequestResponse] })
 	@ApiCommonExceptionsDecorator()
 	@Put()
-	@Roles([UserRole.ADMIN, UserRole.USER])
-	@UseGuards(AuthGuard, RolesGuard)
+	@Auth(AuthType.ROLES, [UserRole.ADMIN, UserRole.USER])
 	async updateFriendRequestStatus(
 		@Req() request: Request,
 		@Body() friendRequestUpdateInputs: FriendRequestUpdateInput[],

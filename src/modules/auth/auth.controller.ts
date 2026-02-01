@@ -1,7 +1,7 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { Request } from 'express';
-import { UserRole } from '../../../prisma/generated/client';
+import { UserRole } from '../../../prisma/generated/enums';
 import { ApiCommonExceptionsDecorator } from '../../common/decorators/api-common-exceptions.decorator';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { HttpExceptionResponseDto } from '../../common/dtos/http-exception-response.dto';

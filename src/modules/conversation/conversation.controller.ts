@@ -1,15 +1,13 @@
-import { Body, Controller, Get, HttpStatus, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, Post, Req } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { Request } from 'express';
 import { UserRole } from '../../../prisma/generated/client';
 import { ApiCommonExceptionsDecorator } from '../../common/decorators/api-common-exceptions.decorator';
-import { Roles } from '../../common/decorators/roles.decorator';
-import { AuthGuard } from '../../common/guards/auth.guard';
-import { RolesGuard } from '../../common/guards/roles.guard';
 import { ConversationService } from './conversation.service';
 import { ConversationInput } from './dto/conversation-input.dto';
 import { ConversationResponse } from './dto/conversation-response.dto';
 import { ConversationMapper } from './mapper/conversation.mapper';
+import { Auth, AuthType } from '../../common/decorators/auth.decorator';
 
 @Controller('/conversations')
 export class ConversationController {
@@ -24,8 +22,7 @@ export class ConversationController {
 	@ApiResponse({ status: HttpStatus.CREATED, type: ConversationResponse })
 	@ApiCommonExceptionsDecorator()
 	@Post('/')
-	@Roles([UserRole.ADMIN, UserRole.USER])
-	@UseGuards(AuthGuard, RolesGuard)
+	@Auth(AuthType.ROLES, [UserRole.ADMIN, UserRole.USER])
 	async postConversation(
 		@Req() req: Request,
 		@Body() conversationInput: ConversationInput,
@@ -47,8 +44,7 @@ export class ConversationController {
 	@ApiResponse({ status: HttpStatus.OK, type: ConversationResponse })
 	@ApiCommonExceptionsDecorator()
 	@Get('/:conversationId')
-	@Roles([UserRole.ADMIN, UserRole.USER])
-	@UseGuards(AuthGuard, RolesGuard)
+	@Auth(AuthType.ROLES, [UserRole.ADMIN, UserRole.USER])
 	async getConversationById(
 		@Req() req: Request,
 		@Param('conversationId') conversationId: string,
@@ -64,8 +60,7 @@ export class ConversationController {
 	@ApiResponse({ status: HttpStatus.OK, type: [ConversationResponse] })
 	@ApiCommonExceptionsDecorator()
 	@Get('/')
-	@Roles([UserRole.ADMIN, UserRole.USER])
-	@UseGuards(AuthGuard, RolesGuard)
+	@Auth(AuthType.ROLES, [UserRole.ADMIN, UserRole.USER])
 	async getConversationsByUserId(@Req() req: Request): Promise<ConversationResponse[]> {
 		return (await this.conversationService.getConversationsByConnectedUser(req.user!)).map((entity) =>
 			ConversationMapper.toDto(entity),
