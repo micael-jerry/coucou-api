@@ -9,6 +9,8 @@ import { MessageModule } from './modules/message/message.module';
 import { UserModule } from './modules/user/user.module';
 import { appConfig, appConfigSchema } from './config/app';
 import { FriendRequestModule } from './modules/friend-request/friend-request.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './common/guards/auth.guard';
 
 @Module({
 	imports: [
@@ -37,6 +39,12 @@ import { FriendRequestModule } from './modules/friend-request/friend-request.mod
 		ConversationModule,
 		MessageModule,
 		FriendRequestModule,
+	],
+	providers: [
+		{
+			provide: APP_GUARD,
+			useClass: AuthGuard,
+		},
 	],
 })
 export class AppModule {}
