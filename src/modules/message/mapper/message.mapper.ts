@@ -1,4 +1,4 @@
-import { Message } from '@prisma/client';
+import { Message } from '../../../../prisma/generated/client';
 import { MessageResponse } from '../dto/message-response.dto';
 
 export class MessageMapper {

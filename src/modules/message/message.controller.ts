@@ -1,15 +1,13 @@
-import { Body, Controller, Get, HttpStatus, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
-import { MessageService } from './message.service';
+import { Body, Controller, Get, HttpStatus, Param, Post, Query, Req } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { Request } from 'express';
+import { UserRole } from '../../../prisma/generated/client';
+import { ApiCommonExceptionsDecorator } from '../../common/decorators/api-common-exceptions.decorator';
 import { MessageInput } from './dto/message-input.dto';
 import { MessageResponse } from './dto/message-response.dto';
 import { MessageMapper } from './mapper/message.mapper';
-import { ApiOperation, ApiBearerAuth, ApiBody, ApiResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
-import { AuthGuard } from '../../common/guards/auth.guard';
-import { ApiCommonExceptionsDecorator } from '../../common/decorators/api-common-exceptions.decorator';
-import { Request } from 'express';
-import { UserRole } from '@prisma/client';
-import { Roles } from '../../common/decorators/roles.decorator';
-import { RolesGuard } from '../../common/guards/roles.guard';
+import { MessageService } from './message.service';
+import { Auth, AuthType } from '../../common/decorators/auth.decorator';
 
 @Controller('/messages')
 export class MessageController {
@@ -24,8 +22,7 @@ export class MessageController {
 	@ApiResponse({ status: HttpStatus.CREATED, type: MessageResponse })
 	@ApiCommonExceptionsDecorator()
 	@Post('/')
-	@Roles([UserRole.ADMIN, UserRole.USER])
-	@UseGuards(AuthGuard, RolesGuard)
+	@Auth(AuthType.ROLES, [UserRole.ADMIN, UserRole.USER])
 	async postMessage(@Req() req: Request, @Body() message: MessageInput): Promise<MessageResponse> {
 		return MessageMapper.toDto(await this.messageService.sendMessage(req.user!, message));
 	}
@@ -39,8 +36,7 @@ export class MessageController {
 	@ApiResponse({ status: HttpStatus.OK, type: MessageResponse })
 	@ApiCommonExceptionsDecorator()
 	@Get('/:messageId')
-	@Roles([UserRole.ADMIN, UserRole.USER])
-	@UseGuards(AuthGuard, RolesGuard)
+	@Auth(AuthType.ROLES, [UserRole.ADMIN, UserRole.USER])
 	async getMessageById(@Param('messageId') messageId: string): Promise<MessageResponse> {
 		return MessageMapper.toDto(await this.messageService.findMessageById(messageId));
 	}
@@ -54,8 +50,7 @@ export class MessageController {
 	@ApiResponse({ status: HttpStatus.OK, type: [MessageResponse] })
 	@ApiCommonExceptionsDecorator()
 	@Get('/')
-	@Roles([UserRole.ADMIN, UserRole.USER])
-	@UseGuards(AuthGuard, RolesGuard)
+	@Auth(AuthType.ROLES, [UserRole.ADMIN, UserRole.USER])
 	async getMessagesByConversationId(
 		@Req() req: Request,
 		@Query('conversationId') conversationId: string,

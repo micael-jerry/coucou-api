@@ -15,11 +15,17 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      NODE_ENV: ${{ vars.NODE_ENV }}
+      PORT: ${{ secrets.PORT }}
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+      JWT_EXPIRES_IN: ${{ secrets.JWT_EXPIRES_IN }}
       RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+
+      NODE_ENV: ${{ vars.NODE_ENV }}
       FRONT_END_BASE_URL: ${{ vars.FRONT_END_BASE_URL }}
+      GOOGLE_REDIRECT_URI: ${{ vars.GOOGLE_REDIRECT_URI }}
 
     steps:
       - name: Checkout code
@@ -28,7 +34,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Set up pnpm
         uses: pnpm/action-setup@v4

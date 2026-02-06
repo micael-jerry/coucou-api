@@ -1,24 +1,30 @@
 import { BadGatewayException, Injectable, Logger } from '@nestjs/common';
-import { User } from '@prisma/client';
+import { ConfigService } from '@nestjs/config';
 import { Resend } from 'resend';
+import { User } from '../../../prisma/generated/client';
+import { NodeEnv } from '../../config/app';
 import { SendEmailObject } from './entity/send-mail-object.entity';
+import { ResetPassword } from './template/reset-password';
 import { VerifyEmail } from './template/verify-email';
 import { WelcomeEmail } from './template/welcome';
-import { ResetPassword } from './template/reset-password';
 
 @Injectable()
 export class MailerService {
 	private readonly resend: Resend;
 	private readonly logger: Logger = new Logger(MailerService.name);
 
-	constructor() {
-		this.resend = new Resend(process.env.RESEND_API_KEY);
+	constructor(private readonly configService: ConfigService) {
+		this.resend = new Resend(this.configService.getOrThrow<string>('app.resend.apiKey'));
+	}
+
+	private get frontEndBaseUrl(): string {
+		return this.configService.getOrThrow<string>('app.frontendBaseUrl');
 	}
 
 	private async sendEmail({ to, subject, html }: SendEmailObject): Promise<void> {
-		// INFO: Not send email on test environement
-		if (process.env.NODE_ENV === 'test') {
-			return Promise.resolve();
+		// INFO: Not send email on test environment
+		if (this.configService.getOrThrow<NodeEnv>('app.env') === NodeEnv.TEST) {
+			return;
 		}
 
 		const { data, error } = await this.resend.emails.send({
@@ -36,27 +42,27 @@ export class MailerService {
 		this.logger.log({ data });
 	}
 
-	async sendWelcomeEmail(createdUser: User) {
+	async sendWelcomeEmail(createdUser: User): Promise<void> {
 		await this.sendEmail({
 			to: [createdUser.email],
 			subject: 'Welcome to Coucou App',
-			html: WelcomeEmail.getTemplate(createdUser),
+			html: WelcomeEmail.getTemplate(createdUser, this.frontEndBaseUrl),
 		});
 	}
 
-	async sendVerificationEmailRequest(createdUser: User, verifyEmailToken: string) {
+	async sendVerificationEmailRequest(createdUser: User, verifyEmailToken: string): Promise<void> {
 		await this.sendEmail({
 			to: [createdUser.email],
 			subject: 'Verify your email address for Coucou App',
-			html: VerifyEmail.getTemplate(createdUser, verifyEmailToken),
+			html: VerifyEmail.getTemplate(createdUser, verifyEmailToken, this.frontEndBaseUrl),
 		});
 	}
 
-	async sendResetPasswordEmailRequest(user: User, authTokenToSend: string) {
+	async sendResetPasswordEmailRequest(user: User, authTokenToSend: string): Promise<void> {
 		await this.sendEmail({
 			to: [user.email],
 			subject: 'Reset your password for Coucou App',
-			html: ResetPassword.getTemplate(user, authTokenToSend),
+			html: ResetPassword.getTemplate(user, authTokenToSend, this.frontEndBaseUrl),
 		});
 	}
 }

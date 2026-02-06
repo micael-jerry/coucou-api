@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { Message } from '@prisma/client';
+import { Message } from '../../../prisma/generated/client';
 import { AuthTokenPayload } from '../../common/payloads/auth-token.payload';
-import { ConversationService } from '../conversation/conversation.service';
 import { PrismaService } from '../../infrastructure/prisma/prisma.service';
-import { SocketGateway } from '../../infrastructure/socket/socket.gateway';
+import { ConversationService } from '../conversation/conversation.service';
 import { MessageInput } from './dto/message-input.dto';
 
 @Injectable()
@@ -11,7 +10,6 @@ export class MessageService {
 	constructor(
 		private readonly prismaService: PrismaService,
 		private readonly conversationService: ConversationService,
-		private readonly socketGateway: SocketGateway,
 	) {}
 
 	async sendMessage(authTokenPayload: AuthTokenPayload, message: MessageInput): Promise<Message> {
@@ -31,8 +29,6 @@ export class MessageService {
 			});
 			return messageCreated;
 		});
-
-		this.socketGateway.emitNewMessage(messageSended);
 
 		return messageSended;
 	}

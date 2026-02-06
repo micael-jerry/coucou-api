@@ -1,6 +1,8 @@
-import { PrismaClient, UserRole } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { PrismaClient, UserRole } from './generated/client';
 
-const prisma = new PrismaClient();
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+const prisma = new PrismaClient({ adapter });
 
 async function main() {
 	await prisma.user.createMany({
@@ -22,6 +24,24 @@ async function main() {
 				password: '$2a$12$nJXXmOUWNQnR3qNU5FEWTOVxsFK9cS7upV.IVfVUeCOK0xLmR5Rqm', // test2@example.com
 				firstname: 'Test',
 				lastname: 'User2',
+				is_verified: true,
+			},
+			{
+				id: '9a8b7c6d-5e4f-3a2b-1c0d-9e8f7a6b5c4d',
+				username: 'testuser3',
+				email: 'test3@example.com',
+				password: '$2a$12$nJXXmOUWNQnR3qNU5FEWTOVxsFK9cS7upV.IVfVUeCOK0xLmR5Rqm', // test3@example.com
+				firstname: 'Test',
+				lastname: 'User3',
+				is_verified: true,
+			},
+			{
+				id: '1f2e3d4c-5b6a-7890-1234-567890abcdef',
+				username: 'testuser4',
+				email: 'test4@example.com',
+				password: '$2a$12$nJXXmOUWNQnR3qNU5FEWTOVxsFK9cS7upV.IVfVUeCOK0xLmR5Rqm', // test4@example.com
+				firstname: 'Test',
+				lastname: 'User4',
 				is_verified: true,
 			},
 		],
@@ -57,6 +77,21 @@ async function main() {
 				content: 'Hello from user 2',
 				sender_id: '3e9bc404-7958-4bd4-942e-54ea2dbe6592',
 				conversation_id: '0dbea30e-9354-4bcb-964c-1b65098bcbbb',
+			},
+		],
+	});
+
+	await prisma.friendRequest.createMany({
+		data: [
+			{
+				user_id: '3e9bc404-7958-4bd4-942e-54ea2dbe6592', // testuser2
+				user_target_id: 'c46ffdce-8ee7-470e-8b22-4e83c84481d2', // testuser1
+				status: 'PENDING',
+			},
+			{
+				user_id: 'c46ffdce-8ee7-470e-8b22-4e83c84481d2', // testuser1
+				user_target_id: '1f2e3d4c-5b6a-7890-1234-567890abcdef', // testuser4
+				status: 'PENDING',
 			},
 		],
 	});

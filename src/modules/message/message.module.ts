@@ -3,10 +3,9 @@ import { ConversationModule } from '../conversation/conversation.module';
 import { PrismaModule } from '../../infrastructure/prisma/prisma.module';
 import { MessageController } from './message.controller';
 import { MessageService } from './message.service';
-import { SocketModule } from '../../infrastructure/socket/socket.module';
 
 @Module({
-	imports: [PrismaModule, ConversationModule, SocketModule],
+	imports: [PrismaModule, ConversationModule],
 	controllers: [MessageController],
 	providers: [MessageService],
 })

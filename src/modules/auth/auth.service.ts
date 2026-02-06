@@ -1,6 +1,8 @@
 import { BadRequestException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '@prisma/client';
+import { User } from '../../../prisma/generated/client';
+import { AuthTokenPayload } from '../../common/payloads/auth-token.payload';
+import { SpecificReqTokenPayload } from '../../common/payloads/specific-req-token.payload';
 import { MailerService } from '../../infrastructure/mailer/mailer.service';
 import { PrismaService } from '../../infrastructure/prisma/prisma.service';
 import { UserMapper } from '../user/mapper/user.mapper';
@@ -12,8 +14,6 @@ import { ResetPasswordRequestDto } from './dto/reset-password-request.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { SignUpDto } from './dto/sign-up.dto';
 import { VerifyEmailResponse } from './dto/verify-email-response.dto';
-import { AuthTokenPayload } from '../../common/payloads/auth-token.payload';
-import { SpecificReqTokenPayload } from '../../common/payloads/specific-req-token.payload';
 
 @Injectable()
 export class AuthService {

@@ -6,10 +6,11 @@ import { AuthGuard } from '../../common/guards/auth.guard';
 import { MailerService } from '../../infrastructure/mailer/mailer.service';
 import { AuthUtils } from './auth.utils';
 import { RolesGuard } from '../../common/guards/roles.guard';
+import { GoogleStrategy } from '../../common/strategies/google.strategy';
 
 @Module({
 	imports: [PrismaModule],
 	controllers: [AuthController],
-	providers: [AuthService, AuthGuard, AuthUtils, MailerService, RolesGuard],
+	providers: [AuthService, AuthGuard, AuthUtils, MailerService, RolesGuard, GoogleStrategy],
 })
 export class AuthModule {}

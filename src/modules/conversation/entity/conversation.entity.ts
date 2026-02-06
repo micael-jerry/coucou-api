@@ -1,4 +1,4 @@
-import { Conversation, Message, User } from '@prisma/client';
+import { Conversation, Message, User } from '../../../../prisma/generated/client';
 
 export interface ConversationEntity extends Conversation {
 	members: {

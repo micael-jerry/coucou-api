@@ -1,8 +1,9 @@
-import { User } from '@prisma/client';
+import { User } from '../../../../prisma/generated/client';
 
 export class VerifyEmail {
-	static getTemplate(createdUser: User, emailVerificationToken: string) {
-		const verificationLink = `${process.env.FRONT_END_BASE_URL}/verify-email?token=${emailVerificationToken}`;
+	static getTemplate(createdUser: User, emailVerificationToken: string, frontEndBaseUrl: string) {
+		const logoUrl = `${frontEndBaseUrl}/logo.png`;
+		const verificationLink = `${frontEndBaseUrl}/verify-email?token=${emailVerificationToken}`;
 
 		return `
 			<!DOCTYPE html>
@@ -69,7 +70,7 @@ export class VerifyEmail {
 			<body>
 				<div class="container">
 					<div class="header">
-						<img src="${process.env.FRONT_END_BASE_URL}/logo.png" alt="Coucou App Logo">
+						<img src="${logoUrl}" alt="Coucou App Logo">
 					</div>
 					<div class="content">
 						<h1>Verify Your Email Address</h1>

@@ -2,6 +2,7 @@ import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Coucou } from './dto/coucou.dto';
 import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiCommonExceptionsDecorator } from '../../common/decorators/api-common-exceptions.decorator';
+import { Auth, AuthType } from '../../common/decorators/auth.decorator';
 
 @Controller()
 export class HealthController {
@@ -12,6 +13,7 @@ export class HealthController {
 	@ApiResponse({ status: HttpStatus.OK, type: Coucou })
 	@ApiCommonExceptionsDecorator()
 	@Get('/coucou')
+	@Auth(AuthType.PUBLIC)
 	@HttpCode(HttpStatus.OK)
 	coucou(): Coucou {
 		return {

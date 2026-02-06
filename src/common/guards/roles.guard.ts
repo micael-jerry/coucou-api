@@ -1,11 +1,11 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
+import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
-import { AuthTokenPayload } from '../payloads/auth-token.payload';
-import { UserRole } from '@prisma/client';
-import { Reflector } from '@nestjs/core';
+import { UserRole } from '../../../prisma/generated/enums';
 import { Roles } from '../decorators/roles.decorator';
+import { AuthTokenPayload } from '../payloads/auth-token.payload';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -25,7 +25,7 @@ export class RolesGuard implements CanActivate {
 		return this.reflector.get<UserRole[]>(Roles, context.getHandler());
 	}
 
-	private hasPermission(payload: AuthTokenPayload, requiredRoles: UserRole[] | undefined) {
+	private hasPermission(payload: AuthTokenPayload, requiredRoles: UserRole[] | undefined): boolean {
 		if (!requiredRoles) return true;
 		return requiredRoles.includes(payload.user_role);
 	}

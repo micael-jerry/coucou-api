@@ -1,11 +1,11 @@
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { ConversationType } from '@prisma/client';
 import * as request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from '../../src/app.module';
 import { LoginResponse } from '../../src/modules/auth/dto/login-response.dto';
 import { ConversationResponse } from '../../src/modules/conversation/dto/conversation-response.dto';
+import { ConversationType } from '../../prisma/generated/enums';
 
 describe('ConversationController (e2e)', () => {
 	let app: INestApplication<App>;
@@ -37,7 +37,7 @@ describe('ConversationController (e2e)', () => {
 			.set('Authorization', `Bearer ${authToken}`)
 			.send({
 				type: ConversationType.PRIVATE,
-				membersId: ['c46ffdce-8ee7-470e-8b22-4e83c84481d2', '3e9bc404-7958-4bd4-942e-54ea2dbe6592'],
+				membersId: ['c46ffdce-8ee7-470e-8b22-4e83c84481d2', '9a8b7c6d-5e4f-3a2b-1c0d-9e8f7a6b5c4d'],
 			})
 			.expect(HttpStatus.CREATED)
 			.then((res: { body: ConversationResponse }) => {

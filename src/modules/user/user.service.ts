@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../infrastructure/prisma/prisma.service';
-import { User } from '@prisma/client';
+import { User } from '../../../prisma/generated/client';
 import { AuthTokenPayload } from '../../common/payloads/auth-token.payload';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { AuthUtils } from '../auth/auth.utils';
 import { MailerService } from '../../infrastructure/mailer/mailer.service';
+import { PrismaService } from '../../infrastructure/prisma/prisma.service';
+import { AuthUtils } from '../auth/auth.utils';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {

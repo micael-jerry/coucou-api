@@ -8,15 +8,13 @@ import { UserMapper } from '../user/mapper/user.mapper';
 import { AuthService } from './auth.service';
 import { LoginResponse } from './dto/login-response.dto';
 import { LoginDto } from './dto/login.dto';
-import { SignUpDto } from './dto/sign-up.dto';
-import { AuthGuard } from '../../common/guards/auth.guard';
 import { ResetPasswordRequestResponse } from './dto/reset-password-request-response.dto';
 import { ResetPasswordRequestDto } from './dto/reset-password-request.dto';
-import { VerifyEmailResponse } from './dto/verify-email-response.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
-import { UserRole } from '@prisma/client';
-import { RolesGuard } from '../../common/guards/roles.guard';
-import { Roles } from '../../common/decorators/roles.decorator';
+import { SignUpDto } from './dto/sign-up.dto';
+import { VerifyEmailResponse } from './dto/verify-email-response.dto';
+import { GoogleAuthGuard } from '../../common/guards/google-auth.guard';
+import { Auth, AuthType } from '../../common/decorators/auth.decorator';
 
 @Controller({ path: '/auth' })
 export class AuthController {
@@ -30,6 +28,7 @@ export class AuthController {
 	@ApiResponse({ status: HttpStatus.CREATED, type: UserResponse })
 	@ApiCommonExceptionsDecorator()
 	@Post('/sign-up')
+	@Auth(AuthType.ANONYMOUS)
 	@HttpCode(HttpStatus.CREATED)
 	async signUp(@Body() signUpDto: SignUpDto): Promise<UserResponse> {
 		return UserMapper.toDto(await this.authService.signUp(signUpDto));
@@ -43,6 +42,7 @@ export class AuthController {
 	@ApiResponse({ status: HttpStatus.OK, type: LoginResponse })
 	@ApiCommonExceptionsDecorator()
 	@Post('/sign-in')
+	@Auth(AuthType.ANONYMOUS)
 	@HttpCode(HttpStatus.OK)
 	async signIn(@Body() signInDto: LoginDto): Promise<LoginResponse> {
 		return await this.authService.signIn(signInDto);
@@ -56,8 +56,8 @@ export class AuthController {
 	@ApiResponse({ status: HttpStatus.OK, type: UserResponse })
 	@ApiCommonExceptionsDecorator()
 	@Get('/who-am-i')
-	@Roles([UserRole.ADMIN, UserRole.USER])
-	@UseGuards(AuthGuard, RolesGuard)
+	@Auth(AuthType.AUTHENTICATED)
+	@HttpCode(HttpStatus.OK)
 	async whoAmI(@Req() req: Request): Promise<UserResponse> {
 		const user = await this.authService.whoAmI(req.user!);
 		return UserMapper.toDto(user);
@@ -71,6 +71,8 @@ export class AuthController {
 	@ApiResponse({ status: HttpStatus.OK, type: HttpExceptionResponseDto })
 	@ApiCommonExceptionsDecorator()
 	@Get('/verify-email')
+	@Auth(AuthType.ANONYMOUS)
+	@HttpCode(HttpStatus.OK)
 	async verifyEmail(@Query('token') token: string): Promise<VerifyEmailResponse> {
 		return await this.authService.verifyEmail(token);
 	}
@@ -83,6 +85,7 @@ export class AuthController {
 	@ApiResponse({ status: HttpStatus.OK, type: ResetPasswordRequestResponse })
 	@ApiCommonExceptionsDecorator()
 	@Post('/reset-password-request')
+	@Auth(AuthType.ANONYMOUS)
 	@HttpCode(HttpStatus.OK)
 	async resetPasswordRequest(
 		@Body() resetPasswordRequestDto: ResetPasswordRequestDto,
@@ -98,8 +101,17 @@ export class AuthController {
 	@ApiResponse({ status: HttpStatus.OK, type: UserResponse })
 	@ApiCommonExceptionsDecorator()
 	@Post('/reset-password')
+	@Auth(AuthType.ANONYMOUS)
 	@HttpCode(HttpStatus.OK)
 	async resetPassword(@Body() resetPasswordDto: ResetPasswordDto): Promise<UserResponse> {
 		return UserMapper.toDto(await this.authService.resetPassword(resetPasswordDto));
 	}
+
+	@Get('/google/sign-in')
+	@UseGuards(GoogleAuthGuard)
+	googleAuthSignIn() {}
+
+	@Get('/google/redirect')
+	@UseGuards(GoogleAuthGuard)
+	googleAuthRedirect() {}
 }

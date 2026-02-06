@@ -1,7 +1,9 @@
-import { User } from '@prisma/client';
+import { User } from '../../../../prisma/generated/client';
 
 export class WelcomeEmail {
-	static getTemplate(createdUser: User) {
+	static getTemplate(createdUser: User, frontEndBaseUrl: string) {
+		const logoUrl = `${frontEndBaseUrl}/logo.png`;
+
 		return `
       <!DOCTYPE html>
       <html lang="en">
@@ -60,7 +62,7 @@ export class WelcomeEmail {
       <body>
         <div class="container">
           <div class="header">
-            <img src="${process.env.FRONT_END_BASE_URL}/logo.png" alt="Coucou App Logo">
+            <img src="${logoUrl}" alt="Coucou App Logo">
           </div>
           <div class="content">
             <h1>Welcome, ${createdUser.firstname} ${createdUser.lastname}!</h1>
