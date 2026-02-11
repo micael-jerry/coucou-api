@@ -130,6 +130,6 @@ export class AuthService {
 			lastname: profile._json.family_name,
 			firstname: profile._json.given_name,
 		};
-		return await this.signUp(dto);
+		return await this.signUp(dto, true);
 	}
 }
