@@ -1,4 +1,4 @@
-import { BadGatewayException, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Resend } from 'resend';
 import { User } from '../../../prisma/generated/client';
@@ -14,7 +14,8 @@ export class MailerService {
 	private readonly logger: Logger = new Logger(MailerService.name);
 
 	constructor(private readonly configService: ConfigService) {
-		this.resend = new Resend(this.configService.getOrThrow<string>('app.resend.apiKey'));
+		const apiKey = this.configService.getOrThrow<string>('app.resend.apiKey');
+		this.resend = new Resend(apiKey);
 	}
 
 	private get frontEndBaseUrl(): string {
@@ -35,11 +36,12 @@ export class MailerService {
 		});
 
 		if (error) {
-			this.logger.error({ error });
-			throw new BadGatewayException('Failed to send the email via external service. Please try again later.');
+			this.logger.error('MAIL NOT SENDED', error);
+			// TODO: VERIFY IF THE ERROR IS FROM RESEND OR FROM THE FRONTEND
+			// throw new BadGatewayException('Failed to send the email via external service. Please try again later.');
 		}
 
-		this.logger.log({ data });
+		this.logger.log(data);
 	}
 
 	async sendWelcomeEmail(createdUser: User): Promise<void> {

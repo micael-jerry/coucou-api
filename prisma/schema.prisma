@@ -15,11 +15,11 @@ enum UserRole {
 model User {
   id                       String               @id @default(uuid())
   username                 String               @unique @db.VarChar(50)
-  password                 String               @db.VarChar()
+  password                 String?               @db.VarChar()
   email                    String               @unique @db.VarChar(50)
   is_verified              Boolean              @default(false)
-  firstname                String               @db.VarChar()
-  lastname                 String               @db.VarChar()
+  firstname                String?               @db.VarChar()
+  lastname                 String?               @db.VarChar()
   created_at               DateTime             @default(now())
   updated_at               DateTime             @default(now()) @updatedAt
   role                     UserRole             @default(USER)

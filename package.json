@@ -45,7 +45,8 @@
 		"reflect-metadata": "^0.2.2",
 		"resend": "^6.1.0",
 		"rxjs": "^7.8.1",
-		"socket.io": "^4.8.1"
+		"socket.io": "^4.8.1",
+		"unique-username-generator": "^1.5.1"
 	},
 	"devDependencies": {
 		"@commitlint/cli": "^19.8.0",

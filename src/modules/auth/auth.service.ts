@@ -14,6 +14,8 @@ import { ResetPasswordRequestDto } from './dto/reset-password-request.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { SignUpDto } from './dto/sign-up.dto';
 import { VerifyEmailResponse } from './dto/verify-email-response.dto';
+import { Profile } from 'passport-google-oauth20';
+import { generateFromEmail } from 'unique-username-generator';
 
 @Injectable()
 export class AuthService {
@@ -25,11 +27,11 @@ export class AuthService {
 		private readonly authUtils: AuthUtils,
 	) {}
 
-	async signUp(signUpDto: SignUpDto): Promise<User> {
+	async signUp({ password: pwd, ...signUpDto }: SignUpDto, signUpWithGoogle: boolean = false): Promise<User> {
 		const createdUser = await this.prismaService.user.create({
 			data: {
 				...signUpDto,
-				password: await this.authUtils.hashPassword(signUpDto.password),
+				...(!signUpWithGoogle && pwd && { password: await this.authUtils.hashPassword(pwd) }),
 			},
 		});
 
@@ -41,11 +43,17 @@ export class AuthService {
 		return createdUser;
 	}
 
-	async signIn(signInDto: LoginDto): Promise<LoginResponse> {
+	async signIn(signInDto: LoginDto, withoutPassword: boolean = false): Promise<LoginResponse> {
 		const user: User = await this.prismaService.user.findUniqueOrThrow({
 			where: { username: signInDto.username },
 		});
-		if (await this.authUtils.isValidPassword(signInDto.password, user.password)) {
+		if (
+			withoutPassword ||
+			(!withoutPassword &&
+				signInDto.password &&
+				user.password &&
+				(await this.authUtils.isValidPassword(signInDto.password, user.password)))
+		) {
 			return {
 				access_token: await this.authUtils.genAuthToken(user),
 				user: UserMapper.toDto(user),
@@ -102,5 +110,26 @@ export class AuthService {
 			this.logger.error(err);
 			throw new BadRequestException('Invalid or expired password reset token.');
 		}
+	}
+
+	async signInWithGoogle(profile: Profile): Promise<User> {
+		if (!profile._json.email) {
+			throw new BadRequestException('Invalid Email');
+		}
+		const user: User | null = await this.prismaService.user.findUnique({
+			where: {
+				email: profile._json.email,
+			},
+		});
+		if (user) {
+			return user;
+		}
+		const dto: SignUpDto = {
+			email: profile._json.email,
+			username: profile.username || generateFromEmail(profile._json.email),
+			lastname: profile._json.family_name,
+			firstname: profile._json.given_name,
+		};
+		return await this.signUp(dto);
 	}
 }

@@ -324,10 +324,6 @@ export type ConversationScalarRelationFilter = {
   isNot?: Prisma.ConversationWhereInput
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-}
-
 export type EnumConversationTypeFieldUpdateOperationsInput = {
   set?: $Enums.ConversationType
 }
