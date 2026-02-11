@@ -42,11 +42,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Build application
+        run: pnpm run build
+
       - name: Run lint
         run: pnpm lint
 
       - name: Run e2e tests
         run: pnpm test:e2e
-
-      - name: Build application
-        run: pnpm run build
