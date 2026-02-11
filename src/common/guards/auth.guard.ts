@@ -37,7 +37,11 @@ export class AuthGuard implements CanActivate {
 
 		if (authType === undefined) {
 			throw new ForbiddenException('Access denied');
-		} else if (authType === AuthType.PUBLIC || (authType === AuthType.ANONYMOUS && !authHeader)) {
+		} else if (
+			authType === AuthType.PUBLIC ||
+			(authType === AuthType.ANONYMOUS && !authHeader) ||
+			authType === AuthType.GOOGLE
+		) {
 			return true;
 		} else if (authType === AuthType.ANONYMOUS && authHeader) {
 			throw new UnauthorizedException('Anonymous users cannot use this endpoint');

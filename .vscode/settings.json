@@ -1,0 +1,6 @@
+{
+	"sonarlint.connectedMode.project": {
+		"connectionId": "micael-jerry",
+		"projectKey": "micael-jerry_coucou-api"
+	}
+}

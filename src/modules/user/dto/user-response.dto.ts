@@ -15,10 +15,10 @@ export class UserResponse {
 	isVerified: boolean;
 
 	@ApiProperty()
-	firstname: string;
+	firstname?: string | null;
 
 	@ApiProperty()
-	lastname: string;
+	lastname?: string | null;
 
 	@ApiProperty({ enum: UserRole, description: 'User role' })
 	role: UserRole;

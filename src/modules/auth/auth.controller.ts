@@ -1,6 +1,6 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Req, Res } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { ApiCommonExceptionsDecorator } from '../../common/decorators/api-common-exceptions.decorator';
 import { HttpExceptionResponseDto } from '../../common/dtos/http-exception-response.dto';
 import { UserResponse } from '../user/dto/user-response.dto';
@@ -13,12 +13,15 @@ import { ResetPasswordRequestDto } from './dto/reset-password-request.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { SignUpDto } from './dto/sign-up.dto';
 import { VerifyEmailResponse } from './dto/verify-email-response.dto';
-import { GoogleAuthGuard } from '../../common/guards/google-auth.guard';
 import { Auth, AuthType } from '../../common/decorators/auth.decorator';
+import { ConfigService } from '@nestjs/config';
 
 @Controller({ path: '/auth' })
 export class AuthController {
-	constructor(private readonly authService: AuthService) {}
+	constructor(
+		private readonly authService: AuthService,
+		private readonly configService: ConfigService,
+	) {}
 
 	@ApiOperation({
 		summary: 'User registration endpoint',
@@ -108,10 +111,14 @@ export class AuthController {
 	}
 
 	@Get('/google/sign-in')
-	@UseGuards(GoogleAuthGuard)
-	googleAuthSignIn() {}
+	@Auth(AuthType.GOOGLE)
+	signInWithGoogle() {}
 
 	@Get('/google/redirect')
-	@UseGuards(GoogleAuthGuard)
-	googleAuthRedirect() {}
+	@Auth(AuthType.GOOGLE)
+	async signInWithGoogleRedirect(@Req() req: Request, @Res() res: Response): Promise<void> {
+		const redirectUrl = this.configService.get<string>('app.frontendBaseUrl');
+		const loginResponse: LoginResponse = await this.authService.signIn({ username: req.user!.user_username }, true);
+		res.redirect(`${redirectUrl}/auth/login?token=${loginResponse.access_token}`);
+	}
 }

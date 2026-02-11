@@ -29,7 +29,7 @@ export class UserService {
 			where: { id: authTokenPayload.user_id },
 			data: {
 				...userUpdateVal,
-				password: await this.authUtils.hashPassword(userUpdateVal.password),
+				...(userUpdateVal.password && { password: await this.authUtils.hashPassword(userUpdateVal.password) }),
 				is_verified: isChangedEmail ? false : user.is_verified,
 			},
 		});

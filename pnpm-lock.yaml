@@ -77,6 +77,9 @@ importers:
       socket.io:
         specifier: ^4.8.1
         version: 4.8.1
+      unique-username-generator:
+        specifier: ^1.5.1
+        version: 1.5.1
     devDependencies:
       '@commitlint/cli':
         specifier: ^19.8.0
@@ -4269,6 +4272,10 @@ packages:
   unicorn-magic@0.1.0:
     resolution: {integrity: sha512-lRfVq8fE8gz6QMBuDM6a+LO3IAzTi05H6gCVaUpir2E1Rwpo4ZUog45KpNXKC/Mn3Yb9UDuHumeFTo9iV/D9FQ==}
     engines: {node: '>=18'}
+
+  unique-username-generator@1.5.1:
+    resolution: {integrity: sha512-Q0pSKPyij4L7Tm6Bo3XsWeFG9qbyWTtwb3jTN+XgGhCFdlvQn6Fj0DCfYElw0kp/Xp7Jv1Q+CL+aA8S07RMChA==}
+    hasBin: true
 
   universalify@2.0.1:
     resolution: {integrity: sha512-gptHNQghINnc/vTGIk0SOFGFNXw7JVrlRUtConJRlvaw6DuX0wO5Jeko9sWrMBhh+PsYAZ7oXAiOnf/UKogyiw==}
@@ -8983,6 +8990,8 @@ snapshots:
   undici-types@6.21.0: {}
 
   unicorn-magic@0.1.0: {}
+
+  unique-username-generator@1.5.1: {}
 
   universalify@2.0.1: {}
 

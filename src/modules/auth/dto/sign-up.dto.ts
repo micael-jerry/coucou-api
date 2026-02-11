@@ -18,13 +18,13 @@ export class SignUpDto {
 	@IsNotEmpty()
 	@MinLength(8)
 	@MaxLength(50)
-	password: string;
+	password?: string;
 
 	@ApiProperty()
 	@IsNotEmpty()
-	firstname: string;
+	firstname?: string;
 
 	@ApiProperty()
 	@IsNotEmpty()
-	lastname: string;
+	lastname?: string;
 }
