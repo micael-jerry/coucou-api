@@ -1,8 +1,12 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Req, Res } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { ApiCommonExceptionsDecorator } from '../../common/decorators/api-common-exceptions.decorator';
+import { Auth, AuthType } from '../../common/decorators/auth.decorator';
+import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { HttpExceptionResponseDto } from '../../common/dtos/http-exception-response.dto';
+import { AuthTokenPayload } from '../../common/payloads/auth-token.payload';
 import { UserResponse } from '../user/dto/user-response.dto';
 import { UserMapper } from '../user/mapper/user.mapper';
 import { AuthService } from './auth.service';
@@ -13,8 +17,6 @@ import { ResetPasswordRequestDto } from './dto/reset-password-request.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { SignUpDto } from './dto/sign-up.dto';
 import { VerifyEmailResponse } from './dto/verify-email-response.dto';
-import { Auth, AuthType } from '../../common/decorators/auth.decorator';
-import { ConfigService } from '@nestjs/config';
 
 @Controller({ path: '/auth' })
 export class AuthController {
@@ -61,9 +63,8 @@ export class AuthController {
 	@Get('/who-am-i')
 	@Auth(AuthType.AUTHENTICATED)
 	@HttpCode(HttpStatus.OK)
-	async whoAmI(@Req() req: Request): Promise<UserResponse> {
-		const user = await this.authService.whoAmI(req.user!);
-		return UserMapper.toDto(user);
+	async whoAmI(@CurrentUser() user: AuthTokenPayload): Promise<UserResponse> {
+		return UserMapper.toDto(await this.authService.whoAmI(user));
 	}
 
 	@ApiOperation({
@@ -114,6 +115,8 @@ export class AuthController {
 	@Auth(AuthType.GOOGLE)
 	signInWithGoogle() {}
 
+	// Google OAuth redirect — uses @Req() here because Passport attaches
+	// the Google profile to req.user, not an AuthTokenPayload.
 	@Get('/google/redirect')
 	@Auth(AuthType.GOOGLE)
 	async signInWithGoogleRedirect(@Req() req: Request, @Res() res: Response): Promise<void> {

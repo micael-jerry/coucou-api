@@ -1,13 +1,14 @@
-import { Body, Controller, Get, HttpStatus, Param, Post, Query, Req } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
-import { Request } from 'express';
 import { UserRole } from '../../../prisma/generated/client';
 import { ApiCommonExceptionsDecorator } from '../../common/decorators/api-common-exceptions.decorator';
+import { Auth, AuthType } from '../../common/decorators/auth.decorator';
+import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { AuthTokenPayload } from '../../common/payloads/auth-token.payload';
 import { MessageInput } from './dto/message-input.dto';
 import { MessageResponse } from './dto/message-response.dto';
 import { MessageMapper } from './mapper/message.mapper';
 import { MessageService } from './message.service';
-import { Auth, AuthType } from '../../common/decorators/auth.decorator';
 
 @Controller('/messages')
 export class MessageController {
@@ -23,8 +24,8 @@ export class MessageController {
 	@ApiCommonExceptionsDecorator()
 	@Post('/')
 	@Auth(AuthType.ROLES, [UserRole.ADMIN, UserRole.USER])
-	async postMessage(@Req() req: Request, @Body() message: MessageInput): Promise<MessageResponse> {
-		return MessageMapper.toDto(await this.messageService.sendMessage(req.user!, message));
+	async postMessage(@CurrentUser() user: AuthTokenPayload, @Body() message: MessageInput): Promise<MessageResponse> {
+		return MessageMapper.toDto(await this.messageService.sendMessage(user, message));
 	}
 
 	@ApiOperation({
@@ -52,10 +53,10 @@ export class MessageController {
 	@Get('/')
 	@Auth(AuthType.ROLES, [UserRole.ADMIN, UserRole.USER])
 	async getMessagesByConversationId(
-		@Req() req: Request,
+		@CurrentUser() user: AuthTokenPayload,
 		@Query('conversationId') conversationId: string,
 	): Promise<MessageResponse[]> {
-		return (await this.messageService.getMessagesByConversationId(req.user!, conversationId)).map((message) =>
+		return (await this.messageService.getMessagesByConversationId(user, conversationId)).map((message) =>
 			MessageMapper.toDto(message),
 		);
 	}
