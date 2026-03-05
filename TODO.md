@@ -162,3 +162,53 @@ Se connecter avec `io(url, { auth: { token: '<JWT>' } })` et écouter les évén
 - [ ] Intégrer à `docker-compose.yml`
 
 📄 [Article : Monitoring NestJS + Prometheus + Grafana](https://dev.to/nestjs/monitoring-nestjs-apps-with-prometheus-and-grafana-1n96)
+
+---
+
+## Phase 4 — Fonctionnalités Originales & IA (Pour se démarquer) 🌟
+
+L'objectif ici est de sortir du cadre classique "app de chat" et de montrer une capacité à intégrer des services modernes et des workflows complexes.
+
+### Étape 4.1 — Intelligence Artificielle (Analyse & Résumé)
+- [ ] Intégration d'un LLM intégré (ou API OpenAI/Mistral) pour résumer les conversations longues ou les "messages ratés".
+- [ ] Analyse de sentiment en arrière-plan : nettoyage/avertissement en cas de messages toxiques ou système de "mood" général d'un groupe.
+- [ ] *Smart Replies* : générer côté serveur des suggestions de réponses rapides contextuelles.
+
+### Étape 4.2 — Traitement Asynchrone de Médias
+- [ ] Transcriptions Vocales : Upload d'un mémo vocal → Déclenchement d'un job BullMQ → Utilisation de *Whisper API* pour transcrire l'audio en texte → Mise à jour du message en DB et notification WebSocket en temps réel.
+- [ ] Génération de "Rich Link Previews" : Lorsqu'un lien est envoyé, un job récupère les *meta tags* (OpenGraph) de la page de façon asynchrone sans bloquer l'envoi du message, puis pousse la mise à jour au client.
+
+### Étape 4.3 — Messages Éphémères (Cron Jobs)
+- [ ] Ajouter une notion de TTL (Time To Live) sur les messages ("mode secret").
+- [ ] Utiliser `@nestjs/schedule` (Cron) pour nettoyer périodiquement en base de données les messages expirés, ou utiliser l'expiration native si un cache Redis est utilisé.
+
+---
+
+## Phase 5 — Concepts Techniques Back-end Avancés 🚀🌍
+
+Ces concepts démontreront une expertise technique pointue (niveau Intermédiaire/Senior), idéale pour un CV et pour valoriser l'application.
+
+### Étape 5.1 — Moteur de Recherche Full-Text (Meilisearch / Elasticsearch)
+- [ ] Synchroniser les entités `User` et `Message` depuis PostgreSQL vers un moteur de recherche spécialisé.
+- [ ] Implémenter une recherche globale floue (typo tolerance) ultra-rapide côté backend (chercher un mot-clé dans tous les messages ou retrouver un profil facilement).
+
+### Étape 5.2 — Architecture CQRS (Command Query Responsibility Segregation)
+- [ ] Refactoriser les fonctionnalités clés (ex: le module Message) pour séparer clairement les flux de "Commandes" (envois, suppressions) et de "Queries" (récupération d'historiques).
+- [ ] Utiliser `@nestjs/cqrs` avec des Event Handlers. Cela prouvera votre excellente maîtrise des architectures modulaires scalables.
+
+### Étape 5.3 — WebRTC Signaling Server
+- [ ] Préparer l'app pour des appels audio/vidéo peer-to-peer fluides.
+- [ ] Le backend ne va pas streamer la vidéo mais agira comme **Serveur de Signalisation** (via les WebSockets existants) pour gérer de manière fiable l'échange des *Offers*, *Answers* et *ICE candidates* (le standard des télécoms temps réel).
+
+### Étape 5.4 — Intégration GraphQL (Approche hybride)
+- [ ] Maintenir le REST pour des endpoints simples (auth, etc.), mais exposer un endpoint GraphQL (`@nestjs/graphql` + Apollo) pour les arborescences de données complexes.
+- [ ] *Très recherché en entreprise* : cela permet au client (mobile ou web) de définir lui-même la forme de l'historique de chat qu'il souhaite récupérer, en éliminant l'overfetching (récupération de données superflues).
+
+---
+
+## Phase 6 — Gamification & Architecture Événementielle 🎮
+
+### Étape 6.1 — Système d'Achievements (EventEmitter)
+- [ ] Utilisation intensive et élégante de `@nestjs/event-emitter`.
+- [ ] Lors d'actions intéressantes (ex: envoi du 100ème message, profil entièrement complété, interactions multiples), le backend émet un événement interne totalement découplé.
+- [ ] Un *listener* indépendant traite discrètement l'événement, débloque un "Badge" utilisateur en DB, puis déclenche un WebSocket qui affichera une animation (ex: pop-up de succès) côté front-end sans ralentir la navigation.
