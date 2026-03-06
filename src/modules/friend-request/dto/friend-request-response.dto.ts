@@ -4,17 +4,17 @@ import { UserResponse } from '../../user/dto/user-response.dto';
 
 export class FriendRequestResponse {
 	@ApiProperty({ enum: FriendRequestStatus })
-	status: FriendRequestStatus;
+	status!: FriendRequestStatus;
 
 	@ApiProperty({ type: UserResponse, description: 'User who sent the friend request' })
-	sender: UserResponse;
+	sender!: UserResponse;
 
 	@ApiProperty({ type: UserResponse, description: 'User who received the friend request' })
-	receiver: UserResponse;
+	receiver!: UserResponse;
 
 	@ApiProperty({ type: 'string', format: 'date-time', description: 'Friend request created datetime' })
-	createdAt: Date;
+	createdAt!: Date;
 
 	@ApiProperty({ type: 'string', format: 'date-time', description: 'Friend request updated datetime' })
-	updatedAt: Date;
+	updatedAt!: Date;
 }
