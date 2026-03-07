@@ -22,28 +22,6 @@ export class MailerService {
 		return this.configService.getOrThrow<string>('app.frontendBaseUrl');
 	}
 
-	private async sendEmail({ to, subject, html }: SendEmailObject): Promise<void> {
-		// INFO: Not send email on test environment
-		if (this.configService.getOrThrow<NodeEnv>('app.env') === NodeEnv.TEST) {
-			return;
-		}
-
-		const { data, error } = await this.resend.emails.send({
-			from: 'Coucou app <no-reply@resend.dev>',
-			to: to,
-			subject: subject,
-			html: html,
-		});
-
-		if (error) {
-			this.logger.error('MAIL NOT SENDED', error);
-			// TODO: VERIFY IF THE ERROR IS FROM RESEND OR FROM THE FRONTEND
-			// throw new BadGatewayException('Failed to send the email via external service. Please try again later.');
-		}
-
-		this.logger.log(data);
-	}
-
 	async sendWelcomeEmail(createdUser: User): Promise<void> {
 		await this.sendEmail({
 			to: [createdUser.email],
@@ -66,5 +44,27 @@ export class MailerService {
 			subject: 'Reset your password for Coucou App',
 			html: ResetPassword.getTemplate(user, authTokenToSend, this.frontEndBaseUrl),
 		});
+	}
+
+	private async sendEmail({ to, subject, html }: SendEmailObject): Promise<void> {
+		// INFO: Not send email on test environment
+		if (this.configService.getOrThrow<NodeEnv>('app.env') === NodeEnv.TEST) {
+			return;
+		}
+
+		const { data, error } = await this.resend.emails.send({
+			from: 'Coucou app <no-reply@resend.dev>',
+			to: to,
+			subject: subject,
+			html: html,
+		});
+
+		if (error) {
+			this.logger.error('MAIL NOT SENDED', error);
+			// TODO: VERIFY IF THE ERROR IS FROM RESEND OR FROM THE FRONTEND
+			// throw new BadGatewayException('Failed to send the email via external service. Please try again later.');
+		}
+
+		this.logger.log(data);
 	}
 }
