@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { PrismaModule } from '../../prisma/prisma.module';
 import { MailerService } from '../mailer/mailer.service';
 import { AuthController } from './auth.controller';
+import { AuthRepository } from './auth.repository';
 import { AuthService } from './auth.service';
 import { AuthUtils } from './auth.utils';
 import { AuthGuard } from './guards/auth.guard';
@@ -11,6 +12,7 @@ import { GoogleStrategy } from './strategies/google.strategy';
 @Module({
 	imports: [PrismaModule],
 	controllers: [AuthController],
-	providers: [AuthService, AuthGuard, AuthUtils, MailerService, RolesGuard, GoogleStrategy],
+	providers: [AuthService, AuthRepository, AuthGuard, AuthUtils, MailerService, RolesGuard, GoogleStrategy],
+	exports: [AuthRepository],
 })
 export class AuthModule {}
