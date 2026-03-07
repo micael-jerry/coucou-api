@@ -3,13 +3,12 @@ import { ConfigService } from '@nestjs/config';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { ApiCommonExceptionsDecorator } from '../../common/decorators/api-common-exceptions.decorator';
-import { Auth, AuthType } from '../../common/decorators/auth.decorator';
-import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import { HttpExceptionResponseDto } from '../../common/dtos/http-exception-response.dto';
-import { AuthTokenPayload } from '../../common/payloads/auth-token.payload';
+import { HttpExceptionResponseDto } from '../../common/dto/http-exception-response.dto';
 import { UserResponse } from '../user/dto/user-response.dto';
 import { UserMapper } from '../user/mapper/user.mapper';
 import { AuthService } from './auth.service';
+import { Auth, AuthType } from './decorators/auth.decorator';
+import { CurrentUser } from './decorators/current-user.decorator';
 import { LoginResponse } from './dto/login-response.dto';
 import { LoginDto } from './dto/login.dto';
 import { ResetPasswordRequestResponse } from './dto/reset-password-request-response.dto';
@@ -17,6 +16,7 @@ import { ResetPasswordRequestDto } from './dto/reset-password-request.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { SignUpDto } from './dto/sign-up.dto';
 import { VerifyEmailResponse } from './dto/verify-email-response.dto';
+import { AuthTokenPayload } from './interfaces/auth-token.payload';
 
 @Controller({ path: '/auth' })
 export class AuthController {

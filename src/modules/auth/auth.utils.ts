@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { User } from '../../../prisma/generated/client';
-import { AuthTokenPayload } from '../../common/payloads/auth-token.payload';
-import { SpecificReqTokenPayload } from '../../common/payloads/specific-req-token.payload';
+import { AuthTokenPayload } from './interfaces/auth-token.payload';
+import { SpecificReqTokenPayload } from './interfaces/specific-req-token.payload';
 
 @Injectable()
 export class AuthUtils {

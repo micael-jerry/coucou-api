@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Profile } from 'passport-google-oauth20';
+import { generateFromEmail } from 'unique-username-generator';
 import { User } from '../../../prisma/generated/client';
-import { AuthTokenPayload } from '../../common/payloads/auth-token.payload';
-import { SpecificReqTokenPayload } from '../../common/payloads/specific-req-token.payload';
-import { MailerService } from '../../infrastructure/mailer/mailer.service';
-import { PrismaService } from '../../infrastructure/prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
+import { MailerService } from '../mailer/mailer.service';
 import { UserMapper } from '../user/mapper/user.mapper';
 import { AuthUtils } from './auth.utils';
 import { LoginResponse } from './dto/login-response.dto';
@@ -14,8 +14,8 @@ import { ResetPasswordRequestDto } from './dto/reset-password-request.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { SignUpDto } from './dto/sign-up.dto';
 import { VerifyEmailResponse } from './dto/verify-email-response.dto';
-import { Profile } from 'passport-google-oauth20';
-import { generateFromEmail } from 'unique-username-generator';
+import { AuthTokenPayload } from './interfaces/auth-token.payload';
+import { SpecificReqTokenPayload } from './interfaces/specific-req-token.payload';
 
 @Injectable()
 export class AuthService {

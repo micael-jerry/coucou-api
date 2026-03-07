@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import { PrismaModule } from '../../prisma/prisma.module';
+import { MailerService } from '../mailer/mailer.service';
 import { AuthController } from './auth.controller';
-import { PrismaModule } from '../../infrastructure/prisma/prisma.module';
-import { AuthGuard } from '../../common/guards/auth.guard';
-import { MailerService } from '../../infrastructure/mailer/mailer.service';
+import { AuthService } from './auth.service';
 import { AuthUtils } from './auth.utils';
-import { RolesGuard } from '../../common/guards/roles.guard';
-import { GoogleStrategy } from '../../common/strategies/google.strategy';
+import { AuthGuard } from './guards/auth.guard';
+import { RolesGuard } from './guards/roles.guard';
+import { GoogleStrategy } from './strategies/google.strategy';
 
 @Module({
 	imports: [PrismaModule],

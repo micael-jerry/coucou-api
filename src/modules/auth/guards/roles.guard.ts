@@ -3,9 +3,9 @@ import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
-import { UserRole } from '../../../prisma/generated/enums';
+import { UserRole } from '../../../../prisma/generated/client';
 import { Roles } from '../decorators/roles.decorator';
-import { AuthTokenPayload } from '../payloads/auth-token.payload';
+import { AuthTokenPayload } from '../interfaces/auth-token.payload';
 
 @Injectable()
 export class RolesGuard implements CanActivate {

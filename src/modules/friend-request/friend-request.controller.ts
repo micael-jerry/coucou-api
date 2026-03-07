@@ -4,13 +4,13 @@ import { Request } from 'express';
 import { UserRole } from '../../../prisma/generated/client';
 import { FriendRequestStatus } from '../../../prisma/generated/enums';
 import { ApiCommonExceptionsDecorator } from '../../common/decorators/api-common-exceptions.decorator';
+import { Auth, AuthType } from '../auth/decorators/auth.decorator';
+import { FriendRequestInput } from './dto/friend-request-input.dto';
 import { FriendRequestResponse } from './dto/friend-request-response.dto';
+import { FriendRequestUpdateInput } from './dto/friend-request-update-input.dto';
 import { FriendRequestService } from './friend-request.service';
 import { FriendRequestMapper } from './mapper/friend-request.mapper';
 import { ParseFriendRequestStatusPipe } from './pipe/friend-request.pipe';
-import { FriendRequestInput } from './dto/friend-request-input.dto';
-import { FriendRequestUpdateInput } from './dto/friend-request-update-input.dto';
-import { Auth, AuthType } from '../../common/decorators/auth.decorator';
 
 @Controller('friend-requests')
 export class FriendRequestController {

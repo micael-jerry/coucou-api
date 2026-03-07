@@ -7,12 +7,12 @@ import {
 	UnauthorizedException,
 } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
+import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
-import { AuthTokenPayload } from '../payloads/auth-token.payload';
-import { Reflector } from '@nestjs/core';
-import { AuthType } from '../decorators/auth.decorator';
 import { AUTH_TYPE_KEY } from '../constants/auth.constant';
+import { AuthType } from '../decorators/auth.decorator';
+import { AuthTokenPayload } from '../interfaces/auth-token.payload';
 
 declare module 'express' {
 	export interface Request {

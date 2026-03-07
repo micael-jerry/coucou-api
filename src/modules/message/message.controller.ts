@@ -2,9 +2,9 @@ import { Body, Controller, Get, HttpStatus, Param, Post, Query } from '@nestjs/c
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { UserRole } from '../../../prisma/generated/client';
 import { ApiCommonExceptionsDecorator } from '../../common/decorators/api-common-exceptions.decorator';
-import { Auth, AuthType } from '../../common/decorators/auth.decorator';
-import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import { AuthTokenPayload } from '../../common/payloads/auth-token.payload';
+import { Auth, AuthType } from '../auth/decorators/auth.decorator';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { AuthTokenPayload } from '../auth/interfaces/auth-token.payload';
 import { MessageInput } from './dto/message-input.dto';
 import { MessageResponse } from './dto/message-response.dto';
 import { MessageMapper } from './mapper/message.mapper';

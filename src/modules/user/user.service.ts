@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '../../../prisma/generated/client';
-import { AuthTokenPayload } from '../../common/payloads/auth-token.payload';
-import { MailerService } from '../../infrastructure/mailer/mailer.service';
-import { PrismaService } from '../../infrastructure/prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
 import { AuthUtils } from '../auth/auth.utils';
+import { AuthTokenPayload } from '../auth/interfaces/auth-token.payload';
+import { MailerService } from '../mailer/mailer.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()

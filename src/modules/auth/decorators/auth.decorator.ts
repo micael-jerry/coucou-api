@@ -1,10 +1,10 @@
 import { applyDecorators, SetMetadata, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '../guards/auth.guard';
-import { RolesGuard } from '../guards/roles.guard';
-import { UserRole } from '../../../prisma/generated/enums';
-import { Roles } from './roles.decorator';
+import { UserRole } from '../../../../prisma/generated/client';
 import { AUTH_TYPE_KEY } from '../constants/auth.constant';
+import { AuthGuard } from '../guards/auth.guard';
 import { GoogleAuthGuard } from '../guards/google-auth.guard';
+import { RolesGuard } from '../guards/roles.guard';
+import { Roles } from './roles.decorator';
 
 export enum AuthType {
 	PUBLIC = 99,

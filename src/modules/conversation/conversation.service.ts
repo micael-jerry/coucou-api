@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConversationMemberRole, ConversationType } from '../../../prisma/generated/client';
-import { AuthTokenPayload } from '../../common/payloads/auth-token.payload';
-import { PrismaService } from '../../infrastructure/prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
+import { AuthTokenPayload } from '../auth/interfaces/auth-token.payload';
 import { ConversationInput } from './dto/conversation-input.dto';
 import { ConversationEntity } from './entity/conversation.entity';
 
