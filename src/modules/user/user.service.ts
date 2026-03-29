@@ -22,7 +22,7 @@ export class UserService {
 		return await this.userRepository.findById(id);
 	}
 
-	async updateUser(authTokenPayload: AuthTokenPayload, userUpdateVal: UpdateUserDto) {
+	async updateUser(authTokenPayload: AuthTokenPayload, userUpdateVal: UpdateUserDto): Promise<User> {
 		const user = await this.findById(authTokenPayload.user_id);
 		const isChangedEmail = user.email !== userUpdateVal.email;
 		const updatedUser = await this.userRepository.update(authTokenPayload.user_id, {

@@ -18,6 +18,9 @@ export class ConversationService {
 		if (conversationAlreadyExist) {
 			throw new BadRequestException('Conversation already exist');
 		}
+		if (!conversationInput.membersId.includes(authTokenPayload.user_id)) {
+			throw new BadRequestException('You are not a member of this conversation');
+		}
 
 		return await this.conversationRepository.createConversationWithMembers(conversationInput, authTokenPayload.user_id);
 	}
