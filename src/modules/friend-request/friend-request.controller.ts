@@ -70,6 +70,7 @@ export class FriendRequestController {
 		@Body() friendRequestUpdateInputs: FriendRequestUpdateInput[],
 	): Promise<FriendRequestResponse[]> {
 		console.log(request.user!.user_id == friendRequestUpdateInputs[0].receiverId);
+		// TODO: a verifier
 		return (
 			await this.friendRequestService.updateFriendRequestStatus(request.user!.user_id, friendRequestUpdateInputs)
 		).map((friendRequest) => FriendRequestMapper.toDto(friendRequest));

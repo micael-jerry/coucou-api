@@ -49,15 +49,19 @@ export class AuthGuard implements CanActivate {
 			throw new UnauthorizedException('No token provided');
 		}
 
-		const token: string = authHeader.split(' ')[1];
-		const user: AuthTokenPayload | undefined = this.jwtService.verify<AuthTokenPayload>(token);
+		try {
+			const token: string = authHeader.split(' ')[1];
+			const user: AuthTokenPayload | undefined = this.jwtService.verify<AuthTokenPayload>(token);
+			if (!user) {
+				throw new Error('Invalid token');
+			}
 
-		if (!user) {
+			req.user = user;
+			return true;
+		} catch (error) {
+			this.logger.error(error);
 			throw new UnauthorizedException('Invalid token');
 		}
-
-		req.user = user;
-		return true;
 	}
 
 	private getAuthType(context: ExecutionContext): AuthType | undefined {
