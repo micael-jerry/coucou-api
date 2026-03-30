@@ -4,8 +4,8 @@ import { FriendRequestStatus } from '../../../../prisma/generated/enums';
 
 export class FriendRequestUpdateInput {
 	@ApiProperty()
-	@IsUUID('4', { message: 'Invalid receiverId' })
-	receiverId!: string;
+	@IsUUID('4', { message: 'Invalid senderId' })
+	senderId!: string;
 
 	@ApiProperty()
 	@IsEnum(FriendRequestStatus, { message: 'Invalid status' })

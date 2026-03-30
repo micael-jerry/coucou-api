@@ -39,7 +39,7 @@ export class FriendRequestRepository {
 	}
 
 	async updateStatusTransaction(
-		senderId: string,
+		receiverId: string,
 		friendReqUpdateInputs: FriendRequestUpdateInput[],
 	): Promise<FriendRequestEntity[]> {
 		return this.prisma.$transaction(async (prisma) => {
@@ -48,8 +48,8 @@ export class FriendRequestRepository {
 				const result = await prisma.friendRequest.update({
 					where: {
 						user_id_user_target_id: {
-							user_id: senderId,
-							user_target_id: friendReqUpdateInput.receiverId,
+							user_id: friendReqUpdateInput.senderId,
+							user_target_id: receiverId,
 						},
 					},
 					data: {

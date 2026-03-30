@@ -19,9 +19,9 @@ export class FriendRequestService {
 	}
 
 	async updateFriendRequestStatus(
-		senderId: string,
+		receiverId: string,
 		friendReqUpdateInputs: FriendRequestUpdateInput[],
 	): Promise<FriendRequestEntity[]> {
-		return await this.friendRequestRepository.updateStatusTransaction(senderId, friendReqUpdateInputs);
+		return await this.friendRequestRepository.updateStatusTransaction(receiverId, friendReqUpdateInputs);
 	}
 }

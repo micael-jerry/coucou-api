@@ -9,6 +9,7 @@ import { ConversationEntity } from './entity/conversation.entity';
 export class ConversationService {
 	constructor(private readonly conversationRepository: ConversationRepository) {}
 
+	// TODO: verify all members are friends and exist
 	async createConversation(
 		authTokenPayload: AuthTokenPayload,
 		conversationInput: ConversationInput,

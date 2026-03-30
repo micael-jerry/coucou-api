@@ -27,7 +27,7 @@ async function main() {
 				is_verified: true,
 			},
 			{
-				id: '9a8b7c6d-5e4f-3a2b-1c0d-9e8f7a6b5c4d',
+				id: '9a8b7c6d-5e4f-4a2b-bc0d-9e8f7a6b5c4d',
 				username: 'testuser3',
 				email: 'test3@example.com',
 				password: '$2a$12$nJXXmOUWNQnR3qNU5FEWTOVxsFK9cS7upV.IVfVUeCOK0xLmR5Rqm', // test3@example.com
@@ -36,7 +36,7 @@ async function main() {
 				is_verified: true,
 			},
 			{
-				id: '1f2e3d4c-5b6a-7890-1234-567890abcdef',
+				id: '1f2e3d4c-5b6a-4890-a234-567890abcdef',
 				username: 'testuser4',
 				email: 'test4@example.com',
 				password: '$2a$12$nJXXmOUWNQnR3qNU5FEWTOVxsFK9cS7upV.IVfVUeCOK0xLmR5Rqm', // test4@example.com
@@ -89,8 +89,8 @@ async function main() {
 				status: 'PENDING',
 			},
 			{
-				user_id: 'c46ffdce-8ee7-470e-8b22-4e83c84481d2', // testuser1
-				user_target_id: '1f2e3d4c-5b6a-7890-1234-567890abcdef', // testuser4
+				user_id: '1f2e3d4c-5b6a-4890-a234-567890abcdef', // testuser4
+				user_target_id: 'c46ffdce-8ee7-470e-8b22-4e83c84481d2', // testuser1
 				status: 'PENDING',
 			},
 		],

@@ -1,0 +1,110 @@
+
+> coucou-api@0.0.1 test:e2e
+> prisma generate && pnpm run reset:test:db && jest --config ./test/jest-e2e.json --runInBand test/e2e/friend-request.e2e-spec.ts
+
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma/schema.prisma.
+
+✔ Generated Prisma Client (7.3.0) to ./prisma/generated in 43ms
+
+
+> coucou-api@0.0.1 reset:test:db /home/micael-jerry/MyFolder/repository/coucou-app/coucou-api
+> prisma migrate reset --force && prisma db seed
+
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma/schema.prisma.
+Datasource "db": PostgreSQL database "coucou_db", schema "public" at "localhost:5432"
+
+Applying migration `20250331091805_user`
+Applying migration `20250920121927_add_conversation`
+Applying migration `20250922184947_verify_email`
+Applying migration `20250929185053_add_updated_conversation`
+Applying migration `20250930042649_add_joined_conv`
+Applying migration `20251007053730_add_user_role`
+Applying migration `20260118142547_conv_name_and_member_conv_role`
+Applying migration `20260124035254_friend_request`
+Applying migration `20260211114106_user_optional_attribute`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20250331091805_user/
+    └─ migration.sql
+  └─ 20250920121927_add_conversation/
+    └─ migration.sql
+  └─ 20250922184947_verify_email/
+    └─ migration.sql
+  └─ 20250929185053_add_updated_conversation/
+    └─ migration.sql
+  └─ 20250930042649_add_joined_conv/
+    └─ migration.sql
+  └─ 20251007053730_add_user_role/
+    └─ migration.sql
+  └─ 20260118142547_conv_name_and_member_conv_role/
+    └─ migration.sql
+  └─ 20260124035254_friend_request/
+    └─ migration.sql
+  └─ 20260211114106_user_optional_attribute/
+    └─ migration.sql
+
+Loaded Prisma config from prisma.config.ts.
+
+Running seed command `ts-node --transpile-only prisma/seed.ts` ...
+
+🌱  The seed command has been executed.
+FAIL test/e2e/friend-request.e2e-spec.ts
+  FriendRequestController (e2e)
+    ✓ /friend-requests (GET) - should get all friend requests (23 ms)
+    ✕ /friend-requests (POST) - should send a friend request (6 ms)
+    ✕ /friend-requests (PUT) - should update a friend request status (3 ms)
+    ✓ /friend-requests (GET) - should fail without auth token (2 ms)
+
+  ● FriendRequestController (e2e) › /friend-requests (POST) - should send a friend request
+
+    expected 201 "Created", got 400 "Bad Request"
+
+      52 | 			.set('Authorization', `Bearer ${authToken}`)
+      53 | 			.send([{ receiverId }])
+    > 54 | 			.expect(HttpStatus.CREATED)
+         | 			 ^
+      55 | 			.then((res: { body: FriendRequestResponse[] }) => {
+      56 | 				expect(res.body.length).toBe(1);
+      57 | 				expect(res.body[0].receiver.id).toBe(receiverId);
+
+      at Object.<anonymous> (friend-request.e2e-spec.ts:54:5)
+      ----
+      at Test._assertStatus (../../node_modules/.pnpm/supertest@7.1.1/node_modules/supertest/lib/test.js:267:14)
+      at ../../node_modules/.pnpm/supertest@7.1.1/node_modules/supertest/lib/test.js:323:13
+      at Test._assertFunction (../../node_modules/.pnpm/supertest@7.1.1/node_modules/supertest/lib/test.js:300:13)
+      at Test.assert (../../node_modules/.pnpm/supertest@7.1.1/node_modules/supertest/lib/test.js:179:23)
+      at Server.localAssert (../../node_modules/.pnpm/supertest@7.1.1/node_modules/supertest/lib/test.js:135:14)
+
+  ● FriendRequestController (e2e) › /friend-requests (PUT) - should update a friend request status
+
+    expected 200 "OK", got 400 "Bad Request"
+
+      66 | 			.set('Authorization', `Bearer ${authToken}`)
+      67 | 			.send([{ senderId, status: FriendRequestStatus.ACCEPTED }])
+    > 68 | 			.expect(HttpStatus.OK)
+         | 			 ^
+      69 | 			.then((res: { body: FriendRequestResponse[] }) => {
+      70 | 				expect(res.body.length).toBe(1);
+      71 | 				expect(res.body[0].status).toBe(FriendRequestStatus.ACCEPTED);
+
+      at Object.<anonymous> (friend-request.e2e-spec.ts:68:5)
+      ----
+      at Test._assertStatus (../../node_modules/.pnpm/supertest@7.1.1/node_modules/supertest/lib/test.js:267:14)
+      at ../../node_modules/.pnpm/supertest@7.1.1/node_modules/supertest/lib/test.js:323:13
+      at Test._assertFunction (../../node_modules/.pnpm/supertest@7.1.1/node_modules/supertest/lib/test.js:300:13)
+      at Test.assert (../../node_modules/.pnpm/supertest@7.1.1/node_modules/supertest/lib/test.js:179:23)
+      at Server.localAssert (../../node_modules/.pnpm/supertest@7.1.1/node_modules/supertest/lib/test.js:135:14)
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 2 passed, 4 total
+Snapshots:   0 total
+Time:        3.003 s
+Ran all test suites matching /test\/e2e\/friend-request.e2e-spec.ts/i.

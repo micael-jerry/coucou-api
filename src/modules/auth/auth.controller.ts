@@ -1,7 +1,7 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Res } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { ApiCommonExceptionsDecorator } from '../../common/decorators/api-common-exceptions.decorator';
 import { HttpExceptionResponseDto } from '../../common/dto/http-exception-response.dto';
 import { UserResponse } from '../user/dto/user-response.dto';
@@ -113,15 +113,17 @@ export class AuthController {
 
 	@Get('/google/sign-in')
 	@Auth(AuthType.GOOGLE)
-	signInWithGoogle() {}
+	signInWithGoogle() {
+		return;
+	}
 
 	// Google OAuth redirect — uses @Req() here because Passport attaches
 	// the Google profile to req.user, not an AuthTokenPayload.
 	@Get('/google/redirect')
 	@Auth(AuthType.GOOGLE)
-	async signInWithGoogleRedirect(@Req() req: Request, @Res() res: Response): Promise<void> {
+	async signInWithGoogleRedirect(@CurrentUser() user: AuthTokenPayload, @Res() res: Response): Promise<void> {
 		const redirectUrl = this.configService.get<string>('app.frontendBaseUrl');
-		const loginResponse: LoginResponse = await this.authService.signIn({ username: req.user!.user_username }, true);
+		const loginResponse: LoginResponse = await this.authService.signIn({ username: user.user_username }, true);
 		res.redirect(`${redirectUrl}/auth/login?token=${loginResponse.access_token}`);
 	}
 }

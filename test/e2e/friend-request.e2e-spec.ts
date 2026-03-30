@@ -46,7 +46,7 @@ describe('FriendRequestController (e2e)', () => {
 	});
 
 	it('/friend-requests (POST) - should send a friend request', async () => {
-		const receiverId = '9a8b7c6d-5e4f-3a2b-1c0d-9e8f7a6b5c4d'; // testuser3
+		const receiverId = '9a8b7c6d-5e4f-4a2b-bc0d-9e8f7a6b5c4d'; // testuser3
 		return request(app.getHttpServer())
 			.post('/friend-requests')
 			.set('Authorization', `Bearer ${authToken}`)
@@ -60,11 +60,11 @@ describe('FriendRequestController (e2e)', () => {
 	});
 
 	it('/friend-requests (PUT) - should update a friend request status', async () => {
-		const receiverId = '1f2e3d4c-5b6a-7890-1234-567890abcdef'; // testuser4
+		const senderId = '1f2e3d4c-5b6a-4890-a234-567890abcdef'; // testuser4
 		return request(app.getHttpServer())
 			.put('/friend-requests')
 			.set('Authorization', `Bearer ${authToken}`)
-			.send([{ receiverId, status: FriendRequestStatus.ACCEPTED }])
+			.send([{ senderId, status: FriendRequestStatus.ACCEPTED }])
 			.expect(HttpStatus.OK)
 			.then((res: { body: FriendRequestResponse[] }) => {
 				expect(res.body.length).toBe(1);

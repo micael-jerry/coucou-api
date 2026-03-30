@@ -1,6 +1,5 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Put, Query, Req } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, ParseArrayPipe, Post, Put, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
-import { Request } from 'express';
 import { UserRole } from '../../../prisma/generated/client';
 import { FriendRequestStatus } from '../../../prisma/generated/enums';
 import { ApiCommonExceptionsDecorator } from '../../common/decorators/api-common-exceptions.decorator';
@@ -11,6 +10,8 @@ import { FriendRequestUpdateInput } from './dto/friend-request-update-input.dto'
 import { FriendRequestService } from './friend-request.service';
 import { FriendRequestMapper } from './mapper/friend-request.mapper';
 import { ParseFriendRequestStatusPipe } from './pipe/friend-request.pipe';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { AuthTokenPayload } from '../auth/interfaces/auth-token.payload';
 
 @Controller('friend-requests')
 export class FriendRequestController {
@@ -27,10 +28,10 @@ export class FriendRequestController {
 	@Get()
 	@Auth(AuthType.ROLES, [UserRole.ADMIN, UserRole.USER])
 	async getAllFriendRequests(
-		@Req() request: Request,
+		@CurrentUser() user: AuthTokenPayload,
 		@Query('status', new ParseFriendRequestStatusPipe()) status?: FriendRequestStatus,
 	): Promise<FriendRequestResponse[]> {
-		return (await this.friendRequestService.getAllFriendRequests(request.user!.user_id, status)).map((friendRequest) =>
+		return (await this.friendRequestService.getAllFriendRequests(user.user_id, status)).map((friendRequest) =>
 			FriendRequestMapper.toDto(friendRequest),
 		);
 	}
@@ -47,10 +48,11 @@ export class FriendRequestController {
 	@HttpCode(HttpStatus.CREATED)
 	@Auth(AuthType.ROLES, [UserRole.ADMIN, UserRole.USER])
 	async sendFriendRequests(
-		@Req() request: Request,
-		@Body() body: FriendRequestInput[],
+		@CurrentUser() user: AuthTokenPayload,
+		@Body(new ParseArrayPipe({ items: FriendRequestInput }))
+		body: FriendRequestInput[],
 	): Promise<FriendRequestResponse[]> {
-		return (await this.friendRequestService.sendFriendRequests(request.user!.user_id, body)).map((friendRequest) =>
+		return (await this.friendRequestService.sendFriendRequests(user.user_id, body)).map((friendRequest) =>
 			FriendRequestMapper.toDto(friendRequest),
 		);
 	}
@@ -66,13 +68,12 @@ export class FriendRequestController {
 	@Put()
 	@Auth(AuthType.ROLES, [UserRole.ADMIN, UserRole.USER])
 	async updateFriendRequestStatus(
-		@Req() request: Request,
-		@Body() friendRequestUpdateInputs: FriendRequestUpdateInput[],
+		@CurrentUser() user: AuthTokenPayload,
+		@Body(new ParseArrayPipe({ items: FriendRequestUpdateInput }))
+		friendRequestUpdateInputs: FriendRequestUpdateInput[],
 	): Promise<FriendRequestResponse[]> {
-		console.log(request.user!.user_id == friendRequestUpdateInputs[0].receiverId);
-		// TODO: a verifier
-		return (
-			await this.friendRequestService.updateFriendRequestStatus(request.user!.user_id, friendRequestUpdateInputs)
-		).map((friendRequest) => FriendRequestMapper.toDto(friendRequest));
+		return (await this.friendRequestService.updateFriendRequestStatus(user.user_id, friendRequestUpdateInputs)).map(
+			(friendRequest) => FriendRequestMapper.toDto(friendRequest),
+		);
 	}
 }
