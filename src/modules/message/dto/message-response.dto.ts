@@ -2,17 +2,17 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class MessageResponse {
 	@ApiProperty()
-	id: string;
+	id!: string;
 
 	@ApiProperty()
-	conversationId: string;
+	conversationId!: string;
 
 	@ApiProperty()
-	senderId: string;
+	senderId!: string;
 
 	@ApiProperty()
-	content: string;
+	content!: string;
 
 	@ApiProperty({ type: 'string', format: 'date-time', description: 'User created datetime' })
-	createdAt: Date;
+	createdAt!: Date;
 }

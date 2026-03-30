@@ -5,11 +5,11 @@ export class SignUpDto {
 	@ApiProperty({ minimum: 5 })
 	@IsNotEmpty()
 	@MinLength(5)
-	username: string;
+	username!: string;
 
 	@ApiProperty()
 	@IsEmail()
-	email: string;
+	email!: string;
 
 	@ApiProperty({
 		minLength: 8,

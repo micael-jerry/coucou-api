@@ -7,12 +7,12 @@ import {
 	UnauthorizedException,
 } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
+import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
-import { AuthTokenPayload } from '../payloads/auth-token.payload';
-import { Reflector } from '@nestjs/core';
-import { AuthType } from '../decorators/auth.decorator';
 import { AUTH_TYPE_KEY } from '../constants/auth.constant';
+import { AuthType } from '../decorators/auth.decorator';
+import { AuthTokenPayload } from '../interfaces/auth-token.payload';
 
 declare module 'express' {
 	export interface Request {
@@ -49,15 +49,19 @@ export class AuthGuard implements CanActivate {
 			throw new UnauthorizedException('No token provided');
 		}
 
-		const token: string = authHeader.split(' ')[1];
-		const user: AuthTokenPayload | undefined = this.jwtService.verify<AuthTokenPayload>(token);
+		try {
+			const token: string = authHeader.split(' ')[1];
+			const user: AuthTokenPayload | undefined = this.jwtService.verify<AuthTokenPayload>(token);
+			if (!user) {
+				throw new Error('Invalid token');
+			}
 
-		if (!user) {
+			req.user = user;
+			return true;
+		} catch (error) {
+			this.logger.error(error);
 			throw new UnauthorizedException('Invalid token');
 		}
-
-		req.user = user;
-		return true;
 	}
 
 	private getAuthType(context: ExecutionContext): AuthType | undefined {

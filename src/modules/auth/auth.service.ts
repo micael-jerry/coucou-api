@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Profile } from 'passport-google-oauth20';
+import { generateFromEmail } from 'unique-username-generator';
 import { User } from '../../../prisma/generated/client';
-import { AuthTokenPayload } from '../../common/payloads/auth-token.payload';
-import { SpecificReqTokenPayload } from '../../common/payloads/specific-req-token.payload';
-import { MailerService } from '../../infrastructure/mailer/mailer.service';
-import { PrismaService } from '../../infrastructure/prisma/prisma.service';
+import { MailerService } from '../mailer/mailer.service';
 import { UserMapper } from '../user/mapper/user.mapper';
+import { AuthRepository } from './auth.repository';
 import { AuthUtils } from './auth.utils';
 import { LoginResponse } from './dto/login-response.dto';
 import { LoginDto } from './dto/login.dto';
@@ -14,25 +14,23 @@ import { ResetPasswordRequestDto } from './dto/reset-password-request.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { SignUpDto } from './dto/sign-up.dto';
 import { VerifyEmailResponse } from './dto/verify-email-response.dto';
-import { Profile } from 'passport-google-oauth20';
-import { generateFromEmail } from 'unique-username-generator';
+import { AuthTokenPayload } from './interfaces/auth-token.payload';
+import { SpecificReqTokenPayload } from './interfaces/specific-req-token.payload';
 
 @Injectable()
 export class AuthService {
 	private readonly logger: Logger = new Logger(AuthService.name);
 	constructor(
-		private readonly prismaService: PrismaService,
+		private readonly authRepository: AuthRepository,
 		private readonly jwtService: JwtService,
 		private readonly mailerService: MailerService,
 		private readonly authUtils: AuthUtils,
 	) {}
 
 	async signUp({ password: pwd, ...signUpDto }: SignUpDto, signUpWithGoogle: boolean = false): Promise<User> {
-		const createdUser = await this.prismaService.user.create({
-			data: {
-				...signUpDto,
-				...(!signUpWithGoogle && pwd && { password: await this.authUtils.hashPassword(pwd) }),
-			},
+		const createdUser = await this.authRepository.create({
+			...signUpDto,
+			...(!signUpWithGoogle && pwd && { password: await this.authUtils.hashPassword(pwd) }),
 		});
 
 		await this.mailerService.sendWelcomeEmail(createdUser);
@@ -44,9 +42,7 @@ export class AuthService {
 	}
 
 	async signIn(signInDto: LoginDto, withoutPassword: boolean = false): Promise<LoginResponse> {
-		const user: User = await this.prismaService.user.findUniqueOrThrow({
-			where: { username: signInDto.username },
-		});
+		const user: User = await this.authRepository.findByUsername(signInDto.username);
 		if (
 			withoutPassword ||
 			(!withoutPassword &&
@@ -63,19 +59,14 @@ export class AuthService {
 	}
 
 	async whoAmI(authTokenPayload: AuthTokenPayload): Promise<User> {
-		const user: User = await this.prismaService.user.findUniqueOrThrow({
-			where: { id: authTokenPayload.user_id },
-		});
+		const user: User = await this.authRepository.findById(authTokenPayload.user_id);
 		return user;
 	}
 
 	async verifyEmail(verificationEmailToken: string): Promise<VerifyEmailResponse> {
 		try {
 			const payload = await this.authUtils.getPayloadToken<SpecificReqTokenPayload>(verificationEmailToken);
-			await this.prismaService.user.update({
-				where: { email: payload.email },
-				data: { is_verified: true },
-			});
+			await this.authRepository.updateByEmail(payload.email, { is_verified: true });
 			return {
 				email: payload.email,
 				message: 'The email address has been checked successfully',
@@ -88,9 +79,7 @@ export class AuthService {
 	}
 
 	async resetPasswordRequest(resetPasswordRequestDto: ResetPasswordRequestDto): Promise<ResetPasswordRequestResponse> {
-		const user: User = await this.prismaService.user.findUniqueOrThrow({
-			where: { email: resetPasswordRequestDto.email },
-		});
+		const user: User = await this.authRepository.findByEmailOrThrow(resetPasswordRequestDto.email);
 		const resetPasswordToken: string = await this.authUtils.genSpecificRequestToken(user);
 		await this.mailerService.sendResetPasswordEmailRequest(user, resetPasswordToken);
 		return {
@@ -102,9 +91,8 @@ export class AuthService {
 	async resetPassword(resetPasswordDto: ResetPasswordDto): Promise<User> {
 		try {
 			const authTokenPayload = await this.authUtils.getPayloadToken<SpecificReqTokenPayload>(resetPasswordDto.token);
-			return await this.prismaService.user.update({
-				where: { id: authTokenPayload.id },
-				data: { password: await this.authUtils.hashPassword(resetPasswordDto.newPassword) },
+			return await this.authRepository.updateById(authTokenPayload.id, {
+				password: await this.authUtils.hashPassword(resetPasswordDto.newPassword),
 			});
 		} catch (err) {
 			this.logger.error(err);
@@ -116,11 +104,7 @@ export class AuthService {
 		if (!profile._json.email) {
 			throw new BadRequestException('Invalid Email');
 		}
-		const user: User | null = await this.prismaService.user.findUnique({
-			where: {
-				email: profile._json.email,
-			},
-		});
+		const user: User | null = await this.authRepository.findByEmail(profile._json.email);
 		if (user) {
 			return user;
 		}

@@ -5,23 +5,23 @@ import { UserResponse } from '../../user/dto/user-response.dto';
 
 export class ConversationResponse {
 	@ApiProperty()
-	id: string;
+	id!: string;
 
 	@ApiProperty({ type: 'string', format: 'date-time', description: 'User created datetime' })
-	createdAt: Date;
+	createdAt!: Date;
 
 	@ApiProperty({ type: 'string', format: 'date-time', description: 'User updated datetime' })
-	updatedAt: Date;
+	updatedAt!: Date;
 
 	@ApiProperty({ description: 'Conversation name' })
 	name?: string;
 
 	@ApiProperty({ enum: ConversationType })
-	type: ConversationType;
+	type!: ConversationType;
 
 	@ApiProperty({ type: [UserResponse] })
-	members: UserResponse[];
+	members!: UserResponse[];
 
 	@ApiProperty({ type: [MessageResponse] })
-	messages: MessageResponse[];
+	messages!: MessageResponse[];
 }

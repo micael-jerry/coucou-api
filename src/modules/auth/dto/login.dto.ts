@@ -5,7 +5,7 @@ export class LoginDto {
 	@ApiProperty({ minimum: 5 })
 	@IsNotEmpty()
 	@MinLength(5)
-	username: string;
+	username!: string;
 
 	@ApiProperty({ minimum: 8, maximum: 50 })
 	@IsNotEmpty()

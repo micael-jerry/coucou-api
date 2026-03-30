@@ -1,13 +1,14 @@
-import { Body, Controller, Get, HttpStatus, Param, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
-import { Request } from 'express';
 import { UserRole } from '../../../prisma/generated/client';
 import { ApiCommonExceptionsDecorator } from '../../common/decorators/api-common-exceptions.decorator';
+import { Auth, AuthType } from '../auth/decorators/auth.decorator';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { AuthTokenPayload } from '../auth/interfaces/auth-token.payload';
 import { ConversationService } from './conversation.service';
 import { ConversationInput } from './dto/conversation-input.dto';
 import { ConversationResponse } from './dto/conversation-response.dto';
 import { ConversationMapper } from './mapper/conversation.mapper';
-import { Auth, AuthType } from '../../common/decorators/auth.decorator';
 
 @Controller('/conversations')
 export class ConversationController {
@@ -24,10 +25,10 @@ export class ConversationController {
 	@Post('/')
 	@Auth(AuthType.ROLES, [UserRole.ADMIN, UserRole.USER])
 	async postConversation(
-		@Req() req: Request,
+		@CurrentUser() user: AuthTokenPayload,
 		@Body() conversationInput: ConversationInput,
 	): Promise<ConversationResponse> {
-		return ConversationMapper.toDto(await this.conversationService.createConversation(req.user!, conversationInput));
+		return ConversationMapper.toDto(await this.conversationService.createConversation(user, conversationInput));
 	}
 
 	@ApiOperation({
@@ -46,10 +47,10 @@ export class ConversationController {
 	@Get('/:conversationId')
 	@Auth(AuthType.ROLES, [UserRole.ADMIN, UserRole.USER])
 	async getConversationById(
-		@Req() req: Request,
+		@CurrentUser() user: AuthTokenPayload,
 		@Param('conversationId') conversationId: string,
 	): Promise<ConversationResponse> {
-		return ConversationMapper.toDto(await this.conversationService.getConversationById(req.user!, conversationId));
+		return ConversationMapper.toDto(await this.conversationService.getConversationById(user, conversationId));
 	}
 
 	@ApiOperation({
@@ -61,8 +62,8 @@ export class ConversationController {
 	@ApiCommonExceptionsDecorator()
 	@Get('/')
 	@Auth(AuthType.ROLES, [UserRole.ADMIN, UserRole.USER])
-	async getConversationsByUserId(@Req() req: Request): Promise<ConversationResponse[]> {
-		return (await this.conversationService.getConversationsByConnectedUser(req.user!)).map((entity) =>
+	async getConversationsByUserId(@CurrentUser() user: AuthTokenPayload): Promise<ConversationResponse[]> {
+		return (await this.conversationService.getConversationsByConnectedUser(user)).map((entity) =>
 			ConversationMapper.toDto(entity),
 		);
 	}

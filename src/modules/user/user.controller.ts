@@ -1,13 +1,14 @@
-import { Body, Controller, Get, HttpStatus, Param, Put, Req } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, Put } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
-import { Request } from 'express';
 import { UserRole } from '../../../prisma/generated/client';
 import { ApiCommonExceptionsDecorator } from '../../common/decorators/api-common-exceptions.decorator';
+import { Auth, AuthType } from '../auth/decorators/auth.decorator';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { AuthTokenPayload } from '../auth/interfaces/auth-token.payload';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserResponse } from './dto/user-response.dto';
 import { UserMapper } from './mapper/user.mapper';
 import { UserService } from './user.service';
-import { Auth, AuthType } from '../../common/decorators/auth.decorator';
 
 @Controller({ path: '/users' })
 export class UserController {
@@ -50,7 +51,7 @@ export class UserController {
 	@ApiCommonExceptionsDecorator()
 	@Put('/me')
 	@Auth(AuthType.ROLES, [UserRole.ADMIN, UserRole.USER])
-	async updateUser(@Req() req: Request, @Body() userUpdateVal: UpdateUserDto) {
-		return UserMapper.toDto(await this.userService.updateUser(req.user!, userUpdateVal));
+	async updateUser(@CurrentUser() user: AuthTokenPayload, @Body() userUpdateVal: UpdateUserDto): Promise<UserResponse> {
+		return UserMapper.toDto(await this.userService.updateUser(user, userUpdateVal));
 	}
 }

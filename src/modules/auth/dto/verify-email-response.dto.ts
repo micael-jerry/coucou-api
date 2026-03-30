@@ -2,11 +2,11 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class VerifyEmailResponse {
 	@ApiProperty()
-	email: string;
+	email!: string;
 
 	@ApiProperty()
-	message: string;
+	message!: string;
 
 	@ApiProperty()
-	timestamp: number;
+	timestamp!: number;
 }

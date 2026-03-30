@@ -3,16 +3,16 @@ import { UserRole } from '../../../../prisma/generated/client';
 
 export class UserResponse {
 	@ApiProperty()
-	id: string;
+	id!: string;
 
 	@ApiProperty()
-	username: string;
+	username!: string;
 
 	@ApiProperty()
-	email: string;
+	email!: string;
 
 	@ApiProperty({ type: 'boolean', description: 'Email verification status' })
-	isVerified: boolean;
+	isVerified!: boolean;
 
 	@ApiProperty()
 	firstname?: string | null;
@@ -21,8 +21,8 @@ export class UserResponse {
 	lastname?: string | null;
 
 	@ApiProperty({ enum: UserRole, description: 'User role' })
-	role: UserRole;
+	role!: UserRole;
 
 	@ApiProperty({ type: 'string', format: 'date-time', description: 'User created datetime' })
-	createdAt: Date;
+	createdAt!: Date;
 }

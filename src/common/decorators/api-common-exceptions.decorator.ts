@@ -2,11 +2,11 @@ import { applyDecorators, HttpStatus } from '@nestjs/common';
 import {
 	ApiBadRequestResponse,
 	ApiForbiddenResponse,
+	ApiInternalServerErrorResponse,
 	ApiNotFoundResponse,
 	ApiTooManyRequestsResponse,
-	ApiInternalServerErrorResponse,
 } from '@nestjs/swagger';
-import { HttpExceptionResponseDto } from '../dtos/http-exception-response.dto';
+import { HttpExceptionResponseDto } from '../dto/http-exception-response.dto';
 
 export function ApiCommonExceptionsDecorator() {
 	return applyDecorators(
